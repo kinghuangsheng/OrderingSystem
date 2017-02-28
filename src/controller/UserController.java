@@ -25,7 +25,7 @@ import global.constant.Reason;
 import jdk.nashorn.api.scripting.JSObject;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/ajax/user")
 public class UserController {
 
 	@RequestMapping(value = "/login", produces = "text/html;charset=UTF-8")

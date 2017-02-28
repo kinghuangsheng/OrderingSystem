@@ -34,23 +34,15 @@ public class PageRequestInterceptor implements HandlerInterceptor {
     	String uri = request.getRequestURI();
     	System.out.println("preHandle uri =  " + uri);
     	HttpSession httpSession = request.getSession();	
-    	if(uri.contains("index")){
-    		return true;
-    	}else if(("/"+ Constant.PROJECT_NAME + "/user/login").equals(uri)){
-    		return true;
-    	}
-    	else{
-    		String username = (String) httpSession.getAttribute(Constant.USER_NAME);
-    		if(null != username){
-    			System.out.println("session username = " + username);
-    			return true;
-    		}else{
-    			System.out.println("session username = " + username);
-    			response.sendRedirect("http://localhost:8080/" + Constant.PROJECT_NAME + "/page/index.html");
-    			return false;
-    		}
-    	}
-    	
+    	String username = (String) httpSession.getAttribute(Constant.USER_NAME);
+		if(null != username){
+			System.out.println("session username = " + username);
+			return true;
+		}else{
+			System.out.println("session username = " + username);
+			response.sendRedirect("/" + Constant.PROJECT_NAME);
+			return false;
+		}
         
     }
     

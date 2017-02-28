@@ -1,4 +1,4 @@
-var ajaxPath = "http://localhost:8080/OrderingSystem/";
+var ajaxPath = "http://localhost:8080/OrderingSystem/ajax/";
 var ajaxUrl = {
 		login: ajaxPath + "user/login"
 };

@@ -3,6 +3,41 @@
 	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
 	id="WebApp_ID" version="3.1">
+	
+    <!-- 程序Session配置 -->  
+    <session-config>  
+        <!-- Session过期时间(单位：分) -->  
+        <session-timeout>30</session-timeout>  
+    </session-config>  
+    
+    
+    
+     <!-- 激活Tomcat的defaultServlet来处理静态文件 -->  
+    <servlet-mapping>  
+        <servlet-name>default</servlet-name>  
+        <url-pattern>*.jpg</url-pattern>  
+        <url-pattern>*.gif</url-pattern>  
+        <url-pattern>*.png</url-pattern> 
+        <url-pattern>*.js</url-pattern>  
+        <url-pattern>*.css</url-pattern>
+        <url-pattern>*.html</url-pattern>
+    </servlet-mapping>  
+    
+    
+    
+    
+    
+    <!--  Spring 上下文参数 加载Spring配置文件 
+    <context-param>  
+        <param-name>contextConfigLocation</param-name>  
+        <param-value>classpath*:xmlconfig/springmvc-mybatis.xml</param-value>  
+    </context-param>  
+    <listener>  
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>  
+    </listener>-->  
+    
+    
+    
 	<display-name>OrderingSystem</display-name>
 	<welcome-file-list>
 		<welcome-file>/page/index.html</welcome-file>
