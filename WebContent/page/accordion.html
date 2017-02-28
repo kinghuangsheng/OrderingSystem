@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>后台管理</title>
+<script src="../js/jquery/jquery-3.1.1.min.js"></script>
+<script src="../js/jquery/jquery.cookie.js"></script>
+<script src="../js/accordion.js"></script>
+<script>
+	//方法一：
+	//获取url中的参数
+	function getUrlParam(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); // 构造一个含有目标参数的正则表达式对象
+		var r = window.location.search.substr(1).match(reg); // 匹配目标参数
+		if (r != null)
+			return unescape(r[2]);
+		return null; // 返回参数值
+	}
+
+	$(document).ready(function() {
+		$("#username").text("hello, " + getUrlParam("username"));
+	});
+</script>
+
+<link
+	href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+	rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="../css/accordion.css" />
+<style type="text/css">
+</style>
+
+</head>
+<body>
+	<div id="username"></div>
+	<div id="div_menu">
+		<ul id="accordion" class="accordion">
+			<li>
+				<div class="link">
+					</i>Diseño web<i class="fa fa-chevron-down"></i>
+				</div>
+				<ul class="submenu">
+					<li><a href="#">Photoshop</a></li>
+					<li><a href="#">HTML</a></li>
+					<li><a href="#">CSS</a></li>
+					<li><a href="#">Maquetacion web</a></li>
+				</ul>
+			</li>
+			<li>
+				<div class="link">
+					</i>Desarrollo front-end<i class="fa fa-chevron-down"></i>
+				</div>
+				<ul class="submenu">
+					<li><a href="#">Javascript</a></li>
+					<li><a href="#">jQuery</a></li>
+					<li><a href="#">Frameworks javascript</a></li>
+				</ul>
+			</li>
+			<li>
+				<div class="link">
+					Diseño responsive<i class="fa fa-chevron-down"></i>
+				</div>
+				<ul class="submenu">
+					<li><a href="#">Tablets</a></li>
+					<li><a href="#">Dispositivos mobiles</a></li>
+					<li><a href="#">Medios de escritorio</a></li>
+					<li><a href="#">Otros dispositivos</a></li>
+				</ul>
+			</li>
+			<li><div class="link">
+					Posicionamiento web<i class="fa fa-chevron-down"></i>
+				</div>
+				<ul class="submenu">
+					<li><a href="http://www.baidu.com">Google</a></li>
+					<li><a href="#">Bing</a></li>
+					<li><a href="#">Yahoo</a></li>
+					<li><a href="#">Otros buscadores</a></li>
+				</ul></li>
+		</ul>
+	</div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+	    <typeAlias alias="User" type="com.laahaa.client.user.User" />
+	    <typeAlias alias="UserBaseInfo" type="com.laahaa.client.msg.rsp.v1.impl.game.bean.UserBaseInfo" />
+	    <typeAlias alias="UserGameInfo" type="com.laahaa.client.msg.rsp.v1.impl.game.bean.UserGameInfo" />
+	    <typeAlias alias="GameBean" type="com.laahaa.client.msg.rsp.v1.impl.game.bean.GameBean" />
+	    <typeAlias alias="ReceivedGift" type="com.laahaa.client.msg.rsp.v1.impl.game.bean.ReceivedGift" />
+	    <typeAlias alias="FriendInfo" type="com.laahaa.client.msg.rsp.v1.impl.game.bean.FriendInfo" />
+	    <typeAlias alias="FeelingBean" type="com.laahaa.client.msg.rsp.v1.impl.game.bean.FeelingBean" />
+	    <typeAlias alias="PhotoBean" type="com.laahaa.client.msg.rsp.v1.impl.game.bean.PhotoBean" />
+    </typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC" />
+              <dataSource type="POOLED">
+	           	<property name="driver" value="com.mysql.jdbc.Driver" />
+               <property name="url" value="jdbc:mysql://localhost:3306/game_gdmj?userUnicode=true&amp;characterEncoding=utf8" />
+               		<property name="username" value="root" />
+                <property name="password" value="root1234" />
+                <property name="poolPingQuery" value="SELECT * FROM partner" />
+                <property name="poolPingEnabled" value="true" />
+    	     </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <mapper resource="com/laahaa/common/database/dao/login.xml"/>
+        <mapper resource="com/laahaa/common/database/dao/game.xml"/>
+    </mappers>
+</configuration>
+  
