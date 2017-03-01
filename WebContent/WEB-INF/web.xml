@@ -27,14 +27,14 @@
     
     
     
-    <!--  Spring 上下文参数 加载Spring配置文件 
+    <!--  Spring 上下文参数 加载Spring配置文件 -->  
     <context-param>  
         <param-name>contextConfigLocation</param-name>  
-        <param-value>classpath*:xmlconfig/springmvc-mybatis.xml</param-value>  
+        <param-value>classpath:spring-mybatis.xml</param-value>  
     </context-param>  
     <listener>  
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>  
-    </listener>-->  
+    </listener>
     
     
     

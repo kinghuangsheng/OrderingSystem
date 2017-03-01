@@ -1,33 +1,30 @@
 package controller;
 
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
-
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
-import com.alibaba.fastjson.JSONObject;
-
-import bean.User;
 import bean.response.LoginResponse;
 import common.util.LogUtil;
 import common.util.Object2JsonUtil;
+import db.pojo.User;
 import global.constant.Constant;
 import global.constant.Reason;
-import jdk.nashorn.api.scripting.JSObject;
+import service.IUserService;
 
 @Controller
 @RequestMapping("/ajax/user")
 public class UserController {
 
+	
+	@Resource  
+    private IUserService userService;  
+	
+	
 	@RequestMapping(value = "/login", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	public String login(String username, String password, HttpSession httpSession,
@@ -45,7 +42,8 @@ public class UserController {
 	}
 
 	private boolean isValid(String username, String password) {
-		if ("admin".equals(username) && "password".equals(password)) {
+		User user = this.userService.getUserById(1);  
+		if (user != null && user.getAccount().equals(username) &&  user.getPassword().equals(password)) {
 			return true;
 		}
 		return false;
