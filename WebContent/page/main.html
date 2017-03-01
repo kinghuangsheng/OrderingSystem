@@ -10,11 +10,11 @@
 <script>
 	$(document).ready(function() {
 		var userInfo = {
-			username: getParam("username")
+			account: getParam("account")
 		};
 		
 		new Vue({
-			el : '#username',
+			el : '#account',
 			data : userInfo
 		});
 	});
@@ -103,7 +103,7 @@ div {
 </head>
 <body>
 	<div id="top">
-		<p id="username">hello,{{ username }}</p>
+		<p id="account">hello,{{ account }}</p>
 	</div>
 	<div id="left"></div>
 

@@ -2,7 +2,9 @@ package global.constant;
 
 public enum Reason {
 
-	USER_NOT_EXIST(1, "用户不存在");
+	USER_NOT_EXIST(1, "用户不存在"),
+	PASSW0RD_ERROR(2, "密码错误"),
+	INTERNAL_ERROR(3, "系统内部错误");
 
 	private int code;
 	private String describe;

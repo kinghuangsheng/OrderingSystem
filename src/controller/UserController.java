@@ -3,49 +3,43 @@ package controller;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import bean.response.LoginResponse;
-import common.util.LogUtil;
-import common.util.Object2JsonUtil;
+import bean.response.Response;
+import db.dao.UserMapper;
 import db.pojo.User;
 import global.constant.Constant;
 import global.constant.Reason;
-import service.IUserService;
 
 @Controller
 @RequestMapping("/ajax/user")
-public class UserController {
+public class UserController extends AbsController{
 
-	
-	@Resource  
-    private IUserService userService;  
-	
-	
+	private static Logger logger = Logger.getLogger(UserController.class);
+	@Resource
+	private UserMapper userMapper;
+
 	@RequestMapping(value = "/login", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	public String login(String username, String password, HttpSession httpSession,
-			@CookieValue(value = "username", required = false) String cookieUserName) {
-		LogUtil.info("  username = " + username + "  password = " + password + "  cookieUserName = " + cookieUserName);
-		if (isValid(username, password)) {
-			httpSession.setAttribute(Constant.USER_NAME, username);
-			LoginResponse response = new LoginResponse();
-			return Object2JsonUtil.toJsonString(response);
+	public String login(String account, String password, HttpSession httpSession,
+			@CookieValue(value = "account", required = false) String cookieUserName) {
+		logger.error("  account = " + account + "  password = " + password + "  cookieUserName = " + cookieUserName);
+		User user = this.userMapper.selectByAccount(account);
+		Response response = new Response();
+		if (user != null) {
+			if (user.getPassword().equals(password)) {
+				httpSession.setAttribute(Constant.USER_NAME, account);
+			} else {
+				response.setReason(Reason.PASSW0RD_ERROR);
+			}
 		} else {
-			LoginResponse response = new LoginResponse(Reason.USER_NOT_EXIST);
-			return Object2JsonUtil.toJsonString(response);
+			response.setReason(Reason.USER_NOT_EXIST);
 		}
-
+		return response.toJsonString();
 	}
 
-	private boolean isValid(String username, String password) {
-		User user = this.userService.getUserById(1);  
-		if (user != null && user.getAccount().equals(username) &&  user.getPassword().equals(password)) {
-			return true;
-		}
-		return false;
-	}
 }

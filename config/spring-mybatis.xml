@@ -43,9 +43,6 @@
         <property name="basePackage" value="db.dao" />  
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>  
     </bean>  
-    
-    <bean id="userService" class="service.impl.UserServiceImpl">  
-    </bean>  
   
     <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->  
     <bean id="transactionManager"  
