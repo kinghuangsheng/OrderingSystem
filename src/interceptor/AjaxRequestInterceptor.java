@@ -1,5 +1,6 @@
 package interceptor;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -17,7 +18,7 @@ import global.constant.Constant;
 import global.constant.Reason;
 import permission.Privilege;
 
-public class PageRequestInterceptor implements HandlerInterceptor {
+public class AjaxRequestInterceptor implements HandlerInterceptor {
 
 	
 	@Override
@@ -39,12 +40,35 @@ public class PageRequestInterceptor implements HandlerInterceptor {
     	HttpSession httpSession = request.getSession();	
     	User user = (User) httpSession.getAttribute(Constant.USER);
 		if(null != user){
+			if (handler instanceof HandlerMethod) {  
+				Privilege privilege = ((HandlerMethod) handler).getMethod().getAnnotation(Privilege.class);  
+	            if (privilege != null) {// 有权限控制的就要检查  
+	            	ArrayList<Integer> userPrivileges = (ArrayList<Integer>)httpSession.getAttribute(Constant.PRIVILEGE);
+	            	if(userPrivileges.contains(privilege.value())){
+	            		return true;
+	            	}else{
+	            		sendResponse(response);
+	            		return false;
+	            	}
+	            }else{
+	            	return true;
+	            }
+			}
 			return true;
 		}else{
-			response.sendRedirect("/" + Constant.PROJECT_NAME);
+    		sendResponse(response);
 			return false;
 		}
         
+    }
+    
+    public void sendResponse(HttpServletResponse response) throws IOException{
+    	response.setContentType("text/html; charset=utf-8");
+    	Response responseData = new Response();
+		responseData.setReason(Reason.HAS_NO_PERSSION);
+		PrintWriter out = response.getWriter();
+        out.print(responseData.toJsonString());
+        out.flush();
     }
     
 }

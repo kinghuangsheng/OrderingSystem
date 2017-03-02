@@ -3,22 +3,161 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="author" content="Chomo" />
-<link rel="start" href="http://www.14px.com" title="Home" />
+<title>后台管理</title>
+<link rel="stylesheet" type="text/css" href="../css/accordion.css" />
 <script src="../js/jquery/jquery-3.1.1.min.js"></script>
 <script src="../js/vue/vue.js"></script>
+<script src="../js/accordion.js"></script>
+<script src="../js/request_url.js"></script>
 
 <script>
+	var success_code = 0;
 	$(document).ready(function() {
-		var userInfo = {
-			account: getParam("account")
-		};
-		
-		new Vue({
-			el : '#account',
-			data : userInfo
+		$.post(ajaxUrl.privilege, function(data) {
+			data = JSON.parse(data);
+			if (data.code == success_code) {
+				data.privileges.forEach(function(value){
+					if (1 == value) {
+						main_data.system_manage.visiable = true;
+						main_data.system_manage.user_manage.visiable = true;
+					}
+					if (2 == value) {
+						main_data.system_manage.visiable = true;
+						main_data.system_manage.role_manage.visiable = true;
+					}
+					if (3 == value) {
+						main_data.restaurant_manage.visiable = true;
+						main_data.restaurant_manage.table_manage.visiable = true;
+					}
+					if (4 == value) {
+						main_data.restaurant_manage.visiable = true;
+						main_data.restaurant_manage.food_manage.visiable = true;
+					}
+					if (5 == value) {
+						main_data.business_manage.visiable = true;
+						main_data.business_manage.book_manage.visiable = true;
+					}
+					if (6 == value) {
+						main_data.business_manage.visiable = true;
+						main_data.business_manage.activity_manage.visiable = true;
+					}
+				})
+			} else {
+				alert("权限获取失败:" + data.describe);
+			}
 		});
 	});
+</script>
+</head>
+<body>
+	<div id="page">
+		<div id="top">
+			<p id="account">hello,{{ account }}</p>
+		</div>
 
+		<div id="left">
+			<div id="div_menu">
+				<ul id="accordion" class="accordion">
+					<li v-if="system_manage.visiable">
+						<div class="link">
+							系统管理
+						</div>
+						<ul class="submenu">
+							<li><a v-on:click="load_page('error.html')"
+								v-if="system_manage.user_manage.visiable">用户管理</a></li>
+							<li><a v-on:click="load_page('error.html')"
+								v-if="system_manage.role_manage.visiable">角色管理</a></li>
+						</ul>
+					</li>
+					<li v-if="restaurant_manage.visiable">
+						<div class="link">
+							餐厅管理
+						</div>
+						<ul class="submenu">
+							<li><a v-on:click="load_page('error.html')"
+								v-if="restaurant_manage.table_manage.visiable">桌位和包厢管理</a></li>
+							<li><a v-on:click="load_page('error.html')"
+								v-if="restaurant_manage.food_manage.visiable">菜品管理</a></li>
+						</ul>
+					</li>
+					<li v-if="business_manage.visiable">
+						<div class="link">
+							运营管理
+						</div>
+						<ul class="submenu">
+							<li><a v-on:click="load_page('error.html')"
+								v-if="business_manage.book_manage.visiable">订位管理</a></li>
+							<li><a v-on:click="load_page('error.html')"
+								v-if="business_manage.activity_manage.visiable">活动管理</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div id="right" class="right">
+			<script>
+				/* $('#right').load("../index.html"); */
+			</script>
+		</div>
+
+
+		<div id="bottom"></div>
+	</div>
+</body>
+
+
+<script>
+	//top上账号信息显示
+	var main_data = new Vue({
+		el : '#page',
+		data : {
+			account : getParam("account"),
+			system_manage : {
+				visiable : false,
+				user_manage : {
+					visiable : false
+				},
+				role_manage : {
+					visiable : false
+				}
+			},
+			restaurant_manage : {
+				visiable : false,
+				table_manage : {
+					visiable : false
+				},
+				food_manage : {
+					visiable : false
+				}
+			},
+			business_manage : {
+				visiable : false,
+				book_manage : {
+					visiable : false
+				},
+				activity_manage : {
+					visiable : false
+				}
+			}
+		},
+
+		mounted : function() {
+			// `this` 指向 vm 实例
+		},
+		updated : function() {
+			// `this` 指向 vm 实例
+			var accordion = new Accordion($('#accordion'), false);
+
+		},
+
+		methods : {
+			load_page : function(uri) {
+				$('#right').load(uri);
+			}
+		},
+
+	});
 	function getParam(paramName) {
 		paramValue = "";
 		isFound = false;
@@ -39,9 +178,13 @@
 			}
 		}
 		return paramValue;
-	}
+	};
 </script>
-<title>后台管理</title>
+
+
+
+
+
 <style type="text/css">
 * {
 	margin: 0;
@@ -62,58 +205,45 @@ body {
 }
 
 div {
-	background: #f60;
+	background: #2d2c41;
 	line-height: 1.6;
 }
 
 #top {
 	position: absolute;
-	left: 10px;
 	top: 10px;
-	right: 10px;
 	height: 50px;
+	width: 100%
 }
 
 #left {
 	position: absolute;
-	left: 10px;
 	top: 70px;
-	bottom: 70px;
+	bottom: 0px;
 	width: 200px;
 	overflow: auto;
+	padding-right: 2px;
 }
 
 #right {
 	position: absolute;
-	left: 220px;
+	left: 210px;
 	top: 70px;
-	bottom: 70px;
-	right: 10px;
+	bottom: 0px;
+	right: 0px;
 	overflow: auto;
 }
 
 #bottom {
 	position: absolute;
-	left: 10px;
-	bottom: 10px;
-	right: 10px;
-	height: 50px;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
+	height: 0px;
+}
+
+#account {
+	color: #fff;
 }
 </style>
-</head>
-<body>
-	<div id="top">
-		<p id="account">hello,{{ account }}</p>
-	</div>
-	<div id="left"></div>
-
-	<div id="right" class="right">
-		<script>
-			/* $('#right').load("../index.html"); */
-		</script>
-	</div>
-
-
-	<div id="bottom"></div>
-</body>
 </html>

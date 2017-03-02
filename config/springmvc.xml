@@ -45,8 +45,13 @@
     <!-- interceptor setting -->
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/**"/>
+            <mvc:mapping path="/ajax/**"/>
             <mvc:exclude-mapping path="/ajax/user/login"/>
+            <bean class="interceptor.AjaxRequestInterceptor"></bean>
+        </mvc:interceptor>        
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/ajax/**"/>
             <bean class="interceptor.PageRequestInterceptor"></bean>
         </mvc:interceptor>        
     </mvc:interceptors>

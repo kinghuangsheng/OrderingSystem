@@ -1,5 +1,7 @@
 package db.pojo;
 
+import com.alibaba.fastjson.JSONObject;
+
 public class User {
     private Integer id;
 
@@ -40,4 +42,5 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+    
 }

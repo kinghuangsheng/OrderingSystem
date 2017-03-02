@@ -3,31 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <title>demo</title>
-<script src="js/vue/vue.js"></script>
-<script src="js/jquery/jquery-3.1.1.min.js"></script>
+<script src="../js/vue/vue.js"></script>
+<script src="../js/jquery/jquery-3.1.1.min.js"></script>
 
 </head>
 
 
 
 <body>
-	<!--这是我们的View-->
-	<div id="app">{{ message }}</div>
+	<div id="app-7">
+		<ol>
+			<!-- Now we provide each todo-item with the todo object    -->
+			<!-- it's representing, so that its content can be dynamic -->
+			<todo-item v-for="item in groceryList" v-bind:todo="item"></todo-item>
+		</ol>
+	</div>
 </body>
 
 <script>
-	// 这是我们的Model
-	var exampleData  = {
-		message : 'Hello World!'
-	};
-	
-	setTimeout("exampleData={message:'Hello Wordddddld!' }", 2000);
-
-	// 创建一个 Vue 实例或 "ViewModel"
-	// 它连接 View 与 Model
-	new Vue({
-		el : '#app',
-		data : exampleData
+	Vue.component('todo-item', {
+		props : [ 'todo' ],
+		template : '<li>{{ todo.text }}</li>'
+	})
+	var app7 = new Vue({
+		el : '#app-7',
+		data : {
+			groceryList : [ {
+				text : 'Vegetables'
+			}, {
+				text : 'Cheese'
+			}, {
+				text : 'Whatever else humans are supposed to eat'
+			} ]
+		}
 	})
 </script>
 </html>

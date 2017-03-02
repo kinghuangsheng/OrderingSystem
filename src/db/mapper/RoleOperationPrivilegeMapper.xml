@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="db.dao.RoleOperationPrivilegeMapper">
+  <resultMap id="BaseResultMap" type="db.pojo.RoleOperationPrivilege">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="privilege_id" jdbcType="INTEGER" property="privilegeId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, role_id, privilege_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from role_operation_privilege
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByRoleId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select privilege_id
+    from role_operation_privilege
+    where role_id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from role_operation_privilege
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="db.pojo.RoleOperationPrivilege">
+    insert into role_operation_privilege (id, role_id, privilege_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{privilegeId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="db.pojo.RoleOperationPrivilege">
+    insert into role_operation_privilege
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="privilegeId != null">
+        privilege_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="privilegeId != null">
+        #{privilegeId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="db.pojo.RoleOperationPrivilege">
+    update role_operation_privilege
+    <set>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="privilegeId != null">
+        privilege_id = #{privilegeId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="db.pojo.RoleOperationPrivilege">
+    update role_operation_privilege
+    set role_id = #{roleId,jdbcType=INTEGER},
+      privilege_id = #{privilegeId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
