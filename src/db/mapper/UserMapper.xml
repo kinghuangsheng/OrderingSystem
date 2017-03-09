@@ -22,6 +22,11 @@
     from user
     where account = #{account,jdbcType=VARCHAR}
   </select>
+  <select id="selectAllUsers" resultType="Map">
+    select u.id, u.account, u.name, r.name role_name
+    from user u, user_role ur, role r
+    where ur.user_id = u.id and r.id = ur.role_id
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from user
     where id = #{id,jdbcType=INTEGER}

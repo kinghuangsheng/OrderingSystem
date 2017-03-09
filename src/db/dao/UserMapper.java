@@ -1,5 +1,8 @@
 package db.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import db.pojo.User;
 
 public interface UserMapper {
@@ -12,6 +15,8 @@ public interface UserMapper {
     User selectByPrimaryKey(Integer id);
     
     User selectByAccount(String id);
+    
+    List<Map> selectAllUsers();
 
     int updateByPrimaryKeySelective(User record);
 

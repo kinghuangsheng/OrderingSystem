@@ -36,6 +36,7 @@ public class PageRequestInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception
     {
+    	response.setContentType("text/html; charset=utf-8");
     	HttpSession httpSession = request.getSession();	
     	User user = (User) httpSession.getAttribute(Constant.USER);
 		if(null != user){

@@ -3,11 +3,20 @@ package bean.response;
 import common.util.Object2JsonUtil;
 import global.constant.Reason;
 
-public class Response {
+public class Response<T extends Object>{
 	
 	private int code;
 	private String describe;
+	private T object;
 	
+	
+	
+	public T getObject() {
+		return object;
+	}
+	public void setObject(T object) {
+		this.object = object;
+	}
 	public void setReason(Reason reason){
 		this.code = reason.getCode();
 		this.describe = reason.getDescribe();
@@ -27,7 +36,6 @@ public class Response {
 	public void setDescribe(String describe) {
 		this.describe = describe;
 	}
-	
 	
 	public String toJsonString(){
 		return Object2JsonUtil.toJsonString(this);

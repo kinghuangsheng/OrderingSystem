@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import bean.response.GetPrivilegeResponse;
 import bean.response.Response;
+import common.util.Object2JsonUtil;
 import db.dao.RoleOperationPrivilegeMapper;
 import db.dao.UserMapper;
 import db.dao.UserRoleMapper;
@@ -58,8 +60,18 @@ public class UserController extends AbsController{
 	@RequestMapping(value = "/privilege", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	public String privilege(HttpSession httpSession) {
-		GetPrivilegeResponse response = new GetPrivilegeResponse();
-		response.setPrivileges((List<Integer>) httpSession.getAttribute(Constant.PRIVILEGE));
+		Response response = new Response();
+		response.setObject((List<Integer>) httpSession.getAttribute(Constant.PRIVILEGE));
+		return response.toJsonString();
+	}
+
+	@RequestMapping(value = "/all", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Privilege(Constant.Privilege.USER_MANAGE)
+	public String all(String key) {
+		List<Map> allUsers = userMapper.selectAllUsers();
+		Response response = new Response();
+		response.setObject(allUsers);
 		return response.toJsonString();
 	}
 
