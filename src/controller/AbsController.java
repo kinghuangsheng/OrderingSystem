@@ -17,9 +17,8 @@ public class AbsController {
 	@ResponseBody
 	public String handleException(HttpServletRequest request, HttpServletResponse  
             httpResponse, Exception e) {  
-		Response response = new Response();
+		Response response = new Response(Reason.INTERNAL_ERROR);
 		logger.error(request.getRequestURL(), e);
-		response.setReason(Reason.INTERNAL_ERROR);
 	    return response.toJsonString();  
 	}  
 	

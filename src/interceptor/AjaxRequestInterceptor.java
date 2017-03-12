@@ -64,8 +64,7 @@ public class AjaxRequestInterceptor implements HandlerInterceptor {
     
     public void sendResponse(HttpServletResponse response) throws IOException{
     	response.setContentType("text/html; charset=utf-8");
-    	Response responseData = new Response();
-		responseData.setReason(Reason.HAS_NO_PERSSION);
+    	Response responseData = new Response(Reason.HAS_NO_PERSSION);
 		PrintWriter out = response.getWriter();
         out.print(responseData.toJsonString());
         out.flush();

@@ -13,7 +13,7 @@
 	</div>
 </div>
 <script>
-	$.post(ajaxUrl.all_user, function(response) {
+	$.post(ajaxUrl.user_list, function(response) {
 		dataList = JSON.parse(response);
 
 		if (dataList.code == success_code) {
@@ -43,7 +43,10 @@
 				}, {
 					field : 'role_name',
 					title : '角色'
-				}, ],
+				}, {
+					field : 'restaurant_name',
+					title : '餐馆'
+				},],
 				data : dataList.object,
 			});
 		} else {

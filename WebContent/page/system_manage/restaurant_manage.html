@@ -1,0 +1,55 @@
+
+<div id="user_list" class="row">
+	<div class="col-md-12 color:#fff">
+		<table id="table"
+           data-toolbar="#toolbar"
+           data-search="true"
+           data-show-refresh="true"
+           data-show-toggle="true"
+           data-show-columns="true"
+           data-show-export="true"
+           data-detail-view="true">
+		</table>
+	</div>
+</div>
+<script>
+	$.post(ajaxUrl.restaurant_list, function(response) {
+		dataList = JSON.parse(response);
+		if (dataList.code == success_code) {
+			$('#table').bootstrapTable({
+				/* striped: true,
+				pagination: true,
+				showColumns: true,
+				showRefresh: true,
+				searchOnEnterKey: false,
+				strictSearch: false,
+				paginationLoop: true,
+				showToggle: true,
+				showPaginationSwitch: true,
+				onlyInfoPagination: false,
+				search: true,
+				pageSize: 5,
+				pageList: [5, 10],
+				selectItemName: "account",
+				searchText: "", */
+				columns : [ {
+					align : 'center',
+					field : 'id',
+					title : 'ID'
+				}, {
+					field : 'name',
+					title : '餐厅名称'
+				}, {
+					field : 'license',
+					title : '营业执照'
+				}, {
+					field : 'manager',
+					title : '管理员'
+				},],
+				data : dataList.object,
+			});
+		} else {
+
+		}
+	});
+</script>

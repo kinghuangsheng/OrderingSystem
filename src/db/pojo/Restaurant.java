@@ -1,9 +1,11 @@
 package db.pojo;
 
-public class OperationPrivilege {
+public class Restaurant {
     private Integer id;
 
     private String name;
+
+    private String license;
 
     public Integer getId() {
         return id;
@@ -19,5 +21,13 @@ public class OperationPrivilege {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLicense() {
+        return license;
+    }
+
+    public void setLicense(String license) {
+        this.license = license;
     }
 }

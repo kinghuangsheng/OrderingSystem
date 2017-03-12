@@ -12,15 +12,10 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import bean.response.GetPrivilegeResponse;
 import bean.response.Response;
-import common.util.Object2JsonUtil;
-import db.dao.RoleOperationPrivilegeMapper;
-import db.dao.UserMapper;
-import db.dao.UserRoleMapper;
-import db.pojo.RoleOperationPrivilege;
+import db.dao.RoleOperationPrivilegeDao;
+import db.dao.UserDao;
 import db.pojo.User;
-import db.pojo.UserRole;
 import global.constant.Constant;
 import global.constant.Reason;
 import permission.Privilege;
@@ -31,29 +26,27 @@ public class UserController extends AbsController{
 
 	private static Logger logger = Logger.getLogger(UserController.class);
 	@Resource
-	private UserMapper userMapper;
+	private UserDao userDao;
 	@Resource
-	private UserRoleMapper userRoleMapper;
-	@Resource
-	private RoleOperationPrivilegeMapper roleOperationPrivilegeMapper;
+	private RoleOperationPrivilegeDao roleOperationPrivilegeDao;
 
 	@RequestMapping(value = "/login", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	public String login(String account, String password, HttpSession httpSession,
 			@CookieValue(value = "account", required = false) String cookieUserName) {
-		User user = this.userMapper.selectByAccount(account);
-		Response response = new Response();
+		User user = this.userDao.selectByAccount(account);
+		Response response = null;
 		if (user != null) {
+			response = new Response();
 			if (user.getPassword().equals(password)) {
-				UserRole userRole = userRoleMapper.selectByUserId(user.getId());
-				List<Integer> privileges = roleOperationPrivilegeMapper.selectByRoleId(userRole.getRoleId());
+				List<Integer> privileges = roleOperationPrivilegeDao.selectByRoleId(user.getRoleId());
 				httpSession.setAttribute(Constant.USER, user);
 				httpSession.setAttribute(Constant.PRIVILEGE, privileges);
 			} else {
-				response.setReason(Reason.PASSW0RD_ERROR);
+				response = new Response(Reason.PASSW0RD_ERROR);
 			}
 		} else {
-			response.setReason(Reason.USER_NOT_EXIST);
+			response = new Response(Reason.USER_NOT_EXIST);
 		}
 		return response.toJsonString();
 	}
@@ -65,13 +58,23 @@ public class UserController extends AbsController{
 		return response.toJsonString();
 	}
 
-	@RequestMapping(value = "/all", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = "/list", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Privilege(Constant.Privilege.USER_MANAGE)
-	public String all(String key) {
-		List<Map> allUsers = userMapper.selectAllUsers();
+	public String list() {
+		List<Map> object = userDao.selectAllUsers();
 		Response response = new Response();
-		response.setObject(allUsers);
+		response.setObject(object);
+		return response.toJsonString();
+	}
+	
+	@RequestMapping(value = "/managerList", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Privilege(Constant.Privilege.RESTAURANT_MANAGER_MANAGE)
+	public String managerList(String account, String name) {
+		List<Map> object = userDao.selectManagerByAccountName(account, name);
+		Response response = new Response();
+		response.setObject(object);
 		return response.toJsonString();
 	}
 

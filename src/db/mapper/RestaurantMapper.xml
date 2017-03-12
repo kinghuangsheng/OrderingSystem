@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="db.dao.RestaurantDao">
+    
+    <sql id="search_column">
+    	r.*, u.name "manager"
+  	</sql>
+	
+	<select id="selectRestaurant" resultType="Map">
+		SELECT 
+		<include refid="search_column" />
+		FROM restaurant r
+		LEFT JOIN user u on u.restaurant_id = r.id
+		where 1=1
+          <if test="name != null">
+          and r.name like concat('%',#{name},'%')
+          </if>
+          <if test="license != null">
+           and r.license like concat('%',#{license},'%') 
+          </if>
+	</select>
+</mapper>

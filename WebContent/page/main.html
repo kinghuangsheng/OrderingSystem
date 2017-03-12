@@ -33,28 +33,28 @@
 			if (data.code == success_code) {
 				data.object.forEach(function(value){
 					if (1 == value) {
-						main_data.system_manage.visiable = true;
-						main_data.system_manage.user_manage.visiable = true;
+						main_data.restaurant_manage.visiable = true;
+						main_data.restaurant_manage.user_manage.visiable = true;
 					}
 					if (2 == value) {
-						main_data.system_manage.visiable = true;
-						main_data.system_manage.role_manage.visiable = true;
+						main_data.restaurant_manage.visiable = true;
+						main_data.restaurant_manage.role_manage.visiable = true;
 					}
-					if (3 == value) {
+					if (4 == value) {
 						main_data.restaurant_manage.visiable = true;
 						main_data.restaurant_manage.table_manage.visiable = true;
 					}
-					if (4 == value) {
+					if (3 == value) {
 						main_data.restaurant_manage.visiable = true;
 						main_data.restaurant_manage.food_manage.visiable = true;
 					}
 					if (5 == value) {
-						main_data.business_manage.visiable = true;
-						main_data.business_manage.book_manage.visiable = true;
+						main_data.system_manage.visiable = true;
+						main_data.system_manage.restaurant_manage.visiable = true;
 					}
 					if (6 == value) {
-						main_data.business_manage.visiable = true;
-						main_data.business_manage.activity_manage.visiable = true;
+						main_data.system_manage.visiable = true;
+						main_data.system_manage.restaurant_manager_manage.visiable = true;
 					}
 				})
 			} else {
@@ -78,10 +78,10 @@
 							系统管理
 						</div>
 						<ul class="submenu">
-							<li><a v-on:click="load_page('system_manage/user_manager.html')"
-								v-if="system_manage.user_manage.visiable">用户管理</a></li>
-							<li><a v-on:click="load_page('common/error.html')"
-								v-if="system_manage.role_manage.visiable">角色管理</a></li>
+						<li><a v-on:click="load_page('system_manage/restaurant_manage.html')"
+								v-if="system_manage.restaurant_manage.visiable">餐厅管理</a></li>
+							<li><a v-on:click="load_page('system_manage/restaurant_manager_manage.html')"
+								v-if="system_manage.restaurant_manager_manage.visiable">餐厅管理员管理</a></li>
 						</ul>
 					</li>
 					<li v-if="restaurant_manage.visiable">
@@ -89,21 +89,14 @@
 							餐厅管理
 						</div>
 						<ul class="submenu">
+						<li><a v-on:click="load_page('system_manage/user_manager.html')"
+								v-if="restaurant_manage.user_manage.visiable">用户管理</a></li>
+							<li><a v-on:click="load_page('common/error.html')"
+								v-if="restaurant_manage.role_manage.visiable">角色管理</a></li>
 							<li><a v-on:click="load_page('common/error.html')"
 								v-if="restaurant_manage.table_manage.visiable">桌位和包厢管理</a></li>
 							<li><a v-on:click="load_page('common/error.html')"
 								v-if="restaurant_manage.food_manage.visiable">菜品管理</a></li>
-						</ul>
-					</li>
-					<li v-if="business_manage.visiable">
-						<div class="link">
-							运营管理
-						</div>
-						<ul class="submenu">
-							<li><a v-on:click="load_page('common/error.html')"
-								v-if="business_manage.book_manage.visiable">订位管理</a></li>
-							<li><a v-on:click="load_page('common/error.html')"
-								v-if="business_manage.activity_manage.visiable">活动管理</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -130,28 +123,25 @@
 			account : getParam("account"),
 			system_manage : {
 				visiable : false,
-				user_manage : {
+				restaurant_manage : {
 					visiable : false
 				},
-				role_manage : {
+				restaurant_manager_manage : {
 					visiable : false
 				}
 			},
 			restaurant_manage : {
 				visiable : false,
+				user_manage : {
+					visiable : false
+				},
+				role_manage : {
+					visiable : false
+				},
 				table_manage : {
 					visiable : false
 				},
 				food_manage : {
-					visiable : false
-				}
-			},
-			business_manage : {
-				visiable : false,
-				book_manage : {
-					visiable : false
-				},
-				activity_manage : {
 					visiable : false
 				}
 			}

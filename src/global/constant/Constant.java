@@ -10,6 +10,8 @@ public class Constant {
 	public class Privilege {
 		
 		public final static int USER_MANAGE = 1;
+		public final static int RESTAURANT_MANAGE = 5;
+		public final static int RESTAURANT_MANAGER_MANAGE = 6;
 
 	}
 	
