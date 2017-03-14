@@ -82,10 +82,10 @@ a {
  	border-bottom: 1px solid #4b4a5e;
  }
 
- .submenu a {
+ #div_menu .submenu a {
  	display: block;
  	text-decoration: none;
- 	color: #d9d9d9;
+ 	color: #ffffff;
  	padding: 12px;
  	padding-left: 42px;
  	-webkit-transition: all 0.25s ease;

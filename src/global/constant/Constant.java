@@ -15,4 +15,9 @@ public class Constant {
 
 	}
 	
+	public class Role{
+		public final static int SYSTEM_MANAGER = 1;
+		public final static int RESTAURANT_MANAGER = 2;
+	}
+	
 }

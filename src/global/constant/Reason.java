@@ -6,7 +6,9 @@ public enum Reason {
 	USER_NOT_EXIST(1, "用户不存在"),
 	PASSW0RD_ERROR(2, "密码错误"),
 	INTERNAL_ERROR(3, "系统内部错误"),
-	HAS_NO_PERSSION(4, "没有权限");
+	HAS_NO_PERSSION(4, "没有权限"),
+	LICENSE_REPEATED(5, "营业执照已存在"),
+	ACCOUNT_REPEATED(5, "账号已存在");
 
 	private int code;
 	private String msg;

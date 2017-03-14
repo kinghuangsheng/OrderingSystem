@@ -11,12 +11,16 @@
 		<include refid="search_column" />
 		FROM restaurant r
 		LEFT JOIN user u on u.restaurant_id = r.id
-		where 1=1
-          <if test="name != null">
-          and r.name like concat('%',#{name},'%')
-          </if>
-          <if test="license != null">
-           and r.license like concat('%',#{license},'%') 
+          <if test="key != null">
+          where r.name like concat('%',#{key},'%') or r.license like concat('%',#{key},'%') 
           </if>
 	</select>
+	
+	
+	<insert id="insertRestaurant" parameterType="db.pojo.Restaurant" useGeneratedKeys="true" keyProperty="id" >
+	    INSERT INTO restaurant (name, license) select #{name}, #{license} FROM DUAL 
+		WHERE NOT EXISTS (SELECT license FROM restaurant WHERE license = #{license})
+  </insert>
+  
+	
 </mapper>

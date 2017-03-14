@@ -14,6 +14,8 @@ public interface UserDao {
 
 	List<Map> selectAllUsers();
 	
+	int insertUser(User user);
+	
 	List<Map> selectManagerByAccountName(@Param("account")String account, @Param("name")String name);
 
 }

@@ -54,7 +54,7 @@ public class UserController extends AbsController{
 	@ResponseBody
 	public String privilege(HttpSession httpSession) {
 		Response response = new Response();
-		response.setObject((List<Integer>) httpSession.getAttribute(Constant.PRIVILEGE));
+		response.setObject(httpSession.getAttribute(Constant.PRIVILEGE));
 		return response.toJsonString();
 	}
 
@@ -62,9 +62,8 @@ public class UserController extends AbsController{
 	@ResponseBody
 	@Privilege(Constant.Privilege.USER_MANAGE)
 	public String list() {
-		List<Map> object = userDao.selectAllUsers();
 		Response response = new Response();
-		response.setObject(object);
+		response.setObject(userDao.selectAllUsers());
 		return response.toJsonString();
 	}
 	
@@ -72,9 +71,24 @@ public class UserController extends AbsController{
 	@ResponseBody
 	@Privilege(Constant.Privilege.RESTAURANT_MANAGER_MANAGE)
 	public String managerList(String account, String name) {
-		List<Map> object = userDao.selectManagerByAccountName(account, name);
 		Response response = new Response();
-		response.setObject(object);
+		response.setObject(userDao.selectManagerByAccountName(account, name));
+		return response.toJsonString();
+	}
+
+	@RequestMapping(value = "/addManager", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Privilege(Constant.Privilege.RESTAURANT_MANAGE)
+	public String addManager(User user) {
+		user.setRoleId(Constant.Role.RESTAURANT_MANAGER);
+		Response response = null;
+		int rowNum = userDao.insertUser(user);
+		if(rowNum == 0){
+			response = new Response(Reason.ACCOUNT_REPEATED);
+		}else{
+			response = new Response();
+			response.setObject(user);
+		}
 		return response.toJsonString();
 	}
 

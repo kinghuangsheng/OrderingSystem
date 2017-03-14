@@ -1,55 +1,204 @@
+<!-- 新增餐厅弹窗 -->
+<div class="modal" id="add_restaurant_modal" tabindex="-1" role="dialog"
+	aria-labelledby="add_restaurant_modal" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="exampleModalLabel">新增餐厅</h4>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="recipient-name" class="control-label">餐厅名称</label>
+						<input v-model="name" type="text" class="form-control">
+					</div>
+					<div class="form-group">
+						<label for="message-text" class="control-label">营业执照</label>
+						<input v-model="license" class="form-control">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary"
+					@click="add_restaurant">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
 
-<div id="user_list" class="row">
+<!-- 分配餐厅管理员弹窗 -->
+<div class="modal" id="add_manager_modal" tabindex="-1" role="dialog"
+	aria-labelledby="add_manager_modal" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="exampleModalLabel">分配管理员</h4>
+				<p class="modal-title" id="exampleModalLabel">{{restaurant_info_data.name}}</p>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="recipient-name" class="control-label">账号</label>
+						<input v-model="account" type="text" class="form-control" >
+					</div>
+					<div class="form-group">
+						<label for="message-text" class="control-label">姓名</label>
+						<input v-model="name" class="form-control" >
+					</div>
+					<div class="form-group">
+						<label for="message-text" class="control-label">密码</label>
+						<input v-model="password" class="form-control" >
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary"
+					@click="add_manager">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="restaurant_manage_div" class="row">
+	<div class="col-lg-6">
+		<div class="input-group">
+			<input v-model="searchKey" type="text" class="form-control"
+				placeholder="餐厅名称或营业执照"> <span class="input-group-btn">
+				<button @click="search" class="btn btn-secondary" type="button">查询</button>
+			</span>
+		</div>
+	</div>
+
+	<button class="btn btn-primary" type="button" data-toggle="modal"
+		data-target="#add_restaurant_modal" data-whatever="@mdo">新增餐厅</button>
+</div>
+<div id="restaurant_list" class="row">
 	<div class="col-md-12 color:#fff">
-		<table id="table"
-           data-toolbar="#toolbar"
-           data-search="true"
-           data-show-refresh="true"
-           data-show-toggle="true"
-           data-show-columns="true"
-           data-show-export="true"
-           data-detail-view="true">
+		<table id="table" data-search="false" data-show-refresh="false"
+			data-show-toggle="false" data-show-columns="false"
+			data-show-export="false" data-detail-view="true">
 		</table>
 	</div>
 </div>
-<script>
-	$.post(ajaxUrl.restaurant_list, function(response) {
-		dataList = JSON.parse(response);
-		if (dataList.code == success_code) {
-			$('#table').bootstrapTable({
-				/* striped: true,
-				pagination: true,
-				showColumns: true,
-				showRefresh: true,
-				searchOnEnterKey: false,
-				strictSearch: false,
-				paginationLoop: true,
-				showToggle: true,
-				showPaginationSwitch: true,
-				onlyInfoPagination: false,
-				search: true,
-				pageSize: 5,
-				pageList: [5, 10],
-				selectItemName: "account",
-				searchText: "", */
-				columns : [ {
-					align : 'center',
-					field : 'id',
-					title : 'ID'
-				}, {
-					field : 'name',
-					title : '餐厅名称'
-				}, {
-					field : 'license',
-					title : '营业执照'
-				}, {
-					field : 'manager',
-					title : '管理员'
-				},],
-				data : dataList.object,
-			});
-		} else {
 
+<script>
+
+
+
+	var restaurant_info_data = new Vue({
+		el : '#add_restaurant_modal',
+		data : {
+			id : "",
+			name : "",
+			license : ""
+		},
+		methods : {
+			add_restaurant : function() {
+				$.post(
+						ajaxUrl.restaurant_add,
+						restaurant_info_data.$data,
+						function(response) {
+							data = JSON.parse(response);
+							debugger;
+							if (data.code == success_code) {
+								id = data.object.id;
+								manager_info_data.restaurantId = data.object.id;
+								var n = restaurant_info_data.name;
+								$('#add_restaurant_modal').modal('hide');
+								restaurant_manage_data.search();
+								$('#add_manager_modal').on('shown.bs.modal', function (e) {
+									$('#add_manager_modal').on('hidden.bs.modal', function (e) {
+										restaurant_info_data.name="";
+										restaurant_info_data.license="";
+									});
+								});
+								$('#add_manager_modal').modal('show');
+							}else{
+								alert(data.msg);
+							}
+						}
+				);
+			}
 		}
+	
 	});
+	
+	var manager_info_data = new Vue({
+		el : '#add_manager_modal',
+		data : {
+			restaurantId:"",
+			name: "",
+			account: "",
+			password: ""
+		},
+		methods : {
+			add_manager : function() {
+				$.post(
+						ajaxUrl.add_manager,
+						manager_info_data.$data,
+						function(response) {
+							data = JSON.parse(response);
+							debugger;
+							if (data.code == success_code) {
+								manager_info_data.name = "",
+								manager_info_data.account = "",
+								manager_info_data.password = "",
+								$('#add_manager_modal').modal('hide');
+								restaurant_manage_data.search();
+							}else{
+								alert(data.msg);
+							}
+						}
+				);
+			}
+		}
+
+	});
+	var restaurant_manage_data = new Vue({
+		el : '#restaurant_manage_div',
+		data : {
+			searchKey : "",
+		},
+		methods : {
+			search : function() {
+				search(this.searchKey, false);
+			}
+		}
+
+	});
+	search("", true);
+	function search(keyStr, isFirstTime) {
+		$.post(ajaxUrl.restaurant_list, {
+			key : keyStr
+		}, function(response) {
+			var dataList = JSON.parse(response);
+			if (dataList.code == success_code) {
+				if (isFirstTime) {
+					$('#table').bootstrapTable({
+						columns : [ {
+							align : 'center',
+							field : 'id',
+							title : 'ID'
+						}, {
+							field : 'name',
+							title : '餐厅名称'
+						}, {
+							field : 'license',
+							title : '营业执照'
+						}, {
+							field : 'manager',
+							title : '管理员'
+						}, ],
+						data : dataList.object,
+					});
+				} else {
+					$('#table').bootstrapTable('load', dataList.object);
+				}
+			} else {
+				alert(dataList.msg);
+			}
+		});
+	}
 </script>
