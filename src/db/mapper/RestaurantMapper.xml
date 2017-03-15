@@ -10,10 +10,11 @@
 		SELECT 
 		<include refid="search_column" />
 		FROM restaurant r
-		LEFT JOIN user u on u.restaurant_id = r.id
-          <if test="key != null">
-          where r.name like concat('%',#{key},'%') or r.license like concat('%',#{key},'%') 
-          </if>
+		LEFT JOIN user u on u.restaurant_id = r.id and u.role_id = #{roleId}
+        <if test="key != null">
+        where r.name like concat('%',#{key},'%') or r.license like concat('%',#{key},'%') 
+        </if>
+        
 	</select>
 	
 	

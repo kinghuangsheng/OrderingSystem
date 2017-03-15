@@ -3,6 +3,7 @@
 <mapper namespace="db.dao.UserDao">
     <resultMap id="userMap" type="db.pojo.User">
 		<result column="role_id" jdbcType="VARCHAR" property="roleId" />
+		<result column="restaurant_id" jdbcType="VARCHAR" property="restaurantId" />
 	</resultMap>
 	<select id="selectByAccount" parameterType="java.lang.String"
 		resultMap="userMap">
@@ -10,28 +11,15 @@
 		from user
 		where account = #{account}
 	</select>
-	<select id="selectAllUsers" resultType="Map">
-		select u.id, u.account, u.name, u.password, role.name 'role_name', r.name
-		'restaurant_name'
-		from user u
-		LEFT JOIN role on role.id = u.role_id
-		LEFT JOIN restaurant r on r.id = u.restaurant_id
-		ORDER BY u.id
-	</select>
 	
-	<select id="selectManagerByAccountName" resultType="Map">
-		select u.id, u.account, u.name, u.password, role.name 'role_name', r.name
-		'restaurant_name'
+	<select id="selectRestaurantUser" resultType="Map">
+		select u.id, u.account, u.name, u.password, role.name 'role_name'
 		from user u
 		LEFT JOIN role on role.id = u.role_id
-		LEFT JOIN restaurant r on r.id = u.restaurant_id
-		where u.role_id = '2'
-		<if test="account != null">
-          and u.account like concat('%',#{account},'%')
-          </if>
-		<if test="name != null">
-          and u.name like concat('%',#{name},'%')
-          </if>
+		where u.restaurant_id = #{restaurantId}
+		<if test="key != null">
+         and(u.account like concat('%',#{key},'%') or u.name like concat('%',#{key},'%'))
+         </if>
 		ORDER BY u.id
 	</select>
 	

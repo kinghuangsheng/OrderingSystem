@@ -38,7 +38,7 @@ public class PageRequestInterceptor implements HandlerInterceptor {
     {
     	response.setContentType("text/html; charset=utf-8");
     	HttpSession httpSession = request.getSession();	
-    	User user = (User) httpSession.getAttribute(Constant.USER);
+    	User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 		if(null != user){
 			return true;
 		}else{

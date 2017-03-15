@@ -4,7 +4,7 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title" id="exampleModalLabel">新增餐厅</h4>
+				<h4 class="modal-title" >新增餐厅</h4>
 			</div>
 			<div class="modal-body">
 				<form>
@@ -33,8 +33,8 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title" id="exampleModalLabel">分配管理员</h4>
-				<p class="modal-title" id="exampleModalLabel">{{restaurant_info_data.name}}</p>
+				<h4 class="modal-title" >分配管理员</h4>
+				<p class="modal-title" >{{restaurant_info_data.name}}</p>
 			</div>
 			<div class="modal-body">
 				<form>
@@ -61,7 +61,7 @@
 	</div>
 </div>
 
-<div id="restaurant_manage_div" class="row">
+<div id="restaurant_search_div" class="row">
 	<div class="col-lg-6">
 		<div class="input-group">
 			<input v-model="searchKey" type="text" class="form-control"
@@ -72,9 +72,9 @@
 	</div>
 
 	<button class="btn btn-primary" type="button" data-toggle="modal"
-		data-target="#add_restaurant_modal" data-whatever="@mdo">新增餐厅</button>
+		data-target="#add_restaurant_modal">新增餐厅</button>
 </div>
-<div id="restaurant_list" class="row">
+<div id="data_list" class="row">
 	<div class="col-md-12 color:#fff">
 		<table id="table" data-search="false" data-show-refresh="false"
 			data-show-toggle="false" data-show-columns="false"
@@ -101,7 +101,6 @@
 						restaurant_info_data.$data,
 						function(response) {
 							data = JSON.parse(response);
-							debugger;
 							if (data.code == success_code) {
 								id = data.object.id;
 								manager_info_data.restaurantId = data.object.id;
@@ -140,7 +139,6 @@
 						manager_info_data.$data,
 						function(response) {
 							data = JSON.parse(response);
-							debugger;
 							if (data.code == success_code) {
 								manager_info_data.name = "",
 								manager_info_data.account = "",
@@ -157,7 +155,7 @@
 
 	});
 	var restaurant_manage_data = new Vue({
-		el : '#restaurant_manage_div',
+		el : '#restaurant_search_div',
 		data : {
 			searchKey : "",
 		},

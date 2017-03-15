@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import bean.response.Response;
+import common.util.StringUtil;
 import db.dao.RoleOperationPrivilegeDao;
 import db.dao.UserDao;
 import db.pojo.User;
@@ -24,24 +25,25 @@ import permission.Privilege;
 @RequestMapping("/ajax/user")
 public class UserController extends AbsController{
 
-	private static Logger logger = Logger.getLogger(UserController.class);
 	@Resource
 	private UserDao userDao;
 	@Resource
 	private RoleOperationPrivilegeDao roleOperationPrivilegeDao;
+	
+	private User user;
 
 	@RequestMapping(value = "/login", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	public String login(String account, String password, HttpSession httpSession,
 			@CookieValue(value = "account", required = false) String cookieUserName) {
-		User user = this.userDao.selectByAccount(account);
+		user = this.userDao.selectByAccount(account);
 		Response response = null;
 		if (user != null) {
 			response = new Response();
 			if (user.getPassword().equals(password)) {
 				List<Integer> privileges = roleOperationPrivilegeDao.selectByRoleId(user.getRoleId());
-				httpSession.setAttribute(Constant.USER, user);
-				httpSession.setAttribute(Constant.PRIVILEGE, privileges);
+				httpSession.setAttribute(Constant.MapKey.USER, user);
+				httpSession.setAttribute(Constant.MapKey.PRIVILEGE, privileges);
 			} else {
 				response = new Response(Reason.PASSW0RD_ERROR);
 			}
@@ -54,42 +56,75 @@ public class UserController extends AbsController{
 	@ResponseBody
 	public String privilege(HttpSession httpSession) {
 		Response response = new Response();
-		response.setObject(httpSession.getAttribute(Constant.PRIVILEGE));
+		response.setObject(httpSession.getAttribute(Constant.MapKey.PRIVILEGE));
 		return response.toJsonString();
 	}
 
-	@RequestMapping(value = "/list", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = "/restaurantUserList", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Privilege(Constant.Privilege.USER_MANAGE)
-	public String list() {
+	public String restaurantUserList(HttpSession httpSession, String key) {
 		Response response = new Response();
-		response.setObject(userDao.selectAllUsers());
+		response.setObject(userDao.selectRestaurantUser(user.getRestaurantId(), key));
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/managerList", produces = "text/html;charset=UTF-8")
+	
+	@RequestMapping(value = "/addRestaurantUser", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Privilege(Constant.Privilege.RESTAURANT_MANAGER_MANAGE)
-	public String managerList(String account, String name) {
-		Response response = new Response();
-		response.setObject(userDao.selectManagerByAccountName(account, name));
-		return response.toJsonString();
-	}
-
-	@RequestMapping(value = "/addManager", produces = "text/html;charset=UTF-8")
-	@ResponseBody
-	@Privilege(Constant.Privilege.RESTAURANT_MANAGE)
-	public String addManager(User user) {
-		user.setRoleId(Constant.Role.RESTAURANT_MANAGER);
+	@Privilege(Constant.Privilege.USER_MANAGE)
+	public String addRestaurantUser(User newUser) {
+		String errorArg = checkArg(newUser);
 		Response response = null;
-		int rowNum = userDao.insertUser(user);
-		if(rowNum == 0){
-			response = new Response(Reason.ACCOUNT_REPEATED);
+		if(errorArg != null){
+			response = new Response(Reason.ERR_ARG);
+			response.setObject(errorArg);
 		}else{
-			response = new Response();
-			response.setObject(user);
+			newUser.setRestaurantId(user.getRestaurantId());
+			int rowNum = userDao.insertUser(newUser);
+			if(rowNum == 0){
+				response = new Response(Reason.ACCOUNT_REPEATED);
+			}else{
+				response = new Response();
+				response.setObject(newUser);
+			}
 		}
 		return response.toJsonString();
+	}
+	
+	@RequestMapping(value = "/addRestaurantManager", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Privilege(Constant.Privilege.RESTAURANT_MANAGE)
+	public String addRestaurantManager(User user) {
+		String errorArg = checkArg(user);
+		Response response = null;
+		if(errorArg != null){
+			response = new Response(Reason.ERR_ARG);
+			response.setObject(errorArg);
+		}else{
+			user.setRoleId(Constant.Role.RESTAURANT_MANAGER);
+			int rowNum = userDao.insertUser(user);
+			if(rowNum == 0){
+				response = new Response(Reason.ACCOUNT_REPEATED);
+			}else{
+				response = new Response();
+				response.setObject(user);
+			}
+		}
+		return response.toJsonString();
+	}
+	
+	public String checkArg(User user){
+		if(StringUtil.checkFail(user.getName(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
+			return "name";
+		}
+		if(StringUtil.checkFail(user.getAccount(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
+			return "account";
+		}
+		if(StringUtil.checkFail(user.getPassword(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
+			return "password";
+		}
+		return null;
 	}
 
 }

@@ -38,12 +38,12 @@ public class AjaxRequestInterceptor implements HandlerInterceptor {
             throws Exception
     {
     	HttpSession httpSession = request.getSession();	
-    	User user = (User) httpSession.getAttribute(Constant.USER);
+    	User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 		if(null != user){
 			if (handler instanceof HandlerMethod) {  
 				Privilege privilege = ((HandlerMethod) handler).getMethod().getAnnotation(Privilege.class);  
 	            if (privilege != null) {// 有权限控制的就要检查  
-	            	ArrayList<Integer> userPrivileges = (ArrayList<Integer>)httpSession.getAttribute(Constant.PRIVILEGE);
+	            	ArrayList<Integer> userPrivileges = (ArrayList<Integer>)httpSession.getAttribute(Constant.MapKey.PRIVILEGE);
 	            	if(userPrivileges.contains(privilege.value())){
 	            		return true;
 	            	}else{

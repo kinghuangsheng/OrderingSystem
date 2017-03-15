@@ -58,7 +58,7 @@
 					}
 				})
 			} else {
-				alert("权限获取失败:" + data.describe);
+				alert("权限获取失败:" + data.msg);
 			}
 		});
 	});
@@ -89,7 +89,7 @@
 							餐厅管理
 						</div>
 						<ul class="submenu">
-						<li><a v-on:click="load_page('system_manage/user_manager.html')"
+						<li><a v-on:click="load_page('restaurant_manage/user_manage.html')"
 								v-if="restaurant_manage.user_manage.visiable">用户管理</a></li>
 							<li><a v-on:click="load_page('common/error.html')"
 								v-if="restaurant_manage.role_manage.visiable">角色管理</a></li>
