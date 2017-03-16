@@ -12,6 +12,9 @@ var ajaxUrl = {
 		restaurant_role_list: ajaxPath + "role/restaurantRoleList",
 		add_restaurant_role: ajaxPath + "role/addRestaurantRole",
 		
+		restaurant_seat_list: ajaxPath + "seat/restaurantSeatList",
+		add_restaurant_seat: ajaxPath + "seat/addRestaurantSeat",
+		
 		restaurant_list: ajaxPath + "restaurant/list",
 		restaurant_add: ajaxPath + "restaurant/add",
 };

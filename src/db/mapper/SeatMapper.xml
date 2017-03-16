@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="db.dao.SeatDao">
+    
+	<select id="selectSeat" resultType="Map">
+		SELECT *
+		FROM seat s
+		where restaurant_id = #{restaurantId} 
+        <if test="key != null">
+        and (s.name like concat('%',#{key},'%') or s.customer_num like concat('%',#{key},'%'))
+        </if>
+        
+	</select>
+	
+	
+	<insert id="insertSeat" parameterType="db.pojo.Seat" useGeneratedKeys="true" keyProperty="id" >
+	    INSERT INTO seat (name, restaurant_id, customer_num) select #{name}, #{restaurantId}, #{customerNum} FROM DUAL 
+		WHERE NOT EXISTS (SELECT name, restaurant_id FROM seat WHERE name = #{name} and restaurant_id = #{restaurantId})
+  </insert>
+  
+	
+</mapper>

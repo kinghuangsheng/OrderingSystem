@@ -29,8 +29,6 @@ public class RoleController extends AbsController{
 
 	@Resource
 	private RoleDao roleDao;
-	@Resource
-	private RoleOperationPrivilegeDao roleOperationPrivilegeDao;
 	
 	@RequestMapping(value = "/restaurantRoleList", produces = "text/html;charset=UTF-8")
 	@ResponseBody

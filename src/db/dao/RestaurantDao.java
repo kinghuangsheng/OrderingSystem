@@ -10,7 +10,7 @@ import db.pojo.Restaurant;
 public interface RestaurantDao {
 	
 	
-	List<Map<String, Object>> selectRole(@Param("key")String key, @Param("roleId")int roleId);
+	List<Map<String, Object>> selectRestaurant(@Param("key")String key, @Param("roleId")int roleId);
 	int insertRestaurant(Restaurant restaurant);
 
 }
