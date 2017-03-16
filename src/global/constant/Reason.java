@@ -9,6 +9,7 @@ public enum Reason {
 	HAS_NO_PERSSION(4, "没有权限"),
 	LICENSE_REPEATED(5, "营业执照已存在"),
 	ACCOUNT_REPEATED(6, "账号已存在"),
+	ROLE_REPEATED(7, "角色名已存在"),
 	ERR_ARG(7, "参数有误");
 
 	private int code;

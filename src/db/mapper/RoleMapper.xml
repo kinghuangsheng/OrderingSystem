@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="db.dao.RoleDao">
+    
+	<select id="selectRole" resultType="Map">
+		SELECT *
+		FROM role r 
+		where restaurant_id = #{restaurantId} 
+        <if test="key != null">
+        and r.name like concat('%',#{key},'%')
+        </if>
+        
+	</select>
+	
+	
+	<insert id="insertRole" parameterType="db.pojo.Role" useGeneratedKeys="true" keyProperty="id" >
+	    INSERT INTO role (name, restaurant_id) select #{name}, #{restaurantId} FROM DUAL 
+		WHERE NOT EXISTS (SELECT name, restaurant_id FROM role WHERE name = #{name} and restaurant_id = #{restaurantId})
+  </insert>
+  
+	
+</mapper>
