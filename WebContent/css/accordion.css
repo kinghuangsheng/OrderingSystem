@@ -1,4 +1,4 @@
-#div_menu {
+#divMenu {
  	width: 100%;
  	
 }
@@ -72,17 +72,17 @@ a {
 /**
  * Submenu
  -----------------------------*/
- .submenu {
+ #divMenu .submenu {
  	display: none;
  	background: #444359;
  	font-size: 14px;
  }
 
- .submenu li {
+ #divMenu .submenu li {
  	border-bottom: 1px solid #4b4a5e;
  }
 
- #div_menu .submenu a {
+ #divMenu .submenu a {
  	display: block;
  	text-decoration: none;
  	color: #ffffff;
@@ -93,7 +93,7 @@ a {
  	transition: all 0.25s ease;
  }
 
- .submenu a:hover {
+ #divMenu .submenu a:hover {
  	background: #b63b4d;
  	color: #FFF;
  }

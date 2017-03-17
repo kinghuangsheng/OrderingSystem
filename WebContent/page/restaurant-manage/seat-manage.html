@@ -1,6 +1,6 @@
 <!-- 新增席位弹窗 -->
-<div class="modal" id="add_seat_modal" tabindex="-1" role="dialog"
-	aria-labelledby="add_seat_modal" aria-hidden="true">
+<div class="modal" id="addSeatModal" tabindex="-1" role="dialog"
+	aria-labelledby="addSeatModal" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -21,14 +21,14 @@
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
 				<button type="button" class="btn btn-primary"
-					@click="add_seat">确定</button>
+					@click="addSeat">确定</button>
 			</div>
 		</div>
 	</div>
 </div>
 
 
-<div id="seat_search_div" class="row">
+<div id="seatSearchDiv" class="row">
 	<div class="col-lg-6">
 		<div class="input-group">
 			<input v-model="searchKey" type="text" class="form-control"
@@ -39,9 +39,9 @@
 	</div>
 
 	<button class="btn btn-primary" type="button" data-toggle="modal"
-		data-target="#add_seat_modal">新增席位</button>
+		data-target="#addSeatModal">新增席位</button>
 </div>
-<div id="data_list" class="row">
+<div id="dataList" class="row">
 	<div class="col-md-12 color:#fff">
 		<table id="table">
 		</table>
@@ -50,24 +50,24 @@
 
 <script>
 
-	var seat_info_data = new Vue({
-		el : '#add_seat_modal',
+	var seatInfoData = new Vue({
+		el : '#addSeatModal',
 		data : {
 			name: "",
 			customerNum: "",
 		},
 		methods : {
-			add_seat : function() {
+			addSeat : function() {
 				$.post(
-						ajaxUrl.add_restaurant_seat,
-						seat_info_data.$data,
+						ajaxUrl.addRestaurantSeat,
+						seatInfoData.$data,
 						function(response) {
 							data = JSON.parse(response);
-							if (data.code == success_code) {
-								seat_info_data.name = "",
-								seat_info_data.customerNum = "",
-								$('#add_seat_modal').modal('hide');
-								seat_search_data.search();
+							if (data.code == successCode) {
+								seatInfoData.name = "",
+								seatInfoData.customerNum = "",
+								$('#addSeatModal').modal('hide');
+								seatSearchData.search();
 							}else{
 								alert(data.msg);
 							}
@@ -77,8 +77,8 @@
 		}
 
 	});
-	var seat_search_data = new Vue({
-		el : '#seat_search_div',
+	var seatSearchData = new Vue({
+		el : '#seatSearchDiv',
 		data : {
 			searchKey : "",
 		},
@@ -91,11 +91,11 @@
 	});
 	search("", true);
 	function search(keyStr, isFirstTime) {
-		$.post(ajaxUrl.restaurant_seat_list, {
+		$.post(ajaxUrl.restaurantSeatList, {
 			key : keyStr
 		}, function(response) {
 			var dataList = JSON.parse(response);
-			if (dataList.code == success_code) {
+			if (dataList.code == successCode) {
 				if (isFirstTime) {
 					$('#table').bootstrapTable({
 						columns : [ {
@@ -106,7 +106,7 @@
 							field : 'name',
 							title : '席位名称'
 						}, {
-							field : 'customer_num',
+							field : 'customerNum',
 							title : '容纳人数'
 						}, ],
 						data : dataList.object,

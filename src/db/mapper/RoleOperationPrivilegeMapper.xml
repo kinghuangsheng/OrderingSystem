@@ -4,7 +4,7 @@
     
     
   <select id="selectByRoleId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
-    select privilege_id
+    select privilege_id as privilegeId
     from role_operation_privilege
     where role_id = #{id,jdbcType=INTEGER}
   </select>

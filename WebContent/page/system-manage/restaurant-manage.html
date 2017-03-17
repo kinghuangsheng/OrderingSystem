@@ -1,6 +1,6 @@
 <!-- 新增餐厅弹窗 -->
-<div class="modal" id="add_restaurant_modal" tabindex="-1" role="dialog"
-	aria-labelledby="add_restaurant_modal" aria-hidden="true">
+<div class="modal" id="addRestaurantModal" tabindex="-1" role="dialog"
+	aria-labelledby="addRestaurantModal" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -21,20 +21,20 @@
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
 				<button type="button" class="btn btn-primary"
-					@click="add_restaurant">确定</button>
+					@click="addRestaurant">确定</button>
 			</div>
 		</div>
 	</div>
 </div>
 
 <!-- 分配餐厅管理员弹窗 -->
-<div class="modal" id="add_manager_modal" tabindex="-1" role="dialog"
-	aria-labelledby="add_manager_modal" aria-hidden="true">
+<div class="modal" id="addManagerModal" tabindex="-1" role="dialog"
+	aria-labelledby="addManagerModal" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title" >分配管理员</h4>
-				<p class="modal-title" >{{restaurant_info_data.name}}</p>
+				<p class="modal-title" >{{restaurantInfoData.name}}</p>
 			</div>
 			<div class="modal-body">
 				<form>
@@ -55,13 +55,13 @@
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
 				<button type="button" class="btn btn-primary"
-					@click="add_manager">确定</button>
+					@click="addManager">确定</button>
 			</div>
 		</div>
 	</div>
 </div>
 
-<div id="restaurant_search_div" class="row">
+<div id="restaurantSearchDiv" class="row">
 	<div class="col-lg-6">
 		<div class="input-group">
 			<input v-model="searchKey" type="text" class="form-control"
@@ -72,9 +72,9 @@
 	</div>
 
 	<button class="btn btn-primary" type="button" data-toggle="modal"
-		data-target="#add_restaurant_modal">新增餐厅</button>
+		data-target="#addRestaurantModal">新增餐厅</button>
 </div>
-<div id="data_list" class="row">
+<div id="dataList" class="row">
 	<div class="col-md-12 color:#fff">
 		<table id="table" data-search="false" data-show-refresh="false"
 			data-show-toggle="false" data-show-columns="false"
@@ -87,33 +87,33 @@
 
 
 
-	var restaurant_info_data = new Vue({
-		el : '#add_restaurant_modal',
+	var restaurantInfoData = new Vue({
+		el : '#addRestaurantModal',
 		data : {
 			id : "",
 			name : "",
 			license : ""
 		},
 		methods : {
-			add_restaurant : function() {
+			addRestaurant : function() {
 				$.post(
-						ajaxUrl.restaurant_add,
-						restaurant_info_data.$data,
+						ajaxUrl.restaurantAdd,
+						restaurantInfoData.$data,
 						function(response) {
 							data = JSON.parse(response);
-							if (data.code == success_code) {
+							if (data.code == successCode) {
 								id = data.object.id;
-								manager_info_data.restaurantId = data.object.id;
-								var n = restaurant_info_data.name;
-								$('#add_restaurant_modal').modal('hide');
-								restaurant_manage_data.search();
-								$('#add_manager_modal').on('shown.bs.modal', function (e) {
-									$('#add_manager_modal').on('hidden.bs.modal', function (e) {
-										restaurant_info_data.name="";
-										restaurant_info_data.license="";
+								managerInfoData.restaurantId = data.object.id;
+								var n = restaurantInfoData.name;
+								$('#addRestaurantModal').modal('hide');
+								restaurantManageData.search();
+								$('#addManagerModal').on('shown.bs.modal', function (e) {
+									$('#addManagerModal').on('hidden.bs.modal', function (e) {
+										restaurantInfoData.name="";
+										restaurantInfoData.license="";
 									});
 								});
-								$('#add_manager_modal').modal('show');
+								$('#addManagerModal').modal('show');
 							}else{
 								alert(data.msg);
 							}
@@ -124,8 +124,8 @@
 	
 	});
 	
-	var manager_info_data = new Vue({
-		el : '#add_manager_modal',
+	var managerInfoData = new Vue({
+		el : '#addManagerModal',
 		data : {
 			restaurantId:"",
 			name: "",
@@ -133,18 +133,18 @@
 			password: ""
 		},
 		methods : {
-			add_manager : function() {
+			addManager : function() {
 				$.post(
-						ajaxUrl.add_manager,
-						manager_info_data.$data,
+						ajaxUrl.addManager,
+						managerInfoData.$data,
 						function(response) {
 							data = JSON.parse(response);
-							if (data.code == success_code) {
-								manager_info_data.name = "",
-								manager_info_data.account = "",
-								manager_info_data.password = "",
-								$('#add_manager_modal').modal('hide');
-								restaurant_manage_data.search();
+							if (data.code == successCode) {
+								managerInfoData.name = "",
+								managerInfoData.account = "",
+								managerInfoData.password = "",
+								$('#addManagerModal').modal('hide');
+								restaurantManageData.search();
 							}else{
 								alert(data.msg);
 							}
@@ -154,8 +154,8 @@
 		}
 
 	});
-	var restaurant_manage_data = new Vue({
-		el : '#restaurant_search_div',
+	var restaurantManageData = new Vue({
+		el : '#restaurantSearchDiv',
 		data : {
 			searchKey : "",
 		},
@@ -168,11 +168,11 @@
 	});
 	search("", true);
 	function search(keyStr, isFirstTime) {
-		$.post(ajaxUrl.restaurant_list, {
+		$.post(ajaxUrl.restaurantList, {
 			key : keyStr
 		}, function(response) {
 			var dataList = JSON.parse(response);
-			if (dataList.code == success_code) {
+			if (dataList.code == successCode) {
 				if (isFirstTime) {
 					$('#table').bootstrapTable({
 						columns : [ {
@@ -203,12 +203,12 @@
 	}
 	window.managerTDEvents = {
 	        'click .addManager': function (e, value, row, index) {
-	        	manager_info_data.restaurantId = row.id;
-	    		$('#add_manager_modal').on('hidden.bs.modal', function (e) {
-	    			restaurant_info_data.name="";
-	    			restaurant_info_data.license="";
+	        	managerInfoData.restaurantId = row.id;
+	    		$('#addManagerModal').on('hidden.bs.modal', function (e) {
+	    			restaurantInfoData.name="";
+	    			restaurantInfoData.license="";
 	    		});
-	    		$('#add_manager_modal').modal('show');
+	    		$('#addManagerModal').modal('show');
 	        },
 	    };
 	function managerTDFormater(value, row, index){

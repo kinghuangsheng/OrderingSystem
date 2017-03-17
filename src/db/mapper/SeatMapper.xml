@@ -3,7 +3,7 @@
 <mapper namespace="db.dao.SeatDao">
     
 	<select id="selectSeat" resultType="Map">
-		SELECT *
+		SELECT s.id, s.name, s.restaurant_id as restaurantId, s.customer_num as customerNum
 		FROM seat s
 		where restaurant_id = #{restaurantId} 
         <if test="key != null">

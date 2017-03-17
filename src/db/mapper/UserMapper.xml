@@ -6,14 +6,15 @@
 		<result column="restaurant_id" jdbcType="VARCHAR" property="restaurantId" />
 	</resultMap>
 	<select id="selectByAccount" parameterType="java.lang.String"
-		resultMap="userMap">
-		select * 
-		from user
+		resultType="db.pojo.User">
+		select u.id, u.account, u.name, u.restaurant_id as restaurantId, u.role_id as roleId,
+				u.password 
+		from user u
 		where account = #{account}
 	</select>
 	
 	<select id="selectRestaurantUser" resultType="Map">
-		select u.id, u.account, u.name, u.password, role.name 'role_name'
+		select u.id, u.account, u.name, u.password, role.name 'roleName'
 		from user u
 		LEFT JOIN role on role.id = u.role_id
 		where u.restaurant_id = #{restaurantId}

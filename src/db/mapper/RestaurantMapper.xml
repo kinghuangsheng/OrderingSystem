@@ -2,13 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="db.dao.RestaurantDao">
     
-    <sql id="search_column">
-    	r.*, u.name "manager"
-  	</sql>
-	
 	<select id="selectRestaurant" resultType="Map">
 		SELECT 
-		<include refid="search_column" />
+		r.id, r.name, r.license, r.state, u.name "manager"
 		FROM restaurant r
 		LEFT JOIN user u on u.restaurant_id = r.id and u.role_id = #{roleId}
         <if test="key != null">

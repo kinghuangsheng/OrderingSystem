@@ -1,6 +1,6 @@
 <!-- 新增餐厅弹窗 -->
-<div class="modal" id="add_user_modal" tabindex="-1" role="dialog"
-	aria-labelledby="add_user_modal" aria-hidden="true">
+<div class="modal" id="addUserModal" tabindex="-1" role="dialog"
+	aria-labelledby="addUserModal" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -25,14 +25,14 @@
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
 				<button type="button" class="btn btn-primary"
-					@click="add_user">确定</button>
+					@click="addUser">确定</button>
 			</div>
 		</div>
 	</div>
 </div>
 
 
-<div id="user_search_div" class="row">
+<div id="userSearchDiv" class="row">
 	<div class="col-lg-6">
 		<div class="input-group">
 			<input v-model="searchKey" type="text" class="form-control"
@@ -43,9 +43,9 @@
 	</div>
 
 	<button class="btn btn-primary" type="button" data-toggle="modal"
-		data-target="#add_user_modal">新增用户</button>
+		data-target="#addUserModal">新增用户</button>
 </div>
-<div id="data_list" class="row">
+<div id="dataList" class="row">
 	<div class="col-md-12 color:#fff">
 		<table id="table">
 		</table>
@@ -54,26 +54,26 @@
 
 <script>
 
-	var user_info_data = new Vue({
-		el : '#add_user_modal',
+	var userInfoData = new Vue({
+		el : '#addUserModal',
 		data : {
 			name: "",
 			account: "",
 			password: ""
 		},
 		methods : {
-			add_user : function() {
+			addUser : function() {
 				$.post(
-						ajaxUrl.add_restaurant_user,
-						user_info_data.$data,
+						ajaxUrl.addRestaurantUser,
+						userInfoData.$data,
 						function(response) {
 							data = JSON.parse(response);
-							if (data.code == success_code) {
-								user_info_data.name = "",
-								user_info_data.account = "",
-								user_info_data.password = "",
-								$('#add_user_modal').modal('hide');
-								user_search_data.search();
+							if (data.code == successCode) {
+								userInfoData.name = "",
+								userInfoData.account = "",
+								userInfoData.password = "",
+								$('#addUserModal').modal('hide');
+								userSearchData.search();
 							}else{
 								alert(data.msg);
 							}
@@ -83,8 +83,8 @@
 		}
 
 	});
-	var user_search_data = new Vue({
-		el : '#user_search_div',
+	var userSearchData = new Vue({
+		el : '#userSearchDiv',
 		data : {
 			searchKey : "",
 		},
@@ -97,11 +97,11 @@
 	});
 	search("", true);
 	function search(keyStr, isFirstTime) {
-		$.post(ajaxUrl.restaurant_user_list, {
+		$.post(ajaxUrl.restaurantUserList, {
 			key : keyStr
 		}, function(response) {
 			var dataList = JSON.parse(response);
-			if (dataList.code == success_code) {
+			if (dataList.code == successCode) {
 				if (isFirstTime) {
 					$('#table').bootstrapTable({
 						columns : [ {
@@ -112,7 +112,7 @@
 							field : 'name',
 							title : '姓名'
 						}, {
-							field : 'role_name',
+							field : 'roleName',
 							title : '角色'
 						}, ],
 						data : dataList.object,

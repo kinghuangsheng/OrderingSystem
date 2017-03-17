@@ -23,38 +23,38 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script> -->
 
-<script src="../js/request_url.js"></script>
+<script src="../js/request-url.js"></script>
 
 <script>
-	var success_code = 0;
+	var successCode = 0;
 	$(document).ready(function() {
 		$.post(ajaxUrl.privilege, function(data) {
 			data = JSON.parse(data);
-			if (data.code == success_code) {
+			if (data.code == successCode) {
 				data.object.forEach(function(value){
 					if (1 == value) {
-						main_data.restaurant_manage.visiable = true;
-						main_data.restaurant_manage.user_manage.visiable = true;
+						mainData.restaurantManage.visiable = true;
+						mainData.restaurantManage.userManage.visiable = true;
 					}
 					if (2 == value) {
-						main_data.restaurant_manage.visiable = true;
-						main_data.restaurant_manage.role_manage.visiable = true;
+						mainData.restaurantManage.visiable = true;
+						mainData.restaurantManage.roleManage.visiable = true;
 					}
 					if (4 == value) {
-						main_data.restaurant_manage.visiable = true;
-						main_data.restaurant_manage.table_manage.visiable = true;
+						mainData.restaurantManage.visiable = true;
+						mainData.restaurantManage.tableManage.visiable = true;
 					}
 					if (3 == value) {
-						main_data.restaurant_manage.visiable = true;
-						main_data.restaurant_manage.food_manage.visiable = true;
+						mainData.restaurantManage.visiable = true;
+						mainData.restaurantManage.foodManage.visiable = true;
 					}
 					if (5 == value) {
-						main_data.system_manage.visiable = true;
-						main_data.system_manage.restaurant_manage.visiable = true;
+						mainData.systemManage.visiable = true;
+						mainData.systemManage.restaurantManage.visiable = true;
 					}
 					if (6 == value) {
-						main_data.system_manage.visiable = true;
-						main_data.system_manage.restaurant_manager_manage.visiable = true;
+						mainData.systemManage.visiable = true;
+						mainData.systemManage.restaurantManagerManage.visiable = true;
 					}
 				})
 			} else {
@@ -71,32 +71,30 @@
 		</div>
 
 		<div id="left">
-			<div id="div_menu">
+			<div id="divMenu">
 				<ul id="accordion" class="accordion">
-					<li v-if="system_manage.visiable">
+					<li v-if="systemManage.visiable">
 						<div class="link">
 							系统管理
 						</div>
 						<ul class="submenu">
-						<li><a v-on:click="load_page('system_manage/restaurant_manage.html')"
-								v-if="system_manage.restaurant_manage.visiable">餐厅管理</a></li>
-							<li><a v-on:click="load_page('system_manage/restaurant_manager_manage.html')"
-								v-if="system_manage.restaurant_manager_manage.visiable">餐厅管理员管理</a></li>
+						<li><a v-on:click="loadPage('system-manage/restaurant-manage.html')"
+								v-if="systemManage.restaurantManage.visiable">餐厅管理</a></li>
 						</ul>
 					</li>
-					<li v-if="restaurant_manage.visiable">
+					<li v-if="restaurantManage.visiable">
 						<div class="link">
 							餐厅管理
 						</div>
 						<ul class="submenu">
-						<li><a v-on:click="load_page('restaurant_manage/user_manage.html')"
-								v-if="restaurant_manage.user_manage.visiable">用户管理</a></li>
-							<li><a v-on:click="load_page('restaurant_manage/role_manage.html')"
-								v-if="restaurant_manage.role_manage.visiable">角色管理</a></li>
-							<li><a v-on:click="load_page('restaurant_manage/seat_manage.html')"
-								v-if="restaurant_manage.table_manage.visiable">席位管理</a></li>
-							<li><a v-on:click="load_page('common/error.html')"
-								v-if="restaurant_manage.food_manage.visiable">菜品管理</a></li>
+						<li><a v-on:click="loadPage('restaurant-manage/user-manage.html')"
+								v-if="restaurantManage.userManage.visiable">用户管理</a></li>
+							<li><a v-on:click="loadPage('restaurant-manage/role-manage.html')"
+								v-if="restaurantManage.roleManage.visiable">角色管理</a></li>
+							<li><a v-on:click="loadPage('restaurant-manage/seat-manage.html')"
+								v-if="restaurantManage.tableManage.visiable">席位管理</a></li>
+							<li><a v-on:click="loadPage('common/error.html')"
+								v-if="restaurantManage.foodManage.visiable">菜品管理</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -117,31 +115,31 @@
 
 <script>
 	//top上账号信息显示
-	var main_data = new Vue({
+	var mainData = new Vue({
 		el : '#page',
 		data : {
 			account : getParam("account"),
-			system_manage : {
+			systemManage : {
 				visiable : false,
-				restaurant_manage : {
+				restaurantManage : {
 					visiable : false
 				},
-				restaurant_manager_manage : {
+				restaurantManagerManage : {
 					visiable : false
 				}
 			},
-			restaurant_manage : {
+			restaurantManage : {
 				visiable : false,
-				user_manage : {
+				userManage : {
 					visiable : false
 				},
-				role_manage : {
+				roleManage : {
 					visiable : false
 				},
-				table_manage : {
+				tableManage : {
 					visiable : false
 				},
-				food_manage : {
+				foodManage : {
 					visiable : false
 				}
 			}
@@ -157,7 +155,7 @@
 		},
 
 		methods : {
-			load_page : function(uri) {
+			loadPage : function(uri) {
 				$('#right').load(uri);
 			}
 		},
