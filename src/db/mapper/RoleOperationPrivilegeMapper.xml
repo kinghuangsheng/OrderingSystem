@@ -3,10 +3,38 @@
 <mapper namespace="db.dao.RoleOperationPrivilegeDao">
     
     
-  <select id="selectByRoleId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+  <select id="selectPrivilegeId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
     select privilege_id as privilegeId
     from role_operation_privilege
-    where role_id = #{id,jdbcType=INTEGER}
+    where role_id = #{roleId}
   </select>
+  
+  
+  <select id="selectPrivilegeInfo" parameterType="java.lang.Integer" resultType="Map">
+    select rop.privilege_id as id, op.name, op.assignable
+    from role_operation_privilege rop 
+    left join operation_privilege op on op.id = rop.privilege_id
+    where role_id = #{roleId}
+  </select>
+  
+  <insert id="insertRoleIdPrivilegeIds" useGeneratedKeys="true" parameterType="java.util.List">  
+    insert into role_operation_privilege (role_id, privilege_id)   
+    values  
+    <foreach collection="privilegeIds" item="item" index="index" separator="," >  
+        (#{roleId}, #{item})  
+    </foreach>  
+</insert>  
+
+  <insert id="insertRoleOperationPrivilege" useGeneratedKeys="true" parameterType="java.util.List">  
+      <selectKey resultType="long" keyProperty="id" order="AFTER">  
+	        SELECT  
+	        LAST_INSERT_ID()  
+	    </selectKey>  
+	    insert into role_operation_privilege (role_id, privilege_id)   
+	    values  
+	    <foreach collection="roleOperationPrivileges" item="item" index="index" separator="," >  
+	        (#{item.roleId}, #{item.privilegeId})  
+	    </foreach>  
+	</insert>  
   
 </mapper>

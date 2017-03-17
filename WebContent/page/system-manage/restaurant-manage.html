@@ -101,7 +101,7 @@
 						restaurantInfoData.$data,
 						function(response) {
 							data = JSON.parse(response);
-							if (data.code == successCode) {
+							if (data.code == _SuccessCode) {
 								id = data.object.id;
 								managerInfoData.restaurantId = data.object.id;
 								var n = restaurantInfoData.name;
@@ -139,7 +139,7 @@
 						managerInfoData.$data,
 						function(response) {
 							data = JSON.parse(response);
-							if (data.code == successCode) {
+							if (data.code == _SuccessCode) {
 								managerInfoData.name = "",
 								managerInfoData.account = "",
 								managerInfoData.password = "",
@@ -172,7 +172,7 @@
 			key : keyStr
 		}, function(response) {
 			var dataList = JSON.parse(response);
-			if (dataList.code == successCode) {
+			if (dataList.code == _SuccessCode) {
 				if (isFirstTime) {
 					$('#table').bootstrapTable({
 						columns : [ {

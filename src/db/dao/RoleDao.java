@@ -14,5 +14,7 @@ public interface RoleDao {
 	List<Map<String, Object>> selectRole(@Param("restaurantId")int restaurantId, @Param("key")String key);
 	
 	int insertRole(Role role);
+	
+	int selectRoleIdNum(@Param("restaurantId")int restaurantId, @Param("roleId")int roleId);
 
 }

@@ -16,6 +16,14 @@
 	        </if>
 	</select>
 	
+	<select id="selectRoleIdNum" resultType="Integer">
+		SELECT count(r.id)
+		FROM 
+			role r 
+		WHERE
+			restaurant_id = #{restaurantId} and id = #{roleId} 
+	</select>
+	
 	
 	<insert id="insertRole" parameterType="db.pojo.Role" useGeneratedKeys="true" keyProperty="id" >
 		INSERT INTO role (NAME, restaurant_id) SELECT

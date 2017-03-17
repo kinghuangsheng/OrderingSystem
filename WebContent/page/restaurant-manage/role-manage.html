@@ -12,6 +12,13 @@
 						<label for="message-text" class="control-label">角色名称</label>
 						<input v-model="name" class="form-control">
 					</div>
+					<template v-for="(privilege, index) in prililegeList">
+					    <div class="checkbox">
+					        <label>
+					          <input type="checkbox" v-on:click="checkPrivilege(privilege, index)" v-model="privilege.checked">{{privilege.name}}
+					        </label>
+					      </div>
+					  </template>
 				</form>
 			</div>
 			<div class="modal-footer">
@@ -46,19 +53,24 @@
 
 <script>
 
+
 	var roleInfoData = new Vue({
 		el : '#addRoleModal',
 		data : {
 			name: "",
+			prililegeList: getPrividegeAssignable(),
 		},
 		methods : {
 			addRole : function() {
 				$.post(
 						ajaxUrl.addRestaurantRole,
-						roleInfoData.$data,
+						{
+							name: roleInfoData.name,
+							privilegeIds: roleInfoData.calcutePrivilegeIds(),
+						},
 						function(response) {
 							data = JSON.parse(response);
-							if (data.code == successCode) {
+							if (data.code == _SuccessCode) {
 								roleInfoData.name = "",
 								$('#addRoleModal').modal('hide');
 								roleSearchData.search();
@@ -67,9 +79,26 @@
 							}
 						}
 				);
-			}
+			}, 
+			checkPrivilege: function (privilege, index) {
+			      //alert(privilege.checked + "index = " + index);
+			 },
+			 calcutePrivilegeIds: function () {
+				 var privilegeIds = [];
+				 roleInfoData.prililegeList.forEach(function(privilege){
+					 if(privilege.checked){
+						 privilegeIds.push(privilege.id);
+					 }
+				 }); 
+		      	return JSON.stringify(privilegeIds);
+		    },
 		}
-
+	});
+	$('#addRoleModal').on('shown.bs.modal', function (e) {
+		roleInfoData.prililegeList.forEach(function(privilege, index){
+			privilege.checked = false;
+			Vue.set(roleInfoData.prililegeList, index, privilege)
+		 }); 
 	});
 	var roleSearchData = new Vue({
 		el : '#roleSearchDiv',
@@ -84,12 +113,13 @@
 
 	});
 	search("", true);
+	//查找角色
 	function search(keyStr, isFirstTime) {
 		$.post(ajaxUrl.restaurantRoleList, {
 			key : keyStr
 		}, function(response) {
 			var dataList = JSON.parse(response);
-			if (dataList.code == successCode) {
+			if (dataList.code == _SuccessCode) {
 				if (isFirstTime) {
 					$('#table').bootstrapTable({
 						columns : [ {
@@ -110,4 +140,15 @@
 			}
 		});
 	}
+	
+	function getPrividegeAssignable(){
+		var list= [];
+		 _PriliegeList.forEach(function(privilege){
+			 if(privilege.assignable == 1){
+			 	list.push(privilege);
+			 }
+		 }); 
+		 return list;
+	}
+	 
 </script>

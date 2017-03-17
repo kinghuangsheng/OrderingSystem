@@ -4,8 +4,18 @@ public class OperationPrivilege {
     private Integer id;
 
     private String name;
+    
+    private int assignable;
 
-    public Integer getId() {
+    public int getAssignable() {
+		return assignable;
+	}
+
+	public void setAssignable(int assignable) {
+		this.assignable = assignable;
+	}
+
+	public Integer getId() {
         return id;
     }
 

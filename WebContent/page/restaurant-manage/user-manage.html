@@ -20,6 +20,15 @@
 						<label for="message-text" class="control-label">密码</label>
 						<input v-model="password" class="form-control">
 					</div>
+					<div class="form-group">
+						<label for="message-text" class="control-label">角色</label>
+						<select v-model="roleId" >
+					 <option v-for="role in roleList" v-bind:value="role.id">
+					   {{ role.name }}
+					 </option>
+					</select>
+					</div>
+					
 				</form>
 			</div>
 			<div class="modal-footer">
@@ -59,19 +68,27 @@
 		data : {
 			name: "",
 			account: "",
-			password: ""
+			roleId: "",
+			roleList: [],
+			password: "",
 		},
 		methods : {
 			addUser : function() {
 				$.post(
 						ajaxUrl.addRestaurantUser,
-						userInfoData.$data,
+						{
+							name: userInfoData.name,
+							account: userInfoData.account,
+							roleId: userInfoData.roleId,
+							password: userInfoData.password,
+						},
 						function(response) {
 							data = JSON.parse(response);
-							if (data.code == successCode) {
+							if (data.code == _SuccessCode) {
 								userInfoData.name = "",
 								userInfoData.account = "",
 								userInfoData.password = "",
+								userInfoData.roleId = "",
 								$('#addUserModal').modal('hide');
 								userSearchData.search();
 							}else{
@@ -95,13 +112,23 @@
 		}
 
 	});
+	$('#addUserModal').on('shown.bs.modal', function (e) {
+		$.post(ajaxUrl.restaurantRoleList, function(response) {
+			var dataList = JSON.parse(response);
+			if (dataList.code == _SuccessCode) {
+				userInfoData.roleList = dataList.object;
+			} else {
+				alert(dataList.msg);
+			}
+		});
+	});
 	search("", true);
 	function search(keyStr, isFirstTime) {
 		$.post(ajaxUrl.restaurantUserList, {
 			key : keyStr
 		}, function(response) {
 			var dataList = JSON.parse(response);
-			if (dataList.code == successCode) {
+			if (dataList.code == _SuccessCode) {
 				if (isFirstTime) {
 					$('#table').bootstrapTable({
 						columns : [ {

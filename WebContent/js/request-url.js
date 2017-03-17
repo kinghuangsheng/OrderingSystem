@@ -17,6 +17,8 @@ var ajaxUrl = {
 		
 		restaurantList: ajaxPath + "restaurant/list",
 		restaurantAdd: ajaxPath + "restaurant/add",
+		
+		restaurantAdd: ajaxPath + "privilege/add",
 };
 
 var pagePath = "http://localhost:8080/OrderingSystem/page/";

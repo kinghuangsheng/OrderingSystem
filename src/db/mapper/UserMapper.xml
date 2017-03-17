@@ -17,7 +17,7 @@
 		select u.id, u.account, u.name, u.password, role.name 'roleName'
 		from user u
 		LEFT JOIN role on role.id = u.role_id
-		where u.restaurant_id = #{restaurantId}
+		where u.restaurant_id = #{restaurantId} and u.role_id not in ${notInRoleIdString} 
 		<if test="key != null">
          and(u.account like concat('%',#{key},'%') or u.name like concat('%',#{key},'%'))
          </if>

@@ -26,33 +26,35 @@
 <script src="../js/request-url.js"></script>
 
 <script>
-	var successCode = 0;
+	var _SuccessCode = 0;
+	var _PriliegeList;
 	$(document).ready(function() {
 		$.post(ajaxUrl.privilege, function(data) {
 			data = JSON.parse(data);
-			if (data.code == successCode) {
-				data.object.forEach(function(value){
-					if (1 == value) {
+			if (data.code == _SuccessCode) {
+				_PriliegeList = data.object;
+				_PriliegeList.forEach(function(privilege){
+					if (1 == privilege.id) {
 						mainData.restaurantManage.visiable = true;
 						mainData.restaurantManage.userManage.visiable = true;
 					}
-					if (2 == value) {
+					if (2 == privilege.id) {
 						mainData.restaurantManage.visiable = true;
 						mainData.restaurantManage.roleManage.visiable = true;
 					}
-					if (4 == value) {
+					if (4 == privilege.id) {
 						mainData.restaurantManage.visiable = true;
 						mainData.restaurantManage.tableManage.visiable = true;
 					}
-					if (3 == value) {
+					if (3 == privilege.id) {
 						mainData.restaurantManage.visiable = true;
 						mainData.restaurantManage.foodManage.visiable = true;
 					}
-					if (5 == value) {
+					if (5 == privilege.id) {
 						mainData.systemManage.visiable = true;
 						mainData.systemManage.restaurantManage.visiable = true;
 					}
-					if (6 == value) {
+					if (6 == privilege.id) {
 						mainData.systemManage.visiable = true;
 						mainData.systemManage.restaurantManagerManage.visiable = true;
 					}

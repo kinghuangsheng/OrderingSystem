@@ -1,6 +1,6 @@
 package bean.response;
 
-import common.util.Object2JsonUtil;
+import common.util.JsonUtil;
 import global.constant.Reason;
 
 public class Response{
@@ -38,7 +38,7 @@ public class Response{
 		this.msg = msg;
 	}
 	public String toJsonString(){
-		return Object2JsonUtil.toJsonString(this);
+		return JsonUtil.toJsonString(this);
 	}
 	
 	
