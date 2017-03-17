@@ -187,6 +187,8 @@
 							title : '营业执照'
 						}, {
 							field : 'manager',
+							formatter: managerTDFormater,
+							events: managerTDEvents,
 							title : '管理员'
 						}, ],
 						data : dataList.object,
@@ -198,5 +200,26 @@
 				alert(dataList.msg);
 			}
 		});
+	}
+	window.managerTDEvents = {
+	        'click .addManager': function (e, value, row, index) {
+	        	manager_info_data.restaurantId = row.id;
+	    		$('#add_manager_modal').on('hidden.bs.modal', function (e) {
+	    			restaurant_info_data.name="";
+	    			restaurant_info_data.license="";
+	    		});
+	    		$('#add_manager_modal').modal('show');
+	        },
+	    };
+	function managerTDFormater(value, row, index){
+		if(value){
+			return value;
+		}else{
+			return [
+		            '<a class="addManager" href="javascript:void(0);" title="分配管理员">',
+		            '+',
+		            '</a>'
+		        ].join('');
+		}
 	}
 </script>
