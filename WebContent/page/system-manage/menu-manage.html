@@ -1,0 +1,63 @@
+<div id="allMenuDiv" class="content_wrap">
+	<ul id="menutree" class="ztree" style="width: 230px; overflow: auto;"></ul>
+</div>
+
+<div id="btnDiv">
+	<button>添加子菜单</button>
+	<button>删除菜单</button>
+</div>
+<script>
+	
+	$(function(){
+		var url = ajaxUrl.allMenuList;
+		$.post(url, function(response) {
+			response = JSON.parse(response);
+			if (response.code == SUCCESS_CODE) {
+				var setting = {
+						data : {
+							simpleData : {
+								enable : true,
+								idKey : "id",
+								pIdKey : "parentId",
+								rootPId : null,
+							}
+						},
+						callback: {
+							onClick: menuTreeOnClick,
+						}
+					};
+					var treeNodes = response.data;
+					var zTree = $.fn.zTree.init($("#menutree"), setting, treeNodes);
+			} else {
+				alert("登录失败:" + data.msg);
+			}
+		});
+	});
+	
+	function menuTreeOnClick(event, treeId, treeNode) {
+		
+	}
+
+</script>
+
+
+<style type="text/css">
+
+#allMenuDiv {
+	position: absolute;
+	width: 200px;
+	height: 100%;
+	overflow: auto;
+	padding-right: 2px;
+	}
+
+#btnDiv {
+	position: absolute;
+	left: 210px;
+	height: 100%;
+	right: 0px;
+	overflow: auto;
+	background: #FFFAFA
+}
+
+</style>

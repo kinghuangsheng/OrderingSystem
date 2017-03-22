@@ -1,0 +1,135 @@
+<!-- 新增席位弹窗 -->
+<div class="modal" id="addInterfaceModal" tabindex="-1" role="dialog"
+	aria-labelledby="addInterfaceModal" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">新增接口</h4>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="message-text" class="control-label">接口名称</label>
+						<input v-model="name" class="form-control">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary"
+					@click="addInterface">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div><p>接口前缀为：http://IP:Port/OrderingSystem</p></div>
+
+<div id="interfaceSearchDiv" class="row">
+		<div class="col-lg-6">
+			<div class="input-group">
+				<input v-model="searchKey" type="text" class="form-control"
+					placeholder="接口名称"> <span class="input-group-btn">
+					<button @click="search" class="btn btn-secondary" type="button">查询</button>
+				</span>
+			</div>
+		</div> 
+
+	<button class="btn btn-primary" type="button" data-toggle="modal"
+		data-target="#addInterfaceModal">新增接口</button>
+</div>
+<div id="dataList" class="row">
+	<div class="col-md-12 color:#fff">
+		<table
+			id="table"
+		>
+		</table>
+	</div>
+</div>
+
+<script>
+
+	var interfaceInfoData = new Vue({
+		el : '#addInterfaceModal',
+		data : {
+			name: "",
+			customerNum: "",
+		},
+		methods : {
+			addInterface : function() {
+				$.post(
+						ajaxUrl.addInterface,
+						interfaceInfoData.$data,
+						function(response) {
+							data = JSON.parse(response);
+							if (data.code == SUCCESS_CODE) {
+								interfaceInfoData.name = "",
+								interfaceInfoData.customerNum = "",
+								$('#addInterfaceModal').modal('hide');
+								interfaceSearchData.search();
+							}else{
+								alert(data.msg);
+							}
+						}
+				);
+			}
+		}
+
+	});
+	var interfaceSearchData = new Vue({
+		el : '#interfaceSearchDiv',
+		data : {
+			searchKey : "",
+		},
+		methods : {
+			search : function() {
+				search(this.searchKey, false);
+			}
+		}
+
+	});
+	
+	//search("", true);
+	function search(keyStr) {
+		$('#table').bootstrapTable('refresh',{pageNumber:2, pageSize: 10, search: true,});
+	}
+	
+	$('#table').bootstrapTable({
+		url: ajaxUrl.interfaceList,
+		cache: false,
+		contentType: "text/html",
+		dataType: "json",
+		pagination: true, 						
+        search: false,
+		sidePagination: "server",
+		pageNumber:1,      //初始化加载第一页，默认第一页
+        pageSize: 2,      //每页的记录行数（*）
+        smartDisplay: false,
+        contentType: "text/html",
+        queryParamsType:'', //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort 设置为 ''  在这种情况下传给服务器的参数为：pageSize,pageNumber
+		queryParams : function(params) {
+			params.key= interfaceSearchData.searchKey;
+			return params;
+		}, 
+		//queryParams : queryParams1,
+		responseHandler: function(response) {
+			response.total = response.count;
+			response.rows = response.data.list;
+			return response;
+		},
+		columns : [ {
+			align : 'center',
+			field : 'id',
+			sortable : true,
+			title : 'ID'
+		}, {
+			field : 'name',
+			sortable : true,
+			title : '接口名称'
+		}, {
+			field : 'path',
+			title : '请求路径'
+		},],
+	});
+</script>

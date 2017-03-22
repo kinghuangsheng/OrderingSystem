@@ -1,4 +1,4 @@
-package bean.response;
+package bean;
 
 import common.util.JsonUtil;
 import global.constant.Reason;
@@ -7,21 +7,21 @@ public class Response{
 	
 	private int code;
 	private String msg;
-	private Object object;
+	private Object data;
 	
-	public Response(Reason reason){
+	public void setReason(Reason reason){
 		this.code = reason.getCode();
 		this.msg = reason.getMsg();
 	}
 	
 	public Response(){
-		this(Reason.SUCCESS);
+		setReason(Reason.SUCCESS);
 	}
-	public Object getObject() {
-		return object;
+	public Object getData() {
+		return data;
 	}
-	public void setObject(Object object) {
-		this.object = object;
+	public void setData(Object data) {
+		this.data = data;
 	}
 	public int getCode() {
 		return code;

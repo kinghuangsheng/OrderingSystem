@@ -5,9 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
-import db.pojo.Role;
 import db.pojo.Seat;
-import db.pojo.User;
 
 public interface SeatDao {
 	

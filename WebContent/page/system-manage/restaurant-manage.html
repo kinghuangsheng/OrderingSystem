@@ -1,61 +1,61 @@
 <!-- 新增餐厅弹窗 -->
-<div class="modal" id="addRestaurantModal" tabindex="-1" role="dialog"
-	aria-labelledby="addRestaurantModal" aria-hidden="true">
+<div class="modal" id="restaurantModal" tabindex="-1" role="dialog"
+	aria-labelledby="restaurantModal" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title" >新增餐厅</h4>
+				<h4 class="modal-title" >{{getModalTitle()}}</h4>
 			</div>
 			<div class="modal-body">
 				<form>
 					<div class="form-group">
 						<label for="recipient-name" class="control-label">餐厅名称</label>
-						<input v-model="name" type="text" class="form-control">
+						<input v-model="restaurant.name" type="text" class="form-control">
 					</div>
 					<div class="form-group">
 						<label for="message-text" class="control-label">营业执照</label>
-						<input v-model="license" class="form-control">
+						<input v-model="restaurant.license" class="form-control">
 					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
 				<button type="button" class="btn btn-primary"
-					@click="addRestaurant">确定</button>
+					@click="sure">确定</button>
 			</div>
 		</div>
 	</div>
 </div>
 
 <!-- 分配餐厅管理员弹窗 -->
-<div class="modal" id="addManagerModal" tabindex="-1" role="dialog"
-	aria-labelledby="addManagerModal" aria-hidden="true">
+<div class="modal" id="managerModal" tabindex="-1" role="dialog"
+	aria-labelledby="managerModal" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title" >分配管理员</h4>
-				<p class="modal-title" >{{restaurantInfoData.name}}</p>
+				<p class="modal-title" >{{restaurantModalData.restaurant.name}}</p>
 			</div>
 			<div class="modal-body">
 				<form>
 					<div class="form-group">
 						<label for="recipient-name" class="control-label">账号</label>
-						<input v-model="account" type="text" class="form-control" >
+						<input v-model="manager.account" type="text" class="form-control" >
 					</div>
 					<div class="form-group">
 						<label for="message-text" class="control-label">姓名</label>
-						<input v-model="name" class="form-control" >
+						<input v-model="manager.name" class="form-control" >
 					</div>
 					<div class="form-group">
 						<label for="message-text" class="control-label">密码</label>
-						<input v-model="password" class="form-control" >
+						<input v-model="manager.password" class="form-control" >
 					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
 				<button type="button" class="btn btn-primary"
-					@click="addManager">确定</button>
+					@click="sure">确定</button>
 			</div>
 		</div>
 	</div>
@@ -72,7 +72,10 @@
 	</div>
 
 	<button class="btn btn-primary" type="button" data-toggle="modal"
-		data-target="#addRestaurantModal">新增餐厅</button>
+		@click="add" >新增餐厅</button>
+		
+	<!-- <button class="btn btn-primary" type="button" data-toggle="modal"
+		data-target="#restaurantModal">新增餐厅</button> -->
 </div>
 <div id="dataList" class="row">
 	<div class="col-md-12 color:#fff">
@@ -87,33 +90,100 @@
 
 
 
-	var restaurantInfoData = new Vue({
-		el : '#addRestaurantModal',
+	var restaurantModalData = new Vue({
+		el : '#restaurantModal',
 		data : {
-			id : "",
-			name : "",
-			license : ""
+			type : 1,
+			restaurant : {
+				id : "",
+				name : "",
+				license : "",
+			},
 		},
 		methods : {
-			addRestaurant : function() {
-				$.post(
-						ajaxUrl.restaurantAdd,
-						restaurantInfoData.$data,
-						function(response) {
-							data = JSON.parse(response);
-							if (data.code == _SuccessCode) {
-								id = data.object.id;
-								managerInfoData.restaurantId = data.object.id;
-								var n = restaurantInfoData.name;
-								$('#addRestaurantModal').modal('hide');
-								restaurantManageData.search();
-								$('#addManagerModal').on('shown.bs.modal', function (e) {
-									$('#addManagerModal').on('hidden.bs.modal', function (e) {
-										restaurantInfoData.name="";
-										restaurantInfoData.license="";
+			getModalTitle : function(){
+				if(this.type == 1){
+					return "新增餐厅信息";
+				}else{
+					return "修改餐厅信息";
+				}
+			},
+			sure : function() {
+				if(this.type == 1){//新增
+					$.post(
+							ajaxUrl.restaurantAdd,
+							restaurantModalData.restaurant,
+							function(response) {
+								response = JSON.parse(response);
+								if (response.code == SUCCESS_CODE) {
+									restaurantModalData.restaurant = response.data;
+									$('#restaurantModal').modal('hide');
+									searchDivData.search();
+									$('#managerModal').on('shown.bs.modal', function (e) {
+										$('#managerModal').on('hidden.bs.modal', function (e) {
+											clearRestaurantModalData();
+										});
 									});
-								});
-								$('#addManagerModal').modal('show');
+									$('#managerModal').modal('show');
+								}else{
+									alert(data.msg);
+								}
+							}
+					);
+				}else{//修改
+					$.post(
+							ajaxUrl.restaurantUpdate,
+							restaurantModalData.restaurant,
+							function(response) {
+								response = JSON.parse(response);
+								if (response.code == SUCCESS_CODE) {
+									restaurantModalData.restaurant = response.data;
+									$('#restaurantModal').modal('hide');
+									searchDivData.search();
+									$('#managerModal').on('shown.bs.modal', function (e) {
+										$('#managerModal').on('hidden.bs.modal', function (e) {
+											clearRestaurantModalData();
+										});
+									});
+									$('#managerModal').modal('show');
+								}else{
+									alert(data.msg);
+								}
+							}
+					);
+				}
+				
+			}
+		}
+	
+	});
+	
+	function clearRestaurantModalData(){
+		restaurantModalData.restaurant.name = "";
+		restaurantModalData.restaurant.license = "";
+	}
+	var managerInfoData = new Vue({
+		el : '#managerModal',
+		data : {
+			manager: {
+				restaurantId:"",
+				name: "",
+				account: "",
+				password: "",
+			}
+	
+		},
+		methods : {
+			sure : function() {
+				$.post(
+						ajaxUrl.addRestaurantManager,
+						managerInfoData.manager,
+						function(response) {
+							response = JSON.parse(response);
+							if (response.code == SUCCESS_CODE) {
+								clearManagerModalData();
+								$('#managerModal').modal('hide');
+								searchDivData.search();
 							}else{
 								alert(data.msg);
 							}
@@ -121,40 +191,17 @@
 				);
 			}
 		}
-	
 	});
 	
-	var managerInfoData = new Vue({
-		el : '#addManagerModal',
-		data : {
+	function clearManagerModalData(){
+		managerInfoData.manager = {
 			restaurantId:"",
 			name: "",
 			account: "",
-			password: ""
-		},
-		methods : {
-			addManager : function() {
-				$.post(
-						ajaxUrl.addManager,
-						managerInfoData.$data,
-						function(response) {
-							data = JSON.parse(response);
-							if (data.code == _SuccessCode) {
-								managerInfoData.name = "",
-								managerInfoData.account = "",
-								managerInfoData.password = "",
-								$('#addManagerModal').modal('hide');
-								restaurantManageData.search();
-							}else{
-								alert(data.msg);
-							}
-						}
-				);
-			}
-		}
-
-	});
-	var restaurantManageData = new Vue({
+			password: "",
+		};
+	}
+	var searchDivData = new Vue({
 		el : '#restaurantSearchDiv',
 		data : {
 			searchKey : "",
@@ -162,7 +209,11 @@
 		methods : {
 			search : function() {
 				search(this.searchKey, false);
-			}
+			},
+			add : function() {
+				restaurantModalData.type = 1;
+				$('#restaurantModal').modal('show');
+			},
 		}
 
 	});
@@ -171,8 +222,8 @@
 		$.post(ajaxUrl.restaurantList, {
 			key : keyStr
 		}, function(response) {
-			var dataList = JSON.parse(response);
-			if (dataList.code == _SuccessCode) {
+			var response = JSON.parse(response);
+			if (response.code == SUCCESS_CODE) {
 				if (isFirstTime) {
 					$('#table').bootstrapTable({
 						columns : [ {
@@ -190,11 +241,24 @@
 							formatter: managerTDFormater,
 							events: managerTDEvents,
 							title : '管理员'
+						}, {
+							field : 'manager',
+							formatter: operationTDFormater,
+							events: operationTDEvents,
+							title : '操作'
 						}, ],
-						data : dataList.object,
+						data : response.data,
+						onDblClickRow: function(row, $element, field){
+							restaurantModalData.type = 2;
+							restaurantModalData.restaurant = row;
+							$('#restaurantModal').modal('show');
+						},
+						onDblClickCell: function(field, value, row, $element){
+							
+						},
 					});
 				} else {
-					$('#table').bootstrapTable('load', dataList.object);
+					$('#table').bootstrapTable('load', response.data);
 				}
 			} else {
 				alert(dataList.msg);
@@ -203,17 +267,29 @@
 	}
 	window.managerTDEvents = {
 	        'click .addManager': function (e, value, row, index) {
-	        	managerInfoData.restaurantId = row.id;
-	    		$('#addManagerModal').on('hidden.bs.modal', function (e) {
-	    			restaurantInfoData.name="";
-	    			restaurantInfoData.license="";
+	        	managerInfoData.manager.restaurantId = row.id;
+	    		$('#managerModal').on('hidden.bs.modal', function (e) {
+	    			clearRestaurantModalData();
 	    		});
-	    		$('#addManagerModal').modal('show');
+	    		$('#managerModal').modal('show');
+	        },
+	        
+	        'click .updateManager': function (e, value, row, index) {
+	        	managerInfoData.manager.restaurantId = row.id;
+	    		$('#managerModal').on('hidden.bs.modal', function (e) {
+	    			clearRestaurantModalData();
+	    		});
+	    		$('#managerModal').modal('show');
 	        },
 	    };
 	function managerTDFormater(value, row, index){
 		if(value){
-			return value;
+			return [
+		            '<a class="updateManager" href="javascript:void(0);" title="更新信息">',
+		            '+',
+		            value,
+		            '</a>'
+		        ].join('');
 		}else{
 			return [
 		            '<a class="addManager" href="javascript:void(0);" title="分配管理员">',
@@ -221,5 +297,18 @@
 		            '</a>'
 		        ].join('');
 		}
+	}
+	
+	window.operationTDEvents = {
+	        'click .delete': function (e, value, row, index) {
+	        	
+	        },
+	    };
+	function operationTDFormater(value, row, index){
+		return [
+	            '<a class="delete" href="javascript:void(0);" title="删除">',
+	            '删除',
+	            '</a>'
+	        ].join('');
 	}
 </script>

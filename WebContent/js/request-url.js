@@ -1,10 +1,13 @@
 var ajaxPath = "http://localhost:8080/OrderingSystem/ajax/";
 var ajaxUrl = {
 		login: ajaxPath + "user/login",
-		privilege: ajaxPath + "user/privilege",
+		roleMenuList: ajaxPath + "menu/roleMenuList",
 		
-		managerList: ajaxPath + "user/restaurantManagerList",
-		addManager: ajaxPath + "user/addRestaurantManager",
+		
+		interfaceList: ajaxPath + "interface/list",
+		allMenuList: ajaxPath + "menu/allList",
+		
+		addRestaurantManager: ajaxPath + "user/addRestaurantManager",
 		
 		restaurantUserList: ajaxPath + "user/restaurantUserList",
 		addRestaurantUser: ajaxPath + "user/addRestaurantUser",
@@ -16,12 +19,12 @@ var ajaxUrl = {
 		addRestaurantSeat: ajaxPath + "seat/addRestaurantSeat",
 		
 		restaurantList: ajaxPath + "restaurant/list",
-		restaurantAdd: ajaxPath + "restaurant/add",
+		addRestaurant: ajaxPath + "restaurant/add",
+		updateRestaurant: ajaxPath + "restaurant/update",
 		
-		restaurantAdd: ajaxPath + "privilege/add",
 };
 
-var pagePath = "http://localhost:8080/OrderingSystem/page/";
+var pagePathPre = "http://localhost:8080/OrderingSystem/page";
 var pageUrl = {
-		main: pagePath + "main.html"
+		main: pagePathPre + "/main/main.html"
 };

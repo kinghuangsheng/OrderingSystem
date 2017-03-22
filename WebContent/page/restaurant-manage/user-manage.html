@@ -84,7 +84,7 @@
 						},
 						function(response) {
 							data = JSON.parse(response);
-							if (data.code == _SuccessCode) {
+							if (data.code == SUCCESS_CODE) {
 								userInfoData.name = "",
 								userInfoData.account = "",
 								userInfoData.password = "",
@@ -115,8 +115,8 @@
 	$('#addUserModal').on('shown.bs.modal', function (e) {
 		$.post(ajaxUrl.restaurantRoleList, function(response) {
 			var dataList = JSON.parse(response);
-			if (dataList.code == _SuccessCode) {
-				userInfoData.roleList = dataList.object;
+			if (dataList.code == SUCCESS_CODE) {
+				userInfoData.roleList = dataList.data;
 			} else {
 				alert(dataList.msg);
 			}
@@ -128,7 +128,7 @@
 			key : keyStr
 		}, function(response) {
 			var dataList = JSON.parse(response);
-			if (dataList.code == _SuccessCode) {
+			if (dataList.code == SUCCESS_CODE) {
 				if (isFirstTime) {
 					$('#table').bootstrapTable({
 						columns : [ {
@@ -142,10 +142,10 @@
 							field : 'roleName',
 							title : '角色'
 						}, ],
-						data : dataList.object,
+						data : dataList.data,
 					});
 				} else {
-					$('#table').bootstrapTable('load', dataList.object);
+					$('#table').bootstrapTable('load', dataList.data);
 				}
 			} else {
 				alert(dataList.msg);

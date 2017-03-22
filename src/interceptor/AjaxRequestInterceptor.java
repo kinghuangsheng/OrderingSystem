@@ -12,11 +12,11 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import bean.response.Response;
+import bean.Response;
 import db.pojo.User;
 import global.constant.Constant;
 import global.constant.Reason;
-import permission.Privilege;
+import permission.Permission;
 
 public class AjaxRequestInterceptor implements HandlerInterceptor {
 
@@ -41,10 +41,10 @@ public class AjaxRequestInterceptor implements HandlerInterceptor {
     	User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 		if(null != user){
 			if (handler instanceof HandlerMethod) {  
-				Privilege privilege = ((HandlerMethod) handler).getMethod().getAnnotation(Privilege.class);  
-	            if (privilege != null) {// 有权限控制的就要检查  
-	            	ArrayList<Integer> userPrivileges = (ArrayList<Integer>)httpSession.getAttribute(Constant.MapKey.PRIVILEGE);
-	            	if(userPrivileges.contains(privilege.value())){
+				Permission perssion = ((HandlerMethod) handler).getMethod().getAnnotation(Permission.class);  
+	            if (perssion != null) {// 有权限控制的就要检查  
+	            	ArrayList<Integer> userPrivileges = (ArrayList<Integer>)httpSession.getAttribute(Constant.MapKey.PERMISSION);
+	            	if(userPrivileges.contains(perssion.value())){
 	            		return true;
 	            	}else{
 	            		sendResponse(response);
@@ -64,7 +64,8 @@ public class AjaxRequestInterceptor implements HandlerInterceptor {
     
     public void sendResponse(HttpServletResponse response) throws IOException{
     	response.setContentType("text/html; charset=utf-8");
-    	Response responseData = new Response(Reason.HAS_NO_PERSSION);
+    	Response responseData = new Response();
+    	responseData.setReason(Reason.HAS_NO_PERSSION);
 		PrintWriter out = response.getWriter();
         out.print(responseData.toJsonString());
         out.flush();

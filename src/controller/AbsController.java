@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import bean.response.Response;
+import bean.Response;
 import global.constant.Reason;
 
 public class AbsController {
@@ -17,7 +17,8 @@ public class AbsController {
 	@ResponseBody
 	public String handleException(HttpServletRequest request, HttpServletResponse  
             httpResponse, Exception e) {  
-		Response response = new Response(Reason.INTERNAL_ERROR);
+		Response response = new Response();
+		response.setReason(Reason.INTERNAL_ERROR);
 		logger.error(request.getRequestURL(), e);
 	    return response.toJsonString();  
 	}  

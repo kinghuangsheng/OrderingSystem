@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="author" content="Chomo" />
+<title>后台管理</title>
+
+<script src="../js/jquery/jquery-3.1.1.min.js"></script>
+<script src="../js/vue/vue.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../css/accordion.css" />
+<script src="../js/accordion.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../component/tether-1.3.3/css/tether.min.css" />
+<script src="../component/tether-1.3.3/js/tether.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../component/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.min.css" />
+<script src="../component/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
+
+<script src="../component/bootstrap-table-1.11.1/bootstrap-table-editable.js"></script>
+<script src="http://rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/js/bootstrap-editable.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../component/bootstrap-table-1.11.1/bootstrap-table.min.css" />
+<script src="../component/bootstrap-table-1.11.1/bootstrap-table.min.js"></script>
+<!-- <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css"/>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script> -->
+
+<script src="../js/request-url.js"></script>
+
+</head>
+<body>
+	<!-- 新增角色弹窗 -->
+<div class="modal" id="addRoleModal" tabindex="-1" role="dialog"
+	aria-labelledby="addRoleModal" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">新增角色</h4>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="message-text" class="control-label">角色名称</label>
+						<input v-model="name" class="form-control">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary"
+					@click="addRole">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="roleSearchDiv" class="row">
+	<div class="col-lg-6">
+		<div class="input-group">
+			<input v-model="searchKey" type="text" class="form-control"
+				placeholder="角色名称"> <span class="input-group-btn">
+				<button @click="search" class="btn btn-secondary" type="button">查询</button>
+			</span>
+		</div>
+	</div>
+
+	<button class="btn btn-primary" type="button" data-toggle="modal"
+		data-target="#addRoleModal">新增角色</button>
+</div>
+<div id="dataList" class="row">
+	<div class="col-md-12 color:#fff">
+		<table id="table"
+		
+		data-show-footer="true">
+		</table>
+	</div>
+</div>
+
+<script>
+var SUCCESS_CODE = 0;
+	var roleInfoData = new Vue({
+		el : '#addRoleModal',
+		data : {
+			name: "",
+		},
+		methods : {
+			addRole : function() {
+				$.post(
+						ajaxUrl.addRestaurantRole,
+						roleInfoData.$data,
+						function(response) {
+							data = JSON.parse(response);
+							if (data.code == SUCCESS_CODE) {
+								roleInfoData.name = "",
+								$('#addRoleModal').modal('hide');
+								roleSearchData.search();
+							}else{
+								alert(data.msg);
+							}
+						}
+				);
+			}
+		}
+
+	});
+	var roleSearchData = new Vue({
+		el : '#roleSearchDiv',
+		data : {
+			searchKey : "",
+		},
+		methods : {
+			search : function() {
+				search(this.searchKey, false);
+			}
+		}
+
+	});
+	search("", true);
+	function search(keyStr, isFirstTime) {
+		$.post(ajaxUrl.restaurantRoleList, {
+			key : keyStr
+		}, function(response) {
+			var dataList = JSON.parse(response);
+			if (dataList.code == SUCCESS_CODE) {
+				if (isFirstTime) {
+					$('#table').bootstrapTable({
+						columns : [{
+	                        field: 'state',
+	                        checkbox: true,
+	                        align: 'center',
+	                        valign: 'middle'
+	                    }, {
+							align : 'center',
+							editable: true,
+							sortable: true,
+							field : 'id',
+							footerFormatter: totalNameFormatter,
+							title : 'ID'
+						}, {
+							field : 'name',
+							sortable: true,
+							editable: {
+	                            type: 'text',
+	                            title: 'Item Price',
+	                            validate: function (value) {
+	                            	debugger;
+	                                value = $.trim(value);
+	                                if (!value) {
+	                                    return 'This field is required';
+	                                }
+	                                if (!/^\$/.test(value)) {
+	                                    return 'This field needs to start width $.'
+	                                }
+	                                var dataa = $('#table').bootstrapTable('getData'),
+	                                    index = $(this).parents('tr').data('index');
+	                                console.log(dataa[index]);
+	                                return '';
+	                            }
+	                        },
+	                        footerFormatter: totalPriceFormatter,
+							title : 'Item Price'
+							
+						}, {
+	                        field: 'operate',
+	                        title: 'Item Operate',
+	                        align: 'center',
+	                        events: operateEvents,
+	                        formatter: operateFormatter
+	                    }],
+						data : dataList.data,
+					});
+				} else {
+					$('#table').bootstrapTable('load', dataList.data);
+				}
+			} else {
+				alert(dataList.msg);
+			}
+		});
+	}
+	
+	window.operateEvents = {
+	        'click .like': function (e, value, row, index) {
+	            alert('You click like action, row: ' + JSON.stringify(row));
+	        },
+	        'click .remove': function (e, value, row, index) {
+	        	$('#table').bootstrapTable('remove', {
+	                field: 'id',
+	                values: [row.id]
+	            });
+	        }
+	    };
+	
+	 function operateFormatter(value, row, index) {
+	        return [
+	            '<a class="like" href="javascript:void(0)" title="Like">',
+	            'detail',
+	            '</a>  ',
+	            '<a class="remove" href="javascript:void(0)" title="Remove">',
+	            'delete',
+	            '</a>'
+	        ].join('');
+	    }
+	function totalPriceFormatter(data) {
+        var total = 0;
+        $.each(data, function (i, row) {
+            total += +(row.name.substring(1));
+        });
+        return '$' + total;
+    }
+	function totalNameFormatter(data) {
+        return data.length;
+    }
+</script>
+</body>
+
+
+
+
+<style type="text/css">
+* {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+html {
+	height: 100%;
+	overflow: hidden;
+	background: #fff;
+}
+
+body {
+	height: 100%;
+	overflow: hidden;
+	background: #fff;
+}
+
+div {
+	line-height: 1.6;
+}
+
+#top {
+	position: absolute;
+	top: 10px;
+	height: 50px;
+	background: #2d2c41;
+	width: 100%
+}
+
+#left {
+	position: absolute;
+	top: 70px;
+	bottom: 0px;
+	width: 200px;
+	overflow: auto;
+	padding-right: 2px;
+	background: #2d2c41;
+}
+
+#right {
+	position: absolute;
+	left: 210px;
+	top: 70px;
+	bottom: 0px;
+	right: 0px;
+	overflow: auto;
+	background: #FFFAFA
+}
+
+#bottom {
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
+	height: 0px;
+}
+
+#account {
+	color: #fff;
+}
+</style>
+</html>

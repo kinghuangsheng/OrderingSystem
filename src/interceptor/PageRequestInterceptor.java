@@ -1,21 +1,14 @@
 package interceptor;
 
-import java.io.PrintWriter;
-import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import bean.response.Response;
 import db.pojo.User;
 import global.constant.Constant;
-import global.constant.Reason;
-import permission.Privilege;
 
 public class PageRequestInterceptor implements HandlerInterceptor {
 

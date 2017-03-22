@@ -1,0 +1,37 @@
+<div class="content_wrap" id="tree_box">
+	<ul id="tree" class="ztree" style="width: 230px; overflow: auto;"></ul>
+</div>
+<script>
+	
+	$(function(){
+		$.post(ajaxUrl.roleMenuList, function(response) {
+			response = JSON.parse(response);
+			if (response.code == SUCCESS_CODE) {
+				var setting = {
+						data : {
+							simpleData : {
+								enable : true,
+								idKey : "id",
+								pIdKey : "parentId",
+								rootPId : 0,
+							}
+						},
+						callback: {
+							onClick: zTreeOnClick
+						}
+					};
+					var treeNodes = response.data;
+					var zTree = $.fn.zTree.init($("#tree"), setting, treeNodes);
+			} else {
+				alert("登录失败:" + data.msg);
+			}
+		});
+	});
+	
+	function zTreeOnClick(event, treeId, treeNode) {
+		if(treeNode.path){
+		    $('#right').load(pagePathPre + treeNode.path);
+		}
+	}
+
+</script>

@@ -1,0 +1,135 @@
+<!-- 新增角色弹窗 -->
+<div class="modal" id="addRoleModal" tabindex="-1" role="dialog"
+	aria-labelledby="addRoleModal" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">新增角色</h4>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="message-text" class="control-label">角色名称</label>
+						<input v-model="name" class="form-control">
+					</div>
+					<privilege-item v-for="item in privilegeList" v-bind:privilege="item"></privilege-item>
+						
+					<template v-for="(privilege, index) in privilegeList">
+					    <div class="checkbox">
+					        <label>
+					          <input type="checkbox" v-on:click="ccccc(privilege, index)" v-model="privilege.checked">{{privilege.name}}
+					        </label>
+					      </div>
+					  </template>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary"
+					@click="addRole">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="roleSearchDiv" class="row">
+	<div class="col-lg-6">
+		<div class="input-group">
+			<input v-model="searchKey" type="text" class="form-control"
+				placeholder="角色名称"> <span class="input-group-btn">
+				<button @click="search" class="btn btn-secondary" type="button">查询</button>
+			</span>
+		</div>
+	</div>
+
+	<button class="btn btn-primary" type="button" data-toggle="modal"
+		data-target="#addRoleModal">新增角色</button>
+</div>
+<div id="dataList" class="row">
+	<div class="col-md-12 color:#fff">
+		<table id="table">
+		</table>
+	</div>
+</div>
+
+<script>
+
+	Vue.component('privilege-item', {
+	  props: ['privilege'],
+	  template: '<div class="checkbox" v-on:click="greet(privilege)"><label><input type="checkbox" v-model="privilege.checked">{{privilege.name}}</label></div>',
+	  methods: {
+		  greet: function (privilege) {
+	      alert(privilege.name);
+	     },
+	  },
+	})
+	var roleInfoData = new Vue({
+		el : '#addRoleModal',
+		data : {
+			name: "",
+			privilegeList:[{id:1, name:'asdf', checked:false}, {id:2, name:'kkkk', checked:true}],
+		},
+		methods : {
+			addRole : function() {
+				$.post(
+						ajaxUrl.addRestaurantRole,
+						roleInfoData.$data,
+						function(response) {
+							data = JSON.parse(response);
+							if (data.code == SUCCESS_CODE) {
+								roleInfoData.name = "",
+								$('#addRoleModal').modal('hide');
+								roleSearchData.search();
+							}else{
+								alert(data.msg);
+							}
+						}
+				);
+			}, 
+			ccccc: function (privilege, index) {
+			      alert(privilege.checked + "index = " + index);
+			 },
+		}
+
+	});
+	var roleSearchData = new Vue({
+		el : '#roleSearchDiv',
+		data : {
+			searchKey : "",
+		},
+		methods : {
+			search : function() {
+				search(this.searchKey, false);
+			}
+		}
+
+	});
+	search("", true);
+	function search(keyStr, isFirstTime) {
+		$.post(ajaxUrl.restaurantRoleList, {
+			key : keyStr
+		}, function(response) {
+			var dataList = JSON.parse(response);
+			if (dataList.code == SUCCESS_CODE) {
+				if (isFirstTime) {
+					$('#table').bootstrapTable({
+						columns : [ {
+							align : 'center',
+							field : 'id',
+							title : 'ID'
+						}, {
+							field : 'name',
+							title : '角色名称'
+						}, ],
+						data : dataList.data,
+					});
+				} else {
+					$('#table').bootstrapTable('load', dataList.data);
+				}
+			} else {
+				alert(dataList.msg);
+			}
+		});
+	}
+</script>

@@ -63,7 +63,7 @@
 						seatInfoData.$data,
 						function(response) {
 							data = JSON.parse(response);
-							if (data.code == _SuccessCode) {
+							if (data.code == SUCCESS_CODE) {
 								seatInfoData.name = "",
 								seatInfoData.customerNum = "",
 								$('#addSeatModal').modal('hide');
@@ -95,7 +95,7 @@
 			key : keyStr
 		}, function(response) {
 			var dataList = JSON.parse(response);
-			if (dataList.code == _SuccessCode) {
+			if (dataList.code == SUCCESS_CODE) {
 				if (isFirstTime) {
 					$('#table').bootstrapTable({
 						columns : [ {
@@ -109,10 +109,10 @@
 							field : 'customerNum',
 							title : '容纳人数'
 						}, ],
-						data : dataList.object,
+						data : dataList.data,
 					});
 				} else {
-					$('#table').bootstrapTable('load', dataList.object);
+					$('#table').bootstrapTable('load', dataList.data);
 				}
 			} else {
 				alert(dataList.msg);

@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="author" content="Chomo" />
+<title>后台管理</title>
+
+<script src="../js/jquery/jquery-3.1.1.min.js"></script>
+<script src="../js/vue/vue.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../css/accordion.css" />
+<script src="../js/accordion.js"></script>
+
+<link rel="stylesheet" type="text/css"
+	href="../component/tether-1.3.3/css/tether.min.css" />
+<script src="../component/tether-1.3.3/js/tether.min.js"></script>
+
+<link rel="stylesheet" type="text/css"
+	href="../component/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.min.css" />
+<script
+	src="../component/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
+
+<script src="../component/ztree.3.5.26/jquery.ztree.all.min.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="../component/ztree.3.5.26/css/zTreeStyle/zTreeStyle.css" />
+
+<link rel="stylesheet" type="text/css"
+	href="../component/bootstrap-table-1.11.1/bootstrap-table.min.css" />
+<script src="../component/bootstrap-table-1.11.1/bootstrap-table.min.js"></script>
+<!-- <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css"/>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script> -->
+
+<script src="../js/request-url.js"></script>
+
+</head>
+<body>
+	<div class="content_wrap" id="tree_box">
+		<button id="addNodes" v-on:click="addNodes">增加节点</button>
+	</div>
+
+	<div class="content_wrap" id="tree_box">
+
+		<ul id="tree" class="ztree" style="width: 230px; overflow: auto;"></ul>
+	</div>
+	<script>
+		var vueData = new Vue({
+			el : '#addNodes',
+			methods : {
+				addNodes : function() {
+					var p = zTree.getNodeByParam("id", "11");
+					zTree.addNodes(p, {
+						"id" : 113,
+						"pId" : 11,
+						"name" : "test113"
+					}, true);
+				}
+			}
+
+		});
+
+		var setting = {
+			data : {
+				simpleData : {
+					enable : true,
+					idKey : "id",
+					pIdKey : "pId",
+					rootPId : 0,
+				}
+			},
+			check : {
+				autoCheckTrigger : true,
+				chkboxType : {"Y": "ps", "N": "ps"},
+				chkStyle : "checkbox",
+				enable : true,
+				nocheckInherit : false,
+				radioType : "level",
+				},
+		};
+		var treeNodes = [ {
+			"id" : 1,
+			"pId" : 0,
+			"name" : "test1"
+		}, {
+			"id" : 11,
+			"pId" : 1,
+			"name" : "test11"
+		}, {
+			"id" : 12,
+			"pId" : 1,
+			"name" : "test12"
+		}, {
+			"id" : 111,
+			"pId" : 11,
+			"name" : "test111"
+		}, {
+			"id" : 112,
+			"pId" : 11,
+			"name" : "test112"
+		}, ];
+		var zTree;
+		$(function() {
+			zTree = $.fn.zTree.init($("#tree"), setting, treeNodes);
+
+		});
+		
+	</script>
+
+</body>
+</html>
