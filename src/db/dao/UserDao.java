@@ -10,11 +10,13 @@ import db.pojo.User;
 public interface UserDao {
 	
 	
-	User selectByAccount(String id);
+	User selectByAccount(@Param("account")String account);
+	User selectById(@Param("id")int id);
 
 	List<Map<String, Object>> selectRestaurantUser(@Param("restaurantId")int restaurantId,
 			@Param("key")String key, @Param("notInRoleIdString")String notInRoleIdString);
 	
 	int insertUser(User user);
+	int updateUser(User user);
 
 }

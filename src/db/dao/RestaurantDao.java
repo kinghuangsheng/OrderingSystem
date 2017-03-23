@@ -12,5 +12,7 @@ public interface RestaurantDao {
 	
 	List<Map<String, Object>> selectRestaurant(@Param("key")String key, @Param("roleId")int roleId);
 	int insertRestaurant(Restaurant restaurant);
+	int updateRestaurant(Restaurant restaurant);
+	int deleteRestaurant(@Param("id")int id, @Param("state")int state);
 
 }

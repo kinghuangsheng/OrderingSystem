@@ -83,8 +83,8 @@
 							password: userInfoData.password,
 						},
 						function(response) {
-							data = JSON.parse(response);
-							if (data.code == SUCCESS_CODE) {
+							response = JSON.parse(response);
+							if (response.code == SUCCESS_CODE) {
 								userInfoData.name = "",
 								userInfoData.account = "",
 								userInfoData.password = "",
@@ -92,7 +92,7 @@
 								$('#addUserModal').modal('hide');
 								userSearchData.search();
 							}else{
-								alert(data.msg);
+								alert(response.msg);
 							}
 						}
 				);

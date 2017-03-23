@@ -13,13 +13,13 @@
 			$.post(ajaxUrl.login, {
 				account : $("#account").val(),
 				password : $("#password").val()
-			}, function(data) {
-				data = JSON.parse(data);
+			}, function(response) {
+				response = JSON.parse(response);
 				$.cookie('account', 'admin');
-				if (data.code == 0) {
+				if (response.code == 0) {
 					window.location.href = pageUrl.main + "?account=admin";
 				} else {
-					alert("登录失败:" + data.msg);
+					alert("登录失败:" + response.msg);
 				}
 
 			});

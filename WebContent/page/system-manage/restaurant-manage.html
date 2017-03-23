@@ -33,7 +33,7 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title" >分配管理员</h4>
+				<h4 class="modal-title" >{{getModalTitle()}}</h4>
 				<p class="modal-title" >{{restaurantModalData.restaurant.name}}</p>
 			</div>
 			<div class="modal-body">
@@ -49,6 +49,10 @@
 					<div class="form-group">
 						<label for="message-text" class="control-label">密码</label>
 						<input v-model="manager.password" class="form-control" >
+					</div>
+					<div class="form-group">
+						<label for="message-text" class="control-label">电话</label>
+						<input v-model="manager.phone" class="form-control" >
 					</div>
 				</form>
 			</div>
@@ -87,13 +91,10 @@
 </div>
 
 <script>
-
-
-
 	var restaurantModalData = new Vue({
 		el : '#restaurantModal',
 		data : {
-			type : 1,
+			modalType : MODAL_TYPE_ADD,
 			restaurant : {
 				id : "",
 				name : "",
@@ -102,16 +103,16 @@
 		},
 		methods : {
 			getModalTitle : function(){
-				if(this.type == 1){
+				if(this.modalType == MODAL_TYPE_ADD){
 					return "新增餐厅信息";
 				}else{
 					return "修改餐厅信息";
 				}
 			},
 			sure : function() {
-				if(this.type == 1){//新增
+				if(this.modalType == MODAL_TYPE_ADD){//新增
 					$.post(
-							ajaxUrl.restaurantAdd,
+							ajaxUrl.addRestaurant,
 							restaurantModalData.restaurant,
 							function(response) {
 								response = JSON.parse(response);
@@ -119,20 +120,15 @@
 									restaurantModalData.restaurant = response.data;
 									$('#restaurantModal').modal('hide');
 									searchDivData.search();
-									$('#managerModal').on('shown.bs.modal', function (e) {
-										$('#managerModal').on('hidden.bs.modal', function (e) {
-											clearRestaurantModalData();
-										});
-									});
 									$('#managerModal').modal('show');
 								}else{
-									alert(data.msg);
+									alert(response.msg);
 								}
 							}
 					);
-				}else{//修改
+				}else if(this.modalType == MODAL_TYPE_UPDATE){//修改
 					$.post(
-							ajaxUrl.restaurantUpdate,
+							ajaxUrl.updateRestaurant,
 							restaurantModalData.restaurant,
 							function(response) {
 								response = JSON.parse(response);
@@ -140,14 +136,8 @@
 									restaurantModalData.restaurant = response.data;
 									$('#restaurantModal').modal('hide');
 									searchDivData.search();
-									$('#managerModal').on('shown.bs.modal', function (e) {
-										$('#managerModal').on('hidden.bs.modal', function (e) {
-											clearRestaurantModalData();
-										});
-									});
-									$('#managerModal').modal('show');
 								}else{
-									alert(data.msg);
+									alert(response.msg);
 								}
 							}
 					);
@@ -158,49 +148,65 @@
 	
 	});
 	
-	function clearRestaurantModalData(){
-		restaurantModalData.restaurant.name = "";
-		restaurantModalData.restaurant.license = "";
-	}
-	var managerInfoData = new Vue({
+	
+	var managerModalData = new Vue({
 		el : '#managerModal',
 		data : {
+			modalType : MODAL_TYPE_ADD,
 			manager: {
 				restaurantId:"",
 				name: "",
 				account: "",
+				phone: "",
 				password: "",
-			}
+			},
 	
 		},
 		methods : {
 			sure : function() {
-				$.post(
-						ajaxUrl.addRestaurantManager,
-						managerInfoData.manager,
-						function(response) {
-							response = JSON.parse(response);
-							if (response.code == SUCCESS_CODE) {
-								clearManagerModalData();
-								$('#managerModal').modal('hide');
-								searchDivData.search();
-							}else{
-								alert(data.msg);
+				debugger;
+				if(this.modalType == MODAL_TYPE_ADD){//新增
+					$.post(
+							ajaxUrl.addRestaurantManager,
+							managerModalData.manager,
+							function(response) {
+								response = JSON.parse(response);
+								if (response.code == SUCCESS_CODE) {
+									clearManagerModalData();
+									$('#managerModal').modal('hide');
+									searchDivData.search();
+								}else{
+									alert(response.msg);
+								}
 							}
-						}
-				);
-			}
+					);
+				}else if(this.modalType == MODAL_TYPE_UPDATE){//修改
+					$.post(
+							ajaxUrl.updateRestaurantManager,
+							managerModalData.manager,
+							function(response) {
+								response = JSON.parse(response);
+								if (response.code == SUCCESS_CODE) {
+									clearManagerModalData();
+									$('#managerModal').modal('hide');
+									searchDivData.search();
+								}else{
+									alert(response.msg);
+								}
+							}
+					);
+				}
+			},
+			getModalTitle : function(){
+				if(this.modalType == MODAL_TYPE_ADD){
+					return "新增管理员信息";
+				}else{
+					return "修改管理员信息";
+				}
+			},
 		}
 	});
 	
-	function clearManagerModalData(){
-		managerInfoData.manager = {
-			restaurantId:"",
-			name: "",
-			account: "",
-			password: "",
-		};
-	}
 	var searchDivData = new Vue({
 		el : '#restaurantSearchDiv',
 		data : {
@@ -211,13 +217,64 @@
 				search(this.searchKey, false);
 			},
 			add : function() {
-				restaurantModalData.type = 1;
+				restaurantModalData.modalType = MODAL_TYPE_ADD;
+				restaurantModalData.restaurant.id = "";
+				clearRestaurantModalData();
 				$('#restaurantModal').modal('show');
 			},
 		}
 
 	});
+	
+	$('#managerModal').on('hidden.bs.modal', function (e) {
+		clearManagerModalData();
+	});
+	$('#managerModal').on('hidden.bs.modal', function (e) {
+		clearRestaurantModalData();
+	});
+	window.managerTDEvents = {
+	        'click .addManager': function (e, value, row, index) {
+	        	managerModalData.manager.restaurantId = row.id;
+	        	managerModalData.modalType = MODAL_TYPE_ADD;
+	    		$('#managerModal').modal('show');
+	        },
+	        
+	        'click .updateManager': function (e, value, row, index) {
+	        	$.post(
+						ajaxUrl.restaurantManagerDetail,
+						{
+							id : row.managerId,	
+						},
+						function(response) {
+							managerModalData.modalType = MODAL_TYPE_UPDATE;
+							response = JSON.parse(response);
+							if (response.code == SUCCESS_CODE) {
+								managerModalData.manager = response.data;
+								$('#managerModal').modal('show');
+							}else{
+								alert(response.msg);
+							}
+						}
+				);
+	        },
+	    };
+
 	search("", true);
+	
+	function clearManagerModalData(){
+		managerModalData.manager = {
+			restaurantId: "",
+			name: "",
+			account: "",
+			password: "",
+		};
+	}
+	
+	function clearRestaurantModalData(){
+		restaurantModalData.restaurant.name = "";
+		restaurantModalData.restaurant.license = "";
+	}
+	
 	function search(keyStr, isFirstTime) {
 		$.post(ajaxUrl.restaurantList, {
 			key : keyStr
@@ -237,24 +294,45 @@
 							field : 'license',
 							title : '营业执照'
 						}, {
-							field : 'manager',
+							field : 'managerName',
 							formatter: managerTDFormater,
 							events: managerTDEvents,
 							title : '管理员'
+						},  {
+							field : 'state',
+							title : '状态'
 						}, {
-							field : 'manager',
+							field : 'operation',
 							formatter: operationTDFormater,
-							events: operationTDEvents,
+							//events: operationTDEvents,
 							title : '操作'
 						}, ],
 						data : response.data,
 						onDblClickRow: function(row, $element, field){
-							restaurantModalData.type = 2;
+							if("operation" == field || "manager" == field){
+								return;
+							}
+							restaurantModalData.modalType = MODAL_TYPE_UPDATE;
 							restaurantModalData.restaurant = row;
 							$('#restaurantModal').modal('show');
 						},
 						onDblClickCell: function(field, value, row, $element){
-							
+							if("operation" == field){
+								$.post(
+										ajaxUrl.deleteRestaurant,
+										{
+											id : row.id,	
+										},
+										function(response) {
+											response = JSON.parse(response);
+											if (response.code == SUCCESS_CODE) {
+												searchDivData.search();
+											}else{
+												alert(response.msg);
+											}
+										}
+								);
+							}
 						},
 					});
 				} else {
@@ -265,23 +343,7 @@
 			}
 		});
 	}
-	window.managerTDEvents = {
-	        'click .addManager': function (e, value, row, index) {
-	        	managerInfoData.manager.restaurantId = row.id;
-	    		$('#managerModal').on('hidden.bs.modal', function (e) {
-	    			clearRestaurantModalData();
-	    		});
-	    		$('#managerModal').modal('show');
-	        },
-	        
-	        'click .updateManager': function (e, value, row, index) {
-	        	managerInfoData.manager.restaurantId = row.id;
-	    		$('#managerModal').on('hidden.bs.modal', function (e) {
-	    			clearRestaurantModalData();
-	    		});
-	    		$('#managerModal').modal('show');
-	        },
-	    };
+	
 	function managerTDFormater(value, row, index){
 		if(value){
 			return [
@@ -299,16 +361,12 @@
 		}
 	}
 	
-	window.operationTDEvents = {
-	        'click .delete': function (e, value, row, index) {
-	        	
-	        },
-	    };
+	
 	function operationTDFormater(value, row, index){
 		return [
-	            '<a class="delete" href="javascript:void(0);" title="删除">',
-	            '删除',
-	            '</a>'
+	            '<p>',
+	            '双击这里删除餐厅',
+	            '</p>'
 	        ].join('');
 	}
 </script>

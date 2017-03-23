@@ -62,14 +62,14 @@
 						ajaxUrl.addRestaurantSeat,
 						seatInfoData.$data,
 						function(response) {
-							data = JSON.parse(response);
-							if (data.code == SUCCESS_CODE) {
+							response = JSON.parse(response);
+							if (response.code == SUCCESS_CODE) {
 								seatInfoData.name = "",
 								seatInfoData.customerNum = "",
 								$('#addSeatModal').modal('hide');
 								seatSearchData.search();
 							}else{
-								alert(data.msg);
+								alert(response.msg);
 							}
 						}
 				);
@@ -94,8 +94,8 @@
 		$.post(ajaxUrl.restaurantSeatList, {
 			key : keyStr
 		}, function(response) {
-			var dataList = JSON.parse(response);
-			if (dataList.code == SUCCESS_CODE) {
+			var response = JSON.parse(response);
+			if (response.code == SUCCESS_CODE) {
 				if (isFirstTime) {
 					$('#table').bootstrapTable({
 						columns : [ {
@@ -109,13 +109,13 @@
 							field : 'customerNum',
 							title : '容纳人数'
 						}, ],
-						data : dataList.data,
+						data : response.data,
 					});
 				} else {
-					$('#table').bootstrapTable('load', dataList.data);
+					$('#table').bootstrapTable('load', response.data);
 				}
 			} else {
-				alert(dataList.msg);
+				alert(response.msg);
 			}
 		});
 	}

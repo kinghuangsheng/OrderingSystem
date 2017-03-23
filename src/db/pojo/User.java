@@ -8,8 +8,11 @@ public class User {
     private String name;
 
     private String password;
+    
+    private String phone;
 
-    private Integer restaurantId;
+
+	private Integer restaurantId;
 
     private Integer roleId;
 
@@ -56,6 +59,14 @@ public class User {
     public Integer getRoleId() {
         return roleId;
     }
+    
+    public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
     public void setRoleId(Integer roleId) {
         this.roleId = roleId;

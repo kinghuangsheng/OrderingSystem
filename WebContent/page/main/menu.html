@@ -23,7 +23,7 @@
 					var treeNodes = response.data;
 					var zTree = $.fn.zTree.init($("#tree"), setting, treeNodes);
 			} else {
-				alert("登录失败:" + data.msg);
+				alert("登录失败:" + response.msg);
 			}
 		});
 	});

@@ -35,7 +35,6 @@ public class UserController extends AbsController{
 //		@CookieValue(value = "account", required = false) String cookieUserName,
 		user = this.userDao.selectByAccount(account);
 		if (user != null) {
-			response = new Response();
 			if (user.getPassword().equals(password)) {
 				List<Integer> permissions = roleDao.selectRoleInterface(user.getRoleId());
 				httpSession.setAttribute(Constant.MapKey.USER, user);
@@ -63,7 +62,7 @@ public class UserController extends AbsController{
 	@ResponseBody
 	@Permission(Constant.Interface.ADD_RESTAURANT_USER)
 	public String addRestaurantUser(HttpSession httpSession, User newUser, Response response) {
-		String errorArg = checkArg(newUser);
+		String errorArg = checkAddArg(newUser);
 		if(errorArg != null){
 			response.setReason(Reason.ERR_ARG);
 			response.setData(errorArg);
@@ -84,7 +83,6 @@ public class UserController extends AbsController{
 			if(rowNum == 0){
 				response.setReason(Reason.ACCOUNT_REPEATED);
 			}else{
-				response = new Response();
 				response.setData(newUser);
 			}
 		}
@@ -95,7 +93,7 @@ public class UserController extends AbsController{
 	@ResponseBody
 	@Permission(Constant.Interface.ADD_RESTAURANT_MANAGER)
 	public String addRestaurantManager(User newUser, Response response) {
-		String errorArg = checkArg(newUser);
+		String errorArg = checkAddArg(newUser);
 		if(errorArg != null){
 			response.setReason(Reason.ERR_ARG);
 			response.setData(errorArg);
@@ -105,14 +103,57 @@ public class UserController extends AbsController{
 			if(rowNum == 0){
 				response.setReason(Reason.ACCOUNT_REPEATED);
 			}else{
-				response = new Response();
 				response.setData(newUser);
 			}
 		}
 		return response.toJsonString();
 	}
 	
-	public String checkArg(User newUser){
+	@RequestMapping(value = "/updateRestaurantManager", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Permission(Constant.Interface.UPDATE_RESTAURANT_MANAGER)
+	public String updateRestaurantManager(User newUser, Response response) {
+		String errorArg = checkUpdateArg(newUser);
+		if(errorArg != null){
+			response.setReason(Reason.ERR_ARG);
+			response.setData(errorArg);
+		}else{
+			int rowNum = userDao.updateUser(newUser);
+			if(rowNum == 0){
+				response.setReason(Reason.ERR_ARG);
+			}else{
+				response.setData(newUser);
+			}
+		}
+		return response.toJsonString();
+	}
+	
+	@RequestMapping(value = "/restaurantManagerDetail", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Permission(Constant.Interface.UPDATE_RESTAURANT_MANAGER)
+	public String restaurantManagerDetail(int id, Response response) {
+		if(id == 0){
+			response.setReason(Reason.ERR_ARG);
+			response.setData("id");
+		}else{
+			User user= userDao.selectById(id);
+			if(user == null){
+				response.setReason(Reason.USER_NOT_EXIST);
+			}else{
+				response.setData(user);
+			}
+		}
+		return response.toJsonString();
+	}
+	
+	public String checkUpdateArg(User newUser){
+		if(user.getId() == null){
+			return "id";
+		}
+		return checkAddArg(newUser);
+	}
+	
+	public String checkAddArg(User newUser){
 		if(StringUtil.checkFail(newUser.getName(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
 			return "name";
 		}
@@ -122,6 +163,9 @@ public class UserController extends AbsController{
 		if(StringUtil.checkFail(newUser.getPassword(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
 			return "password";
 		}
+		/*if(StringUtil.checkFail(newUser.getPhone(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
+			return "phone";
+		}*/
 		return null;
 	}
 

@@ -8,9 +8,16 @@
 	<select id="selectByAccount" parameterType="java.lang.String"
 		resultType="db.pojo.User">
 		select u.id, u.account, u.name, u.restaurant_id as restaurantId, u.role_id as roleId,
-				u.password 
+				u.password, u.phone
 		from user u
 		where account = #{account}
+	</select>
+	<select id="selectById" parameterType="Integer"
+		resultType="db.pojo.User">
+		select u.id, u.account, u.name, u.restaurant_id as restaurantId, u.role_id as roleId,
+				u.password, u.phone
+		from user u
+		where id = #{id}
 	</select>
 	
 	<select id="selectRestaurantUser" resultType="Map">
@@ -25,8 +32,8 @@
 	</select>
 	
 	<insert id="insertUser" parameterType="db.pojo.User" useGeneratedKeys="true" keyProperty="id" >
-	    INSERT INTO user (account, name, password, restaurant_id, role_id) 
-	    SELECT #{account}, #{name}, #{password}, #{restaurantId} , #{roleId}
+	    INSERT INTO user (account, name, password, restaurant_id, role_id, phone) 
+	    SELECT #{account}, #{name}, #{password}, #{restaurantId} , #{roleId}, #{phone}
 	    FROM DUAL 
 		WHERE NOT EXISTS (SELECT account FROM user WHERE account = #{account})
   </insert>
@@ -37,8 +44,9 @@
 		  <if test="name != null">name = #{name},</if>
 		  <if test="password != null">password = #{password},</if>
 		  <if test="roleId != null">role_id = #{roleId},</if>
+		  <if test="phone != null">phone = #{phone},</if>
 		 </set>
-		 WHERE id = {id}
+		 WHERE id = #{id}
   </insert>
   
 </mapper>

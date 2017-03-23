@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -27,9 +28,8 @@ public class RestaurantController extends AbsController{
 	@RequestMapping(value = "/list", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Permission(Constant.Interface.RESTAURANT_LIST)
-	public String search(String key) {
+	public String search(String key, Response response) {
 		List<Map<String, Object>> object = restaurantDao.selectRestaurant(key, Constant.Role.RESTAURANT_MANAGER);
-		Response response = new Response();
 		response.setData(object);
 		return response.toJsonString();
 	}
@@ -38,7 +38,7 @@ public class RestaurantController extends AbsController{
 	@ResponseBody
 	@Permission(Constant.Interface.ADD_RESTAURANT)
 	public String add(Restaurant restaurant, Response response) {
-		String errorArg = checkArg(restaurant);
+		String errorArg = checkAddArg(restaurant);
 		if(errorArg != null){
 			response.setReason(Reason.ERR_ARG);
 			response.setData(errorArg);
@@ -58,14 +58,30 @@ public class RestaurantController extends AbsController{
 	@ResponseBody
 	@Permission(Constant.Interface.ADD_RESTAURANT)
 	public String update(Restaurant restaurant, Response response) {
-		String errorArg = checkArg(restaurant);
+		String errorArg = checkUpdateArg(restaurant);
 		if(errorArg != null){
 			response.setReason(Reason.ERR_ARG);
 			response.setData(errorArg);
 		}else{
-			int rowNum = restaurantDao.insertRestaurant(restaurant);
+			int rowNum = restaurantDao.updateRestaurant(restaurant);
 			if(rowNum == 0){
-				response.setReason(Reason.LICENSE_REPEATED);
+				response.setReason(Reason.ERR_ARG);
+			}
+		}
+		return response.toJsonString();
+	}
+	
+	@RequestMapping(value = "/delete", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Permission(Constant.Interface.DELETE_RESTAURANT)
+	public String delete(Restaurant restaurant, Response response) {
+		if(restaurant.getId() == null){
+			response.setReason(Reason.ERR_ARG);
+			response.setData("id");
+		}else{
+			int rowNum = restaurantDao.deleteRestaurant(restaurant.getId(), Constant.Restuarant.RESTUARANT_STATE_DELETE);
+			if(rowNum == 0){
+				response.setReason(Reason.ERR_ARG);
 			}else{
 				response.setData(restaurant);
 			}
@@ -73,7 +89,19 @@ public class RestaurantController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	public String checkArg(Restaurant restaurant){
+	public String checkUpdateArg(Restaurant restaurant){
+		if(StringUtil.checkFail(restaurant.getName(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
+			return "name";
+		}
+		if(StringUtil.checkFail(restaurant.getLicense(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.LICENSE)){
+			return "license";
+		}
+		if(restaurant.getId() == null){
+			return "id";
+		}
+		return null;
+	}
+	public String checkAddArg(Restaurant restaurant){
 		if(StringUtil.checkFail(restaurant.getName(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
 			return "name";
 		}

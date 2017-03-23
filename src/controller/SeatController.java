@@ -26,9 +26,8 @@ public class SeatController extends AbsController{
 	@RequestMapping(value = "/restaurantSeatList", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Permission(Constant.Interface.RESTAURANT_SEAT_LIST)
-	public String restaurantSeatList(HttpSession httpSession, String key) {
+	public String restaurantSeatList(HttpSession httpSession, String key, Response response) {
 		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
-		Response response = new Response();
 		response.setData(seatDao.selectSeat(user.getRestaurantId(), key));
 		return response.toJsonString();
 	}

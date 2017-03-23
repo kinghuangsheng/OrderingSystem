@@ -4,7 +4,7 @@
     
 	<select id="selectRestaurant" resultType="Map">
 		SELECT 
-		r.id, r.name, r.license, r.state, u.name "manager"
+		r.id, r.name, r.license, r.state, u.id as managerId, u.name "managerName"
 		FROM restaurant r
 		LEFT JOIN user u on u.restaurant_id = r.id and u.role_id = #{roleId}
         <if test="key != null">
@@ -19,5 +19,18 @@
 		WHERE NOT EXISTS (SELECT license FROM restaurant WHERE license = #{license})
   </insert>
   
+  <insert id="updateRestaurant" parameterType="db.pojo.Restaurant" >
+	    UPDATE restaurant 
+	    <set> 
+		  <if test="name != null">name = #{name},</if>
+		  <if test="license != null">license = #{license},</if>
+		 </set>
+		 WHERE id = #{id}
+  </insert>
+  <insert id="deleteRestaurant" parameterType="db.pojo.Restaurant" >
+	    UPDATE restaurant 
+	    set state = #{state} 
+		 WHERE id = #{id}
+  </insert>
 	
 </mapper>

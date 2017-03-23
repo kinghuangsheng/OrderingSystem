@@ -62,14 +62,14 @@
 						ajaxUrl.addInterface,
 						interfaceInfoData.$data,
 						function(response) {
-							data = JSON.parse(response);
-							if (data.code == SUCCESS_CODE) {
+							response = JSON.parse(response);
+							if (response.code == SUCCESS_CODE) {
 								interfaceInfoData.name = "",
 								interfaceInfoData.customerNum = "",
 								$('#addInterfaceModal').modal('hide');
 								interfaceSearchData.search();
 							}else{
-								alert(data.msg);
+								alert(response.msg);
 							}
 						}
 				);

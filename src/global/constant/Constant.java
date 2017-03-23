@@ -21,7 +21,8 @@ public class Constant {
 	public class Pattern{
 		
 		public final static String DEFAULT = "[A-Za-z0-9_\\-\\u4e00-\\u9fa5]+";
-		public final static String LICENSE = "\\d{8}";
+//		public final static String LICENSE = "\\d{8}";
+		public final static String LICENSE = "[A-Za-z0-9_\\-\\u4e00-\\u9fa5]+";
 		
 	}
 	
@@ -40,7 +41,9 @@ public class Constant {
 		public final static int UPDATE_RESTAURANT = 14;
 		public final static int RESTAURANT_USER_LIST = 15;
 		public final static int ADD_RESTAURANT_ROLE = 16;
-		
+		public final static int DELETE_RESTAURANT = 17;
+		public final static int UPDATE_RESTAURANT_MANAGER = 18;
+		public final static int RESTAURANT_MANAGER_DETAIL = 19;
 		
 		
 
@@ -49,6 +52,10 @@ public class Constant {
 	public class Role{
 		public final static int SYSTEM_MANAGER = 1;
 		public final static int RESTAURANT_MANAGER = 2;
+	}
+	public class Restuarant{
+		public final static int RESTUARANT_STATE_NORMAL = 0;
+		public final static int RESTUARANT_STATE_DELETE = 1;
 	}
 	
 }
