@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -28,23 +29,30 @@ public class UserController extends AbsController{
 	
 	private User user;
 	
-	private String password;
-
 	@RequestMapping(value = "/ajax/user/login", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	public String login(String account, String password, HttpSession httpSession, Response response) {
 //		@CookieValue(value = "account", required = false) String cookieUserName,
 		user = this.userDao.selectByAccount(account);
 		if (user != null) {
-			if (user.getPassword().equals(password)) {
-				List<String> interfaces = roleDao.selectRoleInterface(user.getRoleId());
-				password = user.getPassword();
-				user.setPassword(null);
-				response.setData(user);
-				httpSession.setAttribute(Constant.MapKey.USER, user);
-				httpSession.setAttribute(Constant.MapKey.INTERFACES, interfaces);
-			} else {
-				response.setReason(Reason.PASSW0RD_ERROR);
+			if(user.getState() == Constant.State.USER_NORMAL){
+				if (user.getPassword().equals(password)) {
+					//检查餐厅是否停用
+					int restaurantState = userDao.selectRestaurantState(user.getRestaurantId());
+					if(restaurantState == Constant.State.RESTAURANT_NORMAL){
+						List<String> interfaces = roleDao.selectRoleInterface(user.getRoleId());
+						user.setPassword(null);
+						response.setData(user);
+						httpSession.setAttribute(Constant.MapKey.USER, user);
+						httpSession.setAttribute(Constant.MapKey.INTERFACES, interfaces);
+					}else if(restaurantState == Constant.State.RESTAURANT_FORBIDDEN){
+						response.setReason(Reason.RESTAURANT_FORBIDDEN);
+					}
+				} else {
+					response.setReason(Reason.PASSW0RD_ERROR);
+				}
+			}else if(user.getState() == Constant.State.USER_FORBIDDEN){
+				response.setReason(Reason.ACCOUNT_FORBIDDEN);
 			}
 		} else {
 			response.setReason(Reason.USER_NOT_EXIST);
@@ -55,9 +63,8 @@ public class UserController extends AbsController{
 	@RequestMapping(value = "/ajax/user/restaurantUserList", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Permission("/ajax/user/restaurantUserList")
-	public String restaurantUserList(HttpSession httpSession, String key, Response response) {
-		String notInRoleId = "(" + Constant.Role.SYSTEM_MANAGER + ", " + Constant.Role.RESTAURANT_MANAGER + ")";
-		response.setData(userDao.selectRestaurantUser(user.getRestaurantId(), key, notInRoleId));
+	public String restaurantUserList(HttpSession httpSession, String key, Integer state, Response response) {
+		response.setData(userDao.selectRestaurantUser(user.getRestaurantId(), key, state));
 		return response.toJsonString();
 	}
 	
@@ -102,7 +109,6 @@ public class UserController extends AbsController{
 			response.setReason(Reason.ERR_ARG);
 			response.setData(errorArg);
 		}else{
-			newUser.setRoleId(Constant.Role.RESTAURANT_MANAGER);
 			int rowNum = userDao.insertUser(newUser);
 			if(rowNum == 0){
 				response.setReason(Reason.ACCOUNT_REPEATED);
@@ -135,8 +141,8 @@ public class UserController extends AbsController{
 	@RequestMapping(value = "/ajax/user/restaurantManagerDetail", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Permission("/ajax/user/restaurantManagerDetail")
-	public String restaurantManagerDetail(int id, Response response) {
-		if(id == 0){
+	public String restaurantManagerDetail(Integer id, Response response) {
+		if(StringUtil.isEmpty(id)){
 			response.setReason(Reason.ERR_ARG);
 			response.setData("id");
 		}else{
@@ -151,28 +157,31 @@ public class UserController extends AbsController{
 	}
 	
 	public String checkUpdateArg(User newUser){
-		if(user.getId() == null){
+		if(StringUtil.isEmpty(user.getId())){
 			return "id";
 		}
 		return checkAddArg(newUser);
 	}
 	
 	public String checkAddArg(User newUser){
-		if(newUser.getRestaurantId() == null){
-			return "restaurantId";
+		if(StringUtil.checkFail(newUser.getAccount(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
+			return "account";
 		}
 		if(StringUtil.checkFail(newUser.getName(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
 			return "name";
 		}
-		if(StringUtil.checkFail(newUser.getAccount(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
-			return "account";
-		}
 		if(StringUtil.checkFail(newUser.getPassword(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
 			return "password";
 		}
-		/*if(StringUtil.checkFail(newUser.getPhone(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
+		if(StringUtil.checkFail(newUser.getPhone(), 0, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
 			return "phone";
-		}*/
+		}
+		if(StringUtil.isEmpty(newUser.getRoleId())){
+			return "roleId";
+		}
+		if(StringUtil.isEmpty(newUser.getRestaurantId())){
+			return "restaurantId";
+		}
 		return null;
 	}
 

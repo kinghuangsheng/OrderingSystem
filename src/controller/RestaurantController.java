@@ -29,11 +29,15 @@ public class RestaurantController extends AbsController{
 	@RequestMapping(value = "/ajax/restaurant/list", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Permission("/ajax/restaurant/list")
-	public String search(String key, Page page, Response response) {
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put(Constant.MapKey.COUNT, restaurantDao.selectRestaurantCount(key));
-		map.put(Constant.MapKey.LIST, restaurantDao.selectRestaurant(key, page));
-		response.setData(map);
+	public String list(String key, Page page, Response response) {
+		if(page.checkArgSuccess("name", "license", "id")){
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put(Constant.MapKey.COUNT, restaurantDao.selectRestaurantCount(key));
+			map.put(Constant.MapKey.LIST, restaurantDao.selectRestaurant(key, page));
+			response.setData(map);
+		}else{
+			response.setReason(Reason.ERR_ARG);
+		}
 		return response.toJsonString();
 	}
 	
@@ -78,31 +82,23 @@ public class RestaurantController extends AbsController{
 	@ResponseBody
 	@Permission("/ajax/restaurant/delete")
 	public String delete(Restaurant restaurant, Response response) {
-		if(restaurant.getId() == null){
+		if(StringUtil.isEmpty(restaurant.getId())){
 			response.setReason(Reason.ERR_ARG);
 			response.setData("id");
 		}else{
 			int rowNum = restaurantDao.deleteRestaurant(restaurant.getId(), Constant.Restuarant.RESTUARANT_STATE_DELETE);
 			if(rowNum == 0){
 				response.setReason(Reason.ERR_ARG);
-			}else{
-				response.setData(restaurant);
 			}
 		}
 		return response.toJsonString();
 	}
 	
 	public String checkUpdateArg(Restaurant restaurant){
-		if(StringUtil.checkFail(restaurant.getName(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
-			return "name";
-		}
-		if(StringUtil.checkFail(restaurant.getLicense(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.LICENSE)){
-			return "license";
-		}
-		if(restaurant.getId() == null){
+		if(StringUtil.isEmpty(restaurant.getId())){
 			return "id";
 		}
-		return null;
+		return checkAddArg(restaurant);
 	}
 	public String checkAddArg(Restaurant restaurant){
 		if(StringUtil.checkFail(restaurant.getName(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){

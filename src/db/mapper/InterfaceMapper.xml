@@ -9,9 +9,11 @@
         WHERE
         i.name like concat('%',#{key},'%') or i.path like concat('%',#{key},'%')
 	    </if>
-	    <if test="page.sortName != null">
-	    order by ${page.sortName} ${page.sortOrder}
+	    order by
+        <if test="page.sortName != null">
+	     i.${page.sortName} ${page.sortOrder},
 	    </if>
+	    i.id desc
 	    LIMIT #{page.start} , #{page.pageSize}
 	</select>
 	

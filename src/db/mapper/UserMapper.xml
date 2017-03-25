@@ -8,7 +8,7 @@
 	<select id="selectByAccount" parameterType="java.lang.String"
 		resultType="db.pojo.User">
 		select u.id, u.account, u.name, u.restaurant_id as restaurantId, u.role_id as roleId,
-				u.password, u.phone
+				u.password, u.phone, u.state
 		from user u
 		where account = #{account}
 	</select>
@@ -19,14 +19,22 @@
 		from user u
 		where id = #{id}
 	</select>
+	<select id="selectRestaurantState" parameterType="Integer" resultType="Integer">
+		select r.state
+		from restaurant r
+		where id = #{restaurantId}
+	</select>
 	
 	<select id="selectRestaurantUser" resultType="Map">
 		select u.id, u.account, u.name, u.password, role.name 'roleName'
 		from user u
 		LEFT JOIN role on role.id = u.role_id
-		where u.restaurant_id = #{restaurantId} and u.role_id not in ${notInRoleIdString} 
+		where u.restaurant_id = #{restaurantId}
+		<if test="state != null">
+         and u.state = #{state} 
+         </if>
 		<if test="key != null">
-         and(u.account like concat('%',#{key},'%') or u.name like concat('%',#{key},'%'))
+         and (u.account like concat('%',#{key},'%') or u.name like concat('%',#{key},'%'))
          </if>
 		ORDER BY u.id
 	</select>

@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -17,8 +18,13 @@ public class AbsController {
 	@ResponseBody
 	public String handleException(HttpServletRequest request, HttpServletResponse  
             httpResponse, Exception e) {  
+		
 		Response response = new Response();
-		response.setReason(Reason.INTERNAL_ERROR);
+		if(e instanceof BindException){
+			response.setReason(Reason.ERR_ARG);
+		}else{
+			response.setReason(Reason.INTERNAL_ERROR);
+		}
 		logger.error(request.getRequestURL(), e);
 	    return response.toJsonString();  
 	}  

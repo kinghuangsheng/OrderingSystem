@@ -72,7 +72,7 @@
 		},
 		methods : {
 			addRole : function() {
-				$.post(
+				$.get(
 						ajaxUrl.addRestaurantRole,
 						roleInfoData.$data,
 						function(response) {
@@ -82,7 +82,7 @@
 								$('#addRoleModal').modal('hide');
 								roleSearchData.search();
 							}else{
-								alert(response.msg);
+								alert(response.msg + "----" + response.data);
 							}
 						}
 				);
@@ -107,7 +107,7 @@
 	});
 	search("", true);
 	function search(keyStr, isFirstTime) {
-		$.post(ajaxUrl.restaurantRoleList, {
+		$.get(ajaxUrl.restaurantRoleList, {
 			key : keyStr
 		}, function(response) {
 			var response = JSON.parse(response);
@@ -128,7 +128,7 @@
 					$('#table').bootstrapTable('load', response.data);
 				}
 			} else {
-				alert(response.msg);
+				alert(response.msg + "----" + response.data);
 			}
 		});
 	}

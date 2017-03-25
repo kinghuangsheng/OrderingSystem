@@ -11,7 +11,9 @@ public enum Reason {
 	ACCOUNT_REPEATED(6, "账号已存在"),
 	ROLE_REPEATED(7, "角色名已存在"),
 	
-	ERR_ARG(8, "参数有误");
+	ERR_ARG(9, "参数有误"),
+	RESTAURANT_FORBIDDEN(9, "餐厅被停用"),
+	ACCOUNT_FORBIDDEN(10, "账号被停用");
 
 	private int code;
 	private String msg;

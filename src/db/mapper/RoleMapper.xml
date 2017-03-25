@@ -30,7 +30,7 @@
 		FROM 
 			role r 
 		WHERE
-			restaurant_id = #{restaurantId} 
+			r.id > 0 and restaurant_id = #{restaurantId} 
 	        <if test="key != null">
 	        and r.name like concat('%',#{key},'%')
 	        </if>

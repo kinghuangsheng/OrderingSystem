@@ -82,7 +82,7 @@
 							menuIdArray.push(node.id);
 						}
 					);
-					$.post(
+					$.get(
 							ajaxUrl.addRestaurantRole,
 							{
 								name : roleModalData.role.name,
@@ -96,12 +96,12 @@
 									searchDivData.search();
 									$('#managerModal').modal('show');
 								}else{
-									alert(response.msg);
+									alert(response.msg + "----" + response.data);
 								}
 							}
 					);
 				}else if(this.modalType == MODAL_TYPE_UPDATE){//修改
-					$.post(
+					$.get(
 							ajaxUrl.updateRestaurantRole,
 							roleModalData.role,
 							function(response) {
@@ -111,7 +111,7 @@
 									$('#roleModal').modal('hide');
 									searchDivData.search();
 								}else{
-									alert(response.msg);
+									alert(response.msg + "----" + response.data);
 								}
 							}
 					);
@@ -148,7 +148,7 @@
 	        },
 	        
 	        'click .delete': function (e, value, row, index) {
-	        	$.post(
+	        	$.get(
 						ajaxUrl.restaurantManagerDetail,
 						{
 							id : row.managerId,	
@@ -160,7 +160,7 @@
 								managerModalData.manager = response.data;
 								$('#managerModal').modal('show');
 							}else{
-								alert(response.msg);
+								alert(response.msg + "----" + response.data);
 							}
 						}
 				);
@@ -190,7 +190,7 @@
 				response.total = response.count;
 				response.rows = response.data.list;
 			}else{
-				alert(response.msg);
+				alert(response.msg + "----" + response.data);
 			}
 			return response;
 		},
@@ -217,7 +217,7 @@
 		},
 		onDblClickCell: function(field, value, row, $element){
 			if("operation" == field){
-				$.post(
+				$.get(
 						ajaxUrl.deleteRestaurant,
 						{
 							id : row.id,	
@@ -227,7 +227,7 @@
 							if (response.code == SUCCESS_CODE) {
 								searchDivData.search();
 							}else{
-								alert(response.msg);
+								alert(response.msg + "----" + response.data);
 							}
 						}
 				);

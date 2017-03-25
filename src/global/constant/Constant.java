@@ -13,13 +13,17 @@ public class Constant {
 		public final static String LIST = "list";
 		
 	}
-	
-	public class Length{
+	public class State{
+		public final static int USER_NORMAL = 0;
+		public final static int USER_FORBIDDEN = 1;
 		
+		public final static int RESTAURANT_NORMAL = 0;
+		public final static int RESTAURANT_FORBIDDEN = 1;
+	}
+	public class Length{
 		public final static int DEFAULT_MIN = 1;
 		public final static int DEFAULT_MAX = 8;
 		public final static int PATH_MAX = 255;
-		
 	}
 
 	public class Pattern{
@@ -32,8 +36,7 @@ public class Constant {
 	}
 	
 	public class Role{
-		public final static int SYSTEM_MANAGER = 1;
-		public final static int RESTAURANT_MANAGER = 2;
+		public final static int DEVELOPER = 0;
 	}
 	public class Restuarant{
 		public final static int RESTUARANT_STATE_NORMAL = 0;

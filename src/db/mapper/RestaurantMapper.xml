@@ -7,12 +7,15 @@
 		r.id, r.name, r.license, r.state, u.id as managerId, u.name "managerName"
 		FROM restaurant r
 		LEFT JOIN user u on u.restaurant_id = r.id
+		where r.id > 0 
         <if test="key != null">
-        where r.name like concat('%',#{key},'%') or r.license like concat('%',#{key},'%') 
+        and (r.name like concat('%',#{key},'%') or r.license like concat('%',#{key},'%'))
         </if>
+        order by
         <if test="page.sortName != null">
-	    order by ${page.sortName} ${page.sortOrder}
+	     r.${page.sortName} ${page.sortOrder},
 	    </if>
+	    r.id desc
 	    LIMIT #{page.start} , #{page.pageSize}
 	</select>
 	

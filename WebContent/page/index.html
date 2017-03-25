@@ -10,7 +10,7 @@
 <script>
 	$(document).ready(function() {
 		$("#btnLogin").click(function() {
-			$.post(ajaxUrl.login, {
+			$.get(ajaxUrl.login, {
 				account : $("#account").val(),
 				password : $("#password").val()
 			}, function(response) {
@@ -19,7 +19,7 @@
 				if (response.code == 0) {
 					window.location.href = pageUrl.main + "?account=admin";
 				} else {
-					alert(response.msg);
+					alert(response.msg + "----" + response.data);
 				}
 
 			});

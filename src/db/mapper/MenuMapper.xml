@@ -37,11 +37,26 @@
 	        (#{menu.id}, #{item})
 	    </foreach>  
 	</insert> 
-  
-	<delete id="deleteMenuInterface" parameterType="Map">  
+  <delete id="deleteMenu" parameterType="db.pojo.Menu">  
+		delete from menu where id = #{menu.id} and NOT EXISTS (select id from (SELECT id FROM menu WHERE parent_id = #{menu.id}) tmp);
+	</delete> 
+	<delete id="deleteMenuInterface" parameterType="db.pojo.Menu">  
 		delete from menu_interface where menu_id = #{menu.id};
 	</delete> 
-  
+	<delete id="deleteRoleMenu" parameterType="db.pojo.Menu">  
+		delete from role_menu where menu_id = #{menu.id};
+	</delete> 
+	<insert id="insertRoleMenu" parameterType="Map" >  
+		insert into role_menu(role_id, menu_id) 
+		values (#{roleId}, #{menu.id})
+	</insert> 
+	<insert id="insertMenu" parameterType="db.pojo.Menu" useGeneratedKeys="true" keyProperty="menu.id" >  
+		insert into menu(name, path, parent_id) 
+		SELECT #{menu.name}, #{menu.path}, #{menu.parentId} 
+	    FROM DUAL 
+		WHERE EXISTS (SELECT id FROM menu WHERE id = #{menu.parentId})
+	</insert> 
+	
 	  <update id="updateMenu" parameterType="db.pojo.Menu" >
 		    UPDATE menu 
 		    <set> 

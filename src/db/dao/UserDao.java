@@ -14,9 +14,10 @@ public interface UserDao {
 	User selectById(@Param("id")int id);
 
 	List<Map<String, Object>> selectRestaurantUser(@Param("restaurantId")int restaurantId,
-			@Param("key")String key, @Param("notInRoleIdString")String notInRoleIdString);
+			@Param("key")String key, @Param("state")Integer state);
 	
 	int insertUser(User user);
 	int updateUser(User user);
+	int selectRestaurantState(int restaurantId);
 
 }

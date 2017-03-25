@@ -14,9 +14,13 @@ public interface MenuDao {
 	List<Map<String, Object>> selectMenuInterface(@Param("menuId")int menuId);
 	List<Map<String, Object>> selectAllMenu();
 	List<Integer> selectAllInterfaceIds();
-	void updateMenu(@Param("menu")Menu menu);
-	void deleteMenuInterface(@Param("menu")Menu menu);
-	void insertMenuInterface(@Param("menu")Menu menu, @Param("menuInterfaceIds")List<Integer> menuInterfaceIds);
+	int updateMenu(@Param("menu")Menu menu);
+	int insertMenu(@Param("menu")Menu menu);
+	int deleteMenu(@Param("menu")Menu menu);
+	int deleteMenuInterface(@Param("menu")Menu menu);
+	int deleteRoleMenu(@Param("menu")Menu menu);
+	int insertRoleMenu(@Param("menu")Menu menu, @Param("roleId")int roleId);
+	int insertMenuInterface(@Param("menu")Menu menu, @Param("menuInterfaceIds")List<Integer> menuInterfaceIds);
 	
 
 }

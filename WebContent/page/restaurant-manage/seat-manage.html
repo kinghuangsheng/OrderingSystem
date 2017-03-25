@@ -58,7 +58,7 @@
 		},
 		methods : {
 			addSeat : function() {
-				$.post(
+				$.get(
 						ajaxUrl.addRestaurantSeat,
 						seatInfoData.$data,
 						function(response) {
@@ -69,7 +69,7 @@
 								$('#addSeatModal').modal('hide');
 								seatSearchData.search();
 							}else{
-								alert(response.msg);
+								alert(response.msg + "----" + response.data);
 							}
 						}
 				);
@@ -91,7 +91,7 @@
 	});
 	search("", true);
 	function search(keyStr, isFirstTime) {
-		$.post(ajaxUrl.restaurantSeatList, {
+		$.get(ajaxUrl.restaurantSeatList, {
 			key : keyStr
 		}, function(response) {
 			var response = JSON.parse(response);
@@ -115,7 +115,7 @@
 					$('#table').bootstrapTable('load', response.data);
 				}
 			} else {
-				alert(response.msg);
+				alert(response.msg + "----" + response.data);
 			}
 		});
 	}

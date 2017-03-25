@@ -25,7 +25,7 @@
 <script>
 	
 	$(function(){
-		$.post(ajaxUrl.allMenuList, function(response) {
+		$.get(ajaxUrl.allMenuList, function(response) {
 			response = JSON.parse(response);
 			if (response.code == SUCCESS_CODE) {
 				var setting = {
@@ -45,7 +45,7 @@
 					var zTree = $.fn.zTree.init($("#menutree"), setting, treeNodes);
 					zTree.expandAll(true);
 			} else {
-				alert(response.msg);
+				alert(response.msg + "----" + response.data);
 			}
 		});
 	});
@@ -61,18 +61,33 @@
 		},
 		methods : {
 			add : function() {
+				$.get(ajaxUrl.addMenu, {
+					parentId : btnDivData.treeNode.id,
+					name : btnDivData.treeNode.name,
+					path : btnDivData.treeNode.path,
+					interfaceIds : getCheckInterfaceIds,
+				},function(response) {
+					response = JSON.parse(response);
+					alert(response.msg + "----" + response.data);
+				});
 			},
 			del : function() {
+				$.get(ajaxUrl.deleteMenu, {
+					id : btnDivData.treeNode.id,
+				},function(response) {
+					response = JSON.parse(response);
+					alert(response.msg + "----" + response.data);
+				});
 			},
 			update : function() {
-				$.post(ajaxUrl.updateMemu, {
+				$.get(ajaxUrl.updateMenu, {
 					id : btnDivData.treeNode.id,
 					name : btnDivData.treeNode.name,
 					path : btnDivData.treeNode.path,
 					interfaceIds : getCheckInterfaceIds,
 				},function(response) {
 					response = JSON.parse(response);
-					alert(response.msg);
+					alert(response.msg + "----" + response.data);
 				});
 				
 			},
@@ -104,14 +119,14 @@
 			}else{
 				btnDivData.delBtnSeen = true;
 			}
-			$.post(ajaxUrl.menuInterfaceList, {
+			$.get(ajaxUrl.menuInterfaceList, {
 				menuId:treeNode.id,
 			},function(response) {
 				response = JSON.parse(response);
 				if (response.code == SUCCESS_CODE) {
 					btnDivData.interfaceList = response.data;
 				} else {
-					alert(response.msg);
+					alert(response.msg + "----" + response.data);
 				}
 			});
 		}

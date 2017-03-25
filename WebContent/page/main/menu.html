@@ -4,7 +4,7 @@
 <script>
 	
 	$(function(){
-		$.post(ajaxUrl.roleMenuList, function(response) {
+		$.get(ajaxUrl.roleMenuList, function(response) {
 			response = JSON.parse(response);
 			if (response.code == SUCCESS_CODE) {
 				MENU_LIST = response.data;
@@ -24,7 +24,7 @@
 					var zTree = $.fn.zTree.init($("#tree"), setting, MENU_LIST);
 					zTree.expandAll(true);
 			} else {
-				alert(response.msg);
+				alert(response.msg + "----" + response.data);
 			}
 		});
 	});

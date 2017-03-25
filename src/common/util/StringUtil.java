@@ -16,5 +16,9 @@ public class StringUtil {
 		Matcher m = r.matcher(target);
 		return !m.matches();
 	}
+	
+	public static boolean isEmpty(Object str) {
+		return (str == null || "".equals(str));
+	}
 
 }

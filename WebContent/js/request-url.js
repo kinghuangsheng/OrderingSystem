@@ -8,7 +8,9 @@ var ajaxUrl = {
 		roleMenuList: ajaxPath + "menu/roleMenuList",
 		allMenuList: ajaxPath + "menu/allList",
 		menuInterfaceList: ajaxPath + "menu/menuInterfaceList",
-		updateMemu: ajaxPath + "menu/update",
+		updateMenu: ajaxPath + "menu/update",
+		addMenu: ajaxPath + "menu/add",
+		deleteMenu: ajaxPath + "menu/delete",
 		
 		restaurantList: ajaxPath + "restaurant/list",
 		addRestaurant: ajaxPath + "restaurant/add",

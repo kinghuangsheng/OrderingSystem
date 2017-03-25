@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -62,8 +63,18 @@ public class MenuController extends AbsController{
 			response.setReason(Reason.ERR_ARG);
 			response.setData(errorArg);
 		}else{
-			menuDao.updateMenu(menu);
-			
+			int num = menuDao.insertMenu(menu);
+			if(num == 0){
+				response.setReason(Reason.ERR_ARG);
+				response.setData("parentId");
+				return response.toJsonString();
+			}
+			num = menuDao.insertRoleMenu(menu, Constant.Role.DEVELOPER);
+			if(num == 0){
+				response.setReason(Reason.ERR_ARG);
+				response.setData("interfaceIds");
+				return response.toJsonString();
+			}
 			List<Integer> menuInterfaceIds = null;
 			try{
 				menuInterfaceIds = (List<Integer>) JsonUtil.parseArray(interfaceIds, Integer.class);
@@ -71,7 +82,6 @@ public class MenuController extends AbsController{
 				menuInterfaceIds = null;
 			}
 			if(menuInterfaceIds == null || menuInterfaceIds.isEmpty()){
-				menuDao.deleteMenuInterface(menu);
 				return response.toJsonString();
 			}else{
 				initAllInterfaces(menuDao);
@@ -80,9 +90,27 @@ public class MenuController extends AbsController{
 					response.setData("interfaceIds");
 					return response.toJsonString();
 				}
-				menuDao.deleteMenuInterface(menu);
 				menuDao.insertMenuInterface(menu, menuInterfaceIds);
+				
 			}
+		}
+		return response.toJsonString();
+	}
+	@RequestMapping(value = "/ajax/menu/delete", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Permission("/ajax/menu/delete")
+	public String delete(HttpSession httpSession, Menu menu, String interfaceIds, Response response) {
+		if(menu.getId() == null){
+			response.setReason(Reason.ERR_ARG);
+			response.setData("id");
+		}
+		int num = menuDao.deleteMenu(menu);
+		if(num == 0){
+			response.setReason(Reason.ERR_ARG);
+			response.setData("id");
+		}else{
+			menuDao.deleteMenuInterface(menu);
+			menuDao.deleteRoleMenu(menu);
 		}
 		return response.toJsonString();
 	}
@@ -91,13 +119,16 @@ public class MenuController extends AbsController{
 	@ResponseBody
 	@Permission("/ajax/menu/update")
 	public String update(HttpSession httpSession, Menu menu, String interfaceIds, Response response) {
-		String errorArg = checkAddArg(menu);
-		if(errorArg != null){
+		if(menu.getId() == null){
 			response.setReason(Reason.ERR_ARG);
-			response.setData(errorArg);
+			response.setData("id");
 		}else{
-			menuDao.updateMenu(menu);
-			
+			int num = menuDao.updateMenu(menu);
+			if(num == 0){
+				response.setReason(Reason.ERR_ARG);
+				response.setData("interfaceIds");
+				return response.toJsonString();
+			}
 			List<Integer> menuInterfaceIds = null;
 			try{
 				menuInterfaceIds = (List<Integer>) JsonUtil.parseArray(interfaceIds, Integer.class);
@@ -128,13 +159,13 @@ public class MenuController extends AbsController{
 	}
 	
 	public String checkAddArg(Menu menu){
-		if(menu.getId() == null){
-			return "id";
+		if(StringUtil.isEmpty(menu.getParentId())){
+			return "parentId";
 		}
 		if(StringUtil.checkFail(menu.getName(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
 			return "name";
 		}
-		if(StringUtil.checkFail(menu.getPath(), Constant.Length.DEFAULT_MIN, Constant.Length.PATH_MAX, null)){
+		if(StringUtil.isEmpty(menu.getPath()) && StringUtil.checkFail(menu.getPath(), 0, Constant.Length.PATH_MAX, null)){
 			return "path";
 		}
 		return null;

@@ -28,10 +28,15 @@ public class InterfaceController extends AbsController{
 	@ResponseBody
 	@Permission("/ajax/interface/list")
 	public String list(HttpSession httpSession, String key, Page page, Response response) {
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put(Constant.MapKey.COUNT, interfaceDao.selectInterfaceCount(key));
-		map.put(Constant.MapKey.LIST, interfaceDao.selectInterfaceList(key, page));
-		response.setData(map);
+		if(page.checkArgSuccess("name", "path", "id")){
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put(Constant.MapKey.COUNT, interfaceDao.selectInterfaceCount(key));
+			map.put(Constant.MapKey.LIST, interfaceDao.selectInterfaceList(key, page));
+			response.setData(map);
+		}else{
+			response.setReason(Reason.ERR_ARG);
+		}
+		
 		return response.toJsonString();
 	}
 	@RequestMapping(value = "/ajax/interface/add", produces = "text/html;charset=UTF-8")

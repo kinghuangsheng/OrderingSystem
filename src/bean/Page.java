@@ -74,5 +74,27 @@ public class Page {
 	}
 
 
+	public boolean checkArgSuccess(String ... sortNames){
+		if(sortName == null){
+			return true;
+		}
+		if(sortNames == null){
+			sortName = null;
+			return true;
+		}
+		for(String name : sortNames){
+			if(sortName.equals(name)){
+				return checkSortOrder();
+			}
+		}
+		return false;
+	}
+
+	private boolean checkSortOrder() {
+		if("desc".equals(sortOrder) || "asc".equals(sortOrder)){
+			return true;
+		}
+		return false;
+	}
 	
 }

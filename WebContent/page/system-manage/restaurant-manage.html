@@ -54,6 +54,14 @@
 						<label for="message-text" class="control-label">电话</label>
 						<input v-model="manager.phone" class="form-control" >
 					</div>
+					<div class="form-group">
+						<label for="message-text" class="control-label">角色</label>
+						<select v-model="manager.roleId"> 
+							<option v-for="role in roleList" v-bind:value="role.id">
+								{{ role.name }}</option>
+						</select>
+						<span>{{ getRoleName() }}</span>
+					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
@@ -111,7 +119,7 @@
 			},
 			sure : function() {
 				if(this.modalType == MODAL_TYPE_ADD){//新增
-					$.post(
+					$.get(
 							ajaxUrl.addRestaurant,
 							restaurantModalData.restaurant,
 							function(response) {
@@ -121,14 +129,14 @@
 									managerModalData.manager.restaurantId = response.data.id;
 									$('#restaurantModal').modal('hide');
 									searchDivData.search();
-									$('#managerModal').modal('show');
+									showManagerModal();
 								}else{
-									alert(response.msg);
+									alert(response.msg + "----" + response.data);
 								}
 							}
 					);
 				}else if(this.modalType == MODAL_TYPE_UPDATE){//修改
-					$.post(
+					$.get(
 							ajaxUrl.updateRestaurant,
 							restaurantModalData.restaurant,
 							function(response) {
@@ -138,7 +146,7 @@
 									$('#restaurantModal').modal('hide');
 									searchDivData.search();
 								}else{
-									alert(response.msg);
+									alert(response.msg + "----" + response.data);
 								}
 							}
 					);
@@ -159,15 +167,28 @@
 				name: "",
 				account: "",
 				phone: "",
+				roleId: "",
 				password: "",
 			},
+			roleList: [], 
 	
 		},
 		methods : {
+			
+			getRoleName: function(){
+				if(managerModalData){
+					managerModalData.roleList.forEach(function(value){
+						 if(value.id == managerModalData.manager.roleId){
+							 return value.name;
+						 }
+					});
+				}
+			},
 			sure : function() {
-				debugger;
+				
 				if(this.modalType == MODAL_TYPE_ADD){//新增
-					$.post(
+					var a = managerModalData.manager;
+					$.get(
 							ajaxUrl.addRestaurantManager,
 							managerModalData.manager,
 							function(response) {
@@ -177,12 +198,12 @@
 									$('#managerModal').modal('hide');
 									searchDivData.search();
 								}else{
-									alert(response.msg);
+									alert(response.msg + "----" + response.data);
 								}
 							}
 					);
 				}else if(this.modalType == MODAL_TYPE_UPDATE){//修改
-					$.post(
+					$.get(
 							ajaxUrl.updateRestaurantManager,
 							managerModalData.manager,
 							function(response) {
@@ -192,7 +213,7 @@
 									$('#managerModal').modal('hide');
 									searchDivData.search();
 								}else{
-									alert(response.msg);
+									alert(response.msg + "----" + response.data);
 								}
 							}
 					);
@@ -207,7 +228,6 @@
 			},
 		}
 	});
-	
 	var searchDivData = new Vue({
 		el : '#searchDiv',
 		data : {
@@ -235,11 +255,11 @@
 	        'click .addManager': function (e, value, row, index) {
 	        	managerModalData.manager.restaurantId = row.id;
 	        	managerModalData.modalType = MODAL_TYPE_ADD;
-	    		$('#managerModal').modal('show');
+	    		showManagerModal();
 	        },
 	        
 	        'click .updateManager': function (e, value, row, index) {
-	        	$.post(
+	        	$.get(
 						ajaxUrl.restaurantManagerDetail,
 						{
 							id : row.managerId,	
@@ -249,9 +269,9 @@
 							response = JSON.parse(response);
 							if (response.code == SUCCESS_CODE) {
 								managerModalData.manager = response.data;
-								$('#managerModal').modal('show');
+								showManagerModal();
 							}else{
-								alert(response.msg);
+								alert(response.msg + "----" + response.data);
 							}
 						}
 				);
@@ -281,7 +301,7 @@
 				response.total = response.count;
 				response.rows = response.data.list;
 			}else{
-				alert(response.msg);
+				alert(response.msg + "----" + response.data);
 			}
 			return response;
 		},
@@ -319,7 +339,7 @@
 		},
 		onDblClickCell: function(field, value, row, $element){
 			if("operation" == field){
-				$.post(
+				$.get(
 						ajaxUrl.deleteRestaurant,
 						{
 							id : row.id,	
@@ -329,7 +349,7 @@
 							if (response.code == SUCCESS_CODE) {
 								searchDivData.search();
 							}else{
-								alert(response.msg);
+								alert(response.msg + "----" + response.data);
 							}
 						}
 				);
@@ -341,6 +361,19 @@
 		$('#table').bootstrapTable('refresh',{pageNumber:1, pageSize: PAGE_SIZE, search: true,});
 	}
 	
+	
+	function showManagerModal(){
+		$.get(ajaxUrl.restaurantRoleList, function(response) {
+			var response = JSON.parse(response);
+			if (response.code == SUCCESS_CODE) {
+				managerModalData.roleList = response.data.list;
+				$('#managerModal').modal('show');
+			} else {
+				alert(response.msg + "----" + response.data);
+			}
+		});
+		
+	}
 	function clearManagerModalData(){
 		managerModalData.manager = {
 			restaurantId: "",
@@ -356,7 +389,7 @@
 	}
 	
 	/* function search(keyStr, isFirstTime) {
-		$.post(ajaxUrl.restaurantList, {
+		$.get(ajaxUrl.restaurantList, {
 			key : keyStr
 		}, function(response) {
 			var response = JSON.parse(response);
@@ -398,7 +431,7 @@
 						},
 						onDblClickCell: function(field, value, row, $element){
 							if("operation" == field){
-								$.post(
+								$.get(
 										ajaxUrl.deleteRestaurant,
 										{
 											id : row.id,	
@@ -408,7 +441,7 @@
 											if (response.code == SUCCESS_CODE) {
 												searchDivData.search();
 											}else{
-												alert(response.msg);
+												alert(response.msg + "----" + response.data);
 											}
 										}
 								);
@@ -419,7 +452,7 @@
 					$('#table').bootstrapTable('load', response.data);
 				}
 			} else {
-				alert(response.msg);
+				alert(response.msg + "----" + response.data);
 			}
 		});
 	} */
