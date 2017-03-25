@@ -43,7 +43,7 @@ public class AjaxRequestInterceptor implements HandlerInterceptor {
 			if (handler instanceof HandlerMethod) {  
 				Permission perssion = ((HandlerMethod) handler).getMethod().getAnnotation(Permission.class);  
 	            if (perssion != null) {// 有权限控制的就要检查  
-	            	ArrayList<Integer> userPrivileges = (ArrayList<Integer>)httpSession.getAttribute(Constant.MapKey.PERMISSION);
+	            	ArrayList<String> userPrivileges = (ArrayList<String>)httpSession.getAttribute(Constant.MapKey.INTERFACES);
 	            	if(userPrivileges.contains(perssion.value())){
 	            		return true;
 	            	}else{

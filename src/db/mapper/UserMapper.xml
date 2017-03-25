@@ -38,7 +38,7 @@
 		WHERE NOT EXISTS (SELECT account FROM user WHERE account = #{account})
   </insert>
   
-  <insert id="updateUser" parameterType="db.pojo.User" >
+  <update id="updateUser" parameterType="db.pojo.User" >
 	    UPDATE user 
 	    <set> 
 		  <if test="name != null">name = #{name},</if>
@@ -47,6 +47,6 @@
 		  <if test="phone != null">phone = #{phone},</if>
 		 </set>
 		 WHERE id = #{id}
-  </insert>
+  </update>
   
 </mapper>

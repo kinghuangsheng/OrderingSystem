@@ -6,11 +6,24 @@
 		SELECT 
 		r.id, r.name, r.license, r.state, u.id as managerId, u.name "managerName"
 		FROM restaurant r
-		LEFT JOIN user u on u.restaurant_id = r.id and u.role_id = #{roleId}
+		LEFT JOIN user u on u.restaurant_id = r.id
         <if test="key != null">
         where r.name like concat('%',#{key},'%') or r.license like concat('%',#{key},'%') 
         </if>
-        
+        <if test="page.sortName != null">
+	    order by ${page.sortName} ${page.sortOrder}
+	    </if>
+	    LIMIT #{page.start} , #{page.pageSize}
+	</select>
+	
+	
+	<select id="selectRestaurantCount" resultType="Integer">
+		SELECT 
+		count(r.id) 
+		FROM restaurant r 
+        <if test="key != null">
+        where r.name like concat('%',#{key},'%') or r.license like concat('%',#{key},'%') 
+        </if>
 	</select>
 	
 	
@@ -19,18 +32,18 @@
 		WHERE NOT EXISTS (SELECT license FROM restaurant WHERE license = #{license})
   </insert>
   
-  <insert id="updateRestaurant" parameterType="db.pojo.Restaurant" >
+  <update id="updateRestaurant" parameterType="db.pojo.Restaurant" >
 	    UPDATE restaurant 
 	    <set> 
 		  <if test="name != null">name = #{name},</if>
 		  <if test="license != null">license = #{license},</if>
 		 </set>
 		 WHERE id = #{id}
-  </insert>
-  <insert id="deleteRestaurant" parameterType="db.pojo.Restaurant" >
+  </update>
+  <update id="deleteRestaurant" parameterType="db.pojo.Restaurant" >
 	    UPDATE restaurant 
 	    set state = #{state} 
 		 WHERE id = #{id}
-  </insert>
+  </update>
 	
 </mapper>

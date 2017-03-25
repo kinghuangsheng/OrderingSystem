@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import bean.Page;
 import bean.Response;
 import common.util.StringUtil;
 import db.dao.RestaurantDao;
@@ -19,24 +21,25 @@ import global.constant.Reason;
 import permission.Permission;
 
 @Controller
-@RequestMapping("/ajax/restaurant")
 public class RestaurantController extends AbsController{
 
 	@Resource
 	private RestaurantDao restaurantDao;
 
-	@RequestMapping(value = "/list", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = "/ajax/restaurant/list", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission(Constant.Interface.RESTAURANT_LIST)
-	public String search(String key, Response response) {
-		List<Map<String, Object>> object = restaurantDao.selectRestaurant(key, Constant.Role.RESTAURANT_MANAGER);
-		response.setData(object);
+	@Permission("/ajax/restaurant/list")
+	public String search(String key, Page page, Response response) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put(Constant.MapKey.COUNT, restaurantDao.selectRestaurantCount(key));
+		map.put(Constant.MapKey.LIST, restaurantDao.selectRestaurant(key, page));
+		response.setData(map);
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/add", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = "/ajax/restaurant/add", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission(Constant.Interface.ADD_RESTAURANT)
+	@Permission("/ajax/restaurant/add")
 	public String add(Restaurant restaurant, Response response) {
 		String errorArg = checkAddArg(restaurant);
 		if(errorArg != null){
@@ -54,9 +57,9 @@ public class RestaurantController extends AbsController{
 	}
 	
 	
-	@RequestMapping(value = "/update", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = "/ajax/restaurant/update", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission(Constant.Interface.ADD_RESTAURANT)
+	@Permission("/ajax/restaurant/update")
 	public String update(Restaurant restaurant, Response response) {
 		String errorArg = checkUpdateArg(restaurant);
 		if(errorArg != null){
@@ -71,9 +74,9 @@ public class RestaurantController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/delete", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = "/ajax/restaurant/delete", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission(Constant.Interface.DELETE_RESTAURANT)
+	@Permission("/ajax/restaurant/delete")
 	public String delete(Restaurant restaurant, Response response) {
 		if(restaurant.getId() == null){
 			response.setReason(Reason.ERR_ARG);

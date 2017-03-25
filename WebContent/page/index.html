@@ -19,7 +19,7 @@
 				if (response.code == 0) {
 					window.location.href = pageUrl.main + "?account=admin";
 				} else {
-					alert("登录失败:" + response.msg);
+					alert(response.msg);
 				}
 
 			});

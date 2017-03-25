@@ -65,7 +65,7 @@
 	</div>
 </div>
 
-<div id="restaurantSearchDiv" class="row">
+<div id="searchDiv" class="row">
 	<div class="col-lg-6">
 		<div class="input-group">
 			<input v-model="searchKey" type="text" class="form-control"
@@ -118,6 +118,7 @@
 								response = JSON.parse(response);
 								if (response.code == SUCCESS_CODE) {
 									restaurantModalData.restaurant = response.data;
+									managerModalData.manager.restaurantId = response.data.id;
 									$('#restaurantModal').modal('hide');
 									searchDivData.search();
 									$('#managerModal').modal('show');
@@ -208,13 +209,13 @@
 	});
 	
 	var searchDivData = new Vue({
-		el : '#restaurantSearchDiv',
+		el : '#searchDiv',
 		data : {
 			searchKey : "",
 		},
 		methods : {
 			search : function() {
-				search(this.searchKey, false);
+				search();
 			},
 			add : function() {
 				restaurantModalData.modalType = MODAL_TYPE_ADD;
@@ -228,8 +229,6 @@
 	
 	$('#managerModal').on('hidden.bs.modal', function (e) {
 		clearManagerModalData();
-	});
-	$('#managerModal').on('hidden.bs.modal', function (e) {
 		clearRestaurantModalData();
 	});
 	window.managerTDEvents = {
@@ -258,8 +257,89 @@
 				);
 	        },
 	    };
-
-	search("", true);
+	
+	$('#table').bootstrapTable({
+		url: ajaxUrl.restaurantList,
+		cache: false,
+		contentType: "text/html",
+		dataType: "json",
+		pagination: true, 						
+        search: false,
+		sidePagination: "server",
+		pageNumber:1,      //初始化加载第一页，默认第一页
+        pageSize: PAGE_SIZE,      //每页的记录行数（*）
+        smartDisplay: false,
+        contentType: "text/html",
+        queryParamsType:'', //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort 设置为 ''  在这种情况下传给服务器的参数为：pageSize,pageNumber
+		queryParams : function(params) {
+			params.key= searchDivData.searchKey;
+			return params;
+		}, 
+		//queryParams : queryParams1,
+		responseHandler: function(response) {
+			if (response.code == SUCCESS_CODE) {
+				response.total = response.count;
+				response.rows = response.data.list;
+			}else{
+				alert(response.msg);
+			}
+			return response;
+		},
+		columns : [ {
+			align : 'center',
+			field : 'id',
+			title : 'ID'
+		}, {
+			field : 'name',
+			title : '餐厅名称'
+		}, {
+			field : 'license',
+			title : '营业执照'
+		}, {
+			field : 'managerName',
+			formatter: managerTDFormater,
+			events: managerTDEvents,
+			title : '管理员'
+		},  {
+			field : 'state',
+			title : '状态'
+		}, {
+			field : 'operation',
+			formatter: operationTDFormater,
+			//events: operationTDEvents,
+			title : '操作'
+		}, ],
+		onDblClickRow: function(row, $element, field){
+			if("operation" == field || "manager" == field){
+				return;
+			}
+			restaurantModalData.modalType = MODAL_TYPE_UPDATE;
+			restaurantModalData.restaurant = row;
+			$('#restaurantModal').modal('show');
+		},
+		onDblClickCell: function(field, value, row, $element){
+			if("operation" == field){
+				$.post(
+						ajaxUrl.deleteRestaurant,
+						{
+							id : row.id,	
+						},
+						function(response) {
+							response = JSON.parse(response);
+							if (response.code == SUCCESS_CODE) {
+								searchDivData.search();
+							}else{
+								alert(response.msg);
+							}
+						}
+				);
+			}
+		},
+	});
+	
+	function search() {
+		$('#table').bootstrapTable('refresh',{pageNumber:1, pageSize: PAGE_SIZE, search: true,});
+	}
 	
 	function clearManagerModalData(){
 		managerModalData.manager = {
@@ -275,7 +355,7 @@
 		restaurantModalData.restaurant.license = "";
 	}
 	
-	function search(keyStr, isFirstTime) {
+	/* function search(keyStr, isFirstTime) {
 		$.post(ajaxUrl.restaurantList, {
 			key : keyStr
 		}, function(response) {
@@ -339,16 +419,15 @@
 					$('#table').bootstrapTable('load', response.data);
 				}
 			} else {
-				alert(dataList.msg);
+				alert(response.msg);
 			}
 		});
-	}
+	} */
 	
 	function managerTDFormater(value, row, index){
 		if(value){
 			return [
 		            '<a class="updateManager" href="javascript:void(0);" title="更新信息">',
-		            '+',
 		            value,
 		            '</a>'
 		        ].join('');

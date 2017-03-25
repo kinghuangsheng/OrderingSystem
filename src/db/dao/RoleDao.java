@@ -5,12 +5,14 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import bean.Page;
 import db.pojo.Role;
 
 public interface RoleDao {
 	
 	
-	List<Map<String, Object>> selectRole(@Param("restaurantId")int restaurantId, @Param("key")String key);
+	List<Map<String, Object>> selectRole(@Param("restaurantId")int restaurantId, @Param("key")String key, @Param("page")Page page);
+	List<Map<String, Object>> selectRoleCount(@Param("restaurantId")int restaurantId, @Param("key")String key);
 	
 	int insertRole(Role role);
 	
@@ -18,6 +20,8 @@ public interface RoleDao {
 	
 	int selectRoleIdNum(@Param("restaurantId")int restaurantId, @Param("roleId")int roleId);
 	
-	List<Integer> selectRoleInterface(@Param("roleId")int roleId);
+	List<String> selectRoleInterface(@Param("roleId")int roleId);
+	
+	List<Integer> selectRoleMenuIds(@Param("roleId")int roleId);
 
 }

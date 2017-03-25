@@ -1,7 +1,6 @@
 package bean;
 
 public class Page {
-	public static final int PAGE_SIZE_2 = 2;
 	public static final int PAGE_SIZE_10 = 10;
 	public static final int PAGE_SIZE_20 = 20;
 	public static final int PAGE_SIZE_50 = 50;
@@ -16,7 +15,7 @@ public class Page {
 	
 	public Page(){
 		this.pageNumber = 1;
-		this.pageSize = PAGE_SIZE_2;
+		this.pageSize = PAGE_SIZE_10;
 		this.sortOrder = "desc";
 		calculateStartEnd();
 		

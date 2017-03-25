@@ -76,13 +76,13 @@
 						ajaxUrl.addRestaurantRole,
 						roleInfoData.$data,
 						function(response) {
-							data = JSON.parse(response);
-							if (data.code == SUCCESS_CODE) {
+							response = JSON.parse(response);
+							if (response.code == SUCCESS_CODE) {
 								roleInfoData.name = "",
 								$('#addRoleModal').modal('hide');
 								roleSearchData.search();
 							}else{
-								alert(data.msg);
+								alert(response.msg);
 							}
 						}
 				);
@@ -110,8 +110,8 @@
 		$.post(ajaxUrl.restaurantRoleList, {
 			key : keyStr
 		}, function(response) {
-			var dataList = JSON.parse(response);
-			if (dataList.code == SUCCESS_CODE) {
+			var response = JSON.parse(response);
+			if (response.code == SUCCESS_CODE) {
 				if (isFirstTime) {
 					$('#table').bootstrapTable({
 						columns : [ {
@@ -122,13 +122,13 @@
 							field : 'name',
 							title : '角色名称'
 						}, ],
-						data : dataList.data,
+						data : response.data,
 					});
 				} else {
-					$('#table').bootstrapTable('load', dataList.data);
+					$('#table').bootstrapTable('load', response.data);
 				}
 			} else {
-				alert(dataList.msg);
+				alert(response.msg);
 			}
 		});
 	}

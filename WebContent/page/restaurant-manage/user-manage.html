@@ -114,11 +114,11 @@
 	});
 	$('#addUserModal').on('shown.bs.modal', function (e) {
 		$.post(ajaxUrl.restaurantRoleList, function(response) {
-			var dataList = JSON.parse(response);
-			if (dataList.code == SUCCESS_CODE) {
-				userInfoData.roleList = dataList.data;
+			var response = JSON.parse(response);
+			if (response.code == SUCCESS_CODE) {
+				userInfoData.roleList = response.data;
 			} else {
-				alert(dataList.msg);
+				alert(response.msg);
 			}
 		});
 	});
@@ -127,8 +127,8 @@
 		$.post(ajaxUrl.restaurantUserList, {
 			key : keyStr
 		}, function(response) {
-			var dataList = JSON.parse(response);
-			if (dataList.code == SUCCESS_CODE) {
+			var response = JSON.parse(response);
+			if (response.code == SUCCESS_CODE) {
 				if (isFirstTime) {
 					$('#table').bootstrapTable({
 						columns : [ {
@@ -142,13 +142,13 @@
 							field : 'roleName',
 							title : '角色'
 						}, ],
-						data : dataList.data,
+						data : response.data,
 					});
 				} else {
-					$('#table').bootstrapTable('load', dataList.data);
+					$('#table').bootstrapTable('load', response.data);
 				}
 			} else {
-				alert(dataList.msg);
+				alert(response.msg);
 			}
 		});
 	}

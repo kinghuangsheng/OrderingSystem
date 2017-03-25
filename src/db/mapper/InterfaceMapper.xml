@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="db.dao.InterfaceDao">
 
-	<select id="selectInterFaceList" resultType="Map" parameterType="Map">
+	<select id="selectInterfaceList" resultType="Map" parameterType="Map">
 		SELECT i.id, i.name, i.path 
 		FROM  interface i
 	    <if test="key != null">
@@ -15,7 +15,7 @@
 	    LIMIT #{page.start} , #{page.pageSize}
 	</select>
 	
-	<select id="selectInterFaceCount" resultType="Integer">
+	<select id="selectInterfaceCount" resultType="Integer">
 		SELECT count(id)
 		FROM  interface i
         <if test="key != null">
@@ -23,4 +23,11 @@
         i.name like concat('%',#{key},'%') or i.path like concat('%',#{key},'%')
         </if>
 	</select>
+	
+	<insert id="insertInterface" parameterType="db.pojo.Interface" useGeneratedKeys="true" keyProperty="id" >
+	    INSERT INTO interface (name, path) 
+	    SELECT #{name}, #{path} 
+	    FROM DUAL 
+		WHERE NOT EXISTS (SELECT id FROM interface WHERE name = #{name} or path = #{path})
+  </insert>
 </mapper>

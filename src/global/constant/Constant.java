@@ -7,7 +7,10 @@ public class Constant {
 	public class MapKey{
 		
 		public final static String USER = "user";
-		public final static String PERMISSION = "privilege";
+		public final static String INTERFACES = "interfaces";
+		public final static String MENUS = "menus";
+		public final static String COUNT = "count";
+		public final static String LIST = "list";
 		
 	}
 	
@@ -15,38 +18,17 @@ public class Constant {
 		
 		public final static int DEFAULT_MIN = 1;
 		public final static int DEFAULT_MAX = 8;
+		public final static int PATH_MAX = 255;
 		
 	}
 
 	public class Pattern{
 		
 		public final static String DEFAULT = "[A-Za-z0-9_\\-\\u4e00-\\u9fa5]+";
+		public final static String PATH = "([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?";
 //		public final static String LICENSE = "\\d{8}";
 		public final static String LICENSE = "[A-Za-z0-9_\\-\\u4e00-\\u9fa5]+";
 		
-	}
-	
-	public class Interface {
-		
-		public final static int INTERFACE_LIST = 5;
-		public final static int ALL_MENU_LIST = 6;
-		public final static int ADD_RESTAURANT_MANAGER = 7;
-		public final static int ADD_RESTAURANT_USER = 8;
-		public final static int RESTAURANT_ROLE_LIST = 9;
-		
-		public final static int RESTAURANT_SEAT_LIST = 10;
-		public final static int ADD_RESTAURANT_SEAT = 11;
-		public final static int RESTAURANT_LIST = 12;
-		public final static int ADD_RESTAURANT = 13;
-		public final static int UPDATE_RESTAURANT = 14;
-		public final static int RESTAURANT_USER_LIST = 15;
-		public final static int ADD_RESTAURANT_ROLE = 16;
-		public final static int DELETE_RESTAURANT = 17;
-		public final static int UPDATE_RESTAURANT_MANAGER = 18;
-		public final static int RESTAURANT_MANAGER_DETAIL = 19;
-		
-		
-
 	}
 	
 	public class Role{

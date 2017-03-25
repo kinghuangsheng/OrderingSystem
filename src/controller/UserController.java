@@ -19,7 +19,6 @@ import global.constant.Reason;
 import permission.Permission;
 
 @Controller
-@RequestMapping("/ajax/user")
 public class UserController extends AbsController{
 
 	@Resource
@@ -28,17 +27,22 @@ public class UserController extends AbsController{
 	private RoleDao roleDao;
 	
 	private User user;
+	
+	private String password;
 
-	@RequestMapping(value = "/login", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = "/ajax/user/login", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	public String login(String account, String password, HttpSession httpSession, Response response) {
 //		@CookieValue(value = "account", required = false) String cookieUserName,
 		user = this.userDao.selectByAccount(account);
 		if (user != null) {
 			if (user.getPassword().equals(password)) {
-				List<Integer> permissions = roleDao.selectRoleInterface(user.getRoleId());
+				List<String> interfaces = roleDao.selectRoleInterface(user.getRoleId());
+				password = user.getPassword();
+				user.setPassword(null);
+				response.setData(user);
 				httpSession.setAttribute(Constant.MapKey.USER, user);
-				httpSession.setAttribute(Constant.MapKey.PERMISSION, permissions);
+				httpSession.setAttribute(Constant.MapKey.INTERFACES, interfaces);
 			} else {
 				response.setReason(Reason.PASSW0RD_ERROR);
 			}
@@ -48,9 +52,9 @@ public class UserController extends AbsController{
 		return response.toJsonString();
 	}
 
-	@RequestMapping(value = "/restaurantUserList", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = "/ajax/user/restaurantUserList", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission(Constant.Interface.RESTAURANT_USER_LIST)
+	@Permission("/ajax/user/restaurantUserList")
 	public String restaurantUserList(HttpSession httpSession, String key, Response response) {
 		String notInRoleId = "(" + Constant.Role.SYSTEM_MANAGER + ", " + Constant.Role.RESTAURANT_MANAGER + ")";
 		response.setData(userDao.selectRestaurantUser(user.getRestaurantId(), key, notInRoleId));
@@ -58,9 +62,9 @@ public class UserController extends AbsController{
 	}
 	
 	
-	@RequestMapping(value = "/addRestaurantUser", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = "/ajax/user/addRestaurantUser", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission(Constant.Interface.ADD_RESTAURANT_USER)
+	@Permission("/ajax/user/addRestaurantUser")
 	public String addRestaurantUser(HttpSession httpSession, User newUser, Response response) {
 		String errorArg = checkAddArg(newUser);
 		if(errorArg != null){
@@ -89,9 +93,9 @@ public class UserController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/addRestaurantManager", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = "/ajax/user/addRestaurantManager", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission(Constant.Interface.ADD_RESTAURANT_MANAGER)
+	@Permission("/ajax/user/addRestaurantManager")
 	public String addRestaurantManager(User newUser, Response response) {
 		String errorArg = checkAddArg(newUser);
 		if(errorArg != null){
@@ -109,9 +113,9 @@ public class UserController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/updateRestaurantManager", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = "/ajax/user/updateRestaurantManager", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission(Constant.Interface.UPDATE_RESTAURANT_MANAGER)
+	@Permission("/ajax/user/updateRestaurantManager")
 	public String updateRestaurantManager(User newUser, Response response) {
 		String errorArg = checkUpdateArg(newUser);
 		if(errorArg != null){
@@ -128,9 +132,9 @@ public class UserController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/restaurantManagerDetail", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = "/ajax/user/restaurantManagerDetail", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission(Constant.Interface.UPDATE_RESTAURANT_MANAGER)
+	@Permission("/ajax/user/restaurantManagerDetail")
 	public String restaurantManagerDetail(int id, Response response) {
 		if(id == 0){
 			response.setReason(Reason.ERR_ARG);
@@ -154,6 +158,9 @@ public class UserController extends AbsController{
 	}
 	
 	public String checkAddArg(User newUser){
+		if(newUser.getRestaurantId() == null){
+			return "restaurantId";
+		}
 		if(StringUtil.checkFail(newUser.getName(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
 			return "name";
 		}

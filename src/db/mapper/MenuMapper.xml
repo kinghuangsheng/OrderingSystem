@@ -14,4 +14,40 @@
 		SELECT m.name , m.id , m.parent_id parentId , m.path
 		FROM menu m
 	</select>
+	
+	<select id="selectAllInterfaceIds" resultType="Integer">
+		SELECT i.id
+		FROM interface i
+	</select>
+	
+	
+	<select id="selectMenuInterface" resultType="Map">
+		select i.* , tmp.checked
+		from interface i
+		left join 
+		(select mi.interface_id, 'true' as checked from menu_interface mi where mi.menu_id= #{menuId}) tmp
+		on tmp.interface_id = i.id
+	</select>
+	
+	
+	<insert id="insertMenuInterface" parameterType="Map">  
+	    insert into menu_interface (menu_id, interface_id)   
+	    values  
+	    <foreach collection="menuInterfaceIds" item="item" index="index" separator="," >  
+	        (#{menu.id}, #{item})
+	    </foreach>  
+	</insert> 
+  
+	<delete id="deleteMenuInterface" parameterType="Map">  
+		delete from menu_interface where menu_id = #{menu.id};
+	</delete> 
+  
+	  <update id="updateMenu" parameterType="db.pojo.Menu" >
+		    UPDATE menu 
+		    <set> 
+			  <if test="menu.name != null">name = #{menu.name},</if>
+			  <if test="menu.path != null">path = #{menu.path},</if>
+			 </set>
+			 WHERE id = #{menu.id}
+	  </update>
 </mapper>

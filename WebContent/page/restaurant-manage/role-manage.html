@@ -1,37 +1,33 @@
 <!-- 新增角色弹窗 -->
-<div class="modal" id="addRoleModal" tabindex="-1" role="dialog"
-	aria-labelledby="addRoleModal" aria-hidden="true">
+<div class="modal" id="roleModal" tabindex="-1" role="dialog"
+	aria-labelledby="roleModal" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">新增角色</h4>
+				<h4 class="modal-title" >{{getModalTitle()}}</h4>
 			</div>
 			<div class="modal-body">
 				<form>
 					<div class="form-group">
-						<label for="message-text" class="control-label">角色名称</label>
-						<input v-model="name" class="form-control">
+						<label for="recipient-name" class="control-label">角色名称</label>
+						<input v-model="role.name" type="text" class="form-control">
 					</div>
-					<template v-for="(privilege, index) in prililegeList">
-					    <div class="checkbox">
-					        <label>
-					          <input type="checkbox" v-on:click="checkPrivilege(privilege, index)" v-model="privilege.checked">{{privilege.name}}
-					        </label>
-					      </div>
-					  </template>
+					
+					<div class="content_wrap" id="tree_box">
+						<ul id="roleMenuTree" class="ztree" style="width: 230px; overflow: auto;"></ul>
+					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
 				<button type="button" class="btn btn-primary"
-					@click="addRole">确定</button>
+					@click="sure">确定</button>
 			</div>
 		</div>
 	</div>
 </div>
 
-
-<div id="roleSearchDiv" class="row">
+<div id="searchDiv" class="row">
 	<div class="col-lg-6">
 		<div class="input-group">
 			<input v-model="searchKey" type="text" class="form-control"
@@ -42,113 +38,253 @@
 	</div>
 
 	<button class="btn btn-primary" type="button" data-toggle="modal"
-		data-target="#addRoleModal">新增角色</button>
+		@click="add" >新增角色</button>
+		
 </div>
 <div id="dataList" class="row">
 	<div class="col-md-12 color:#fff">
-		<table id="table">
+		<table id="table" data-search="false" data-show-refresh="false"
+			data-show-toggle="false" data-show-columns="false"
+			data-show-export="false" data-detail-view="true">
 		</table>
 	</div>
 </div>
 
 <script>
-
-
-	var roleInfoData = new Vue({
-		el : '#addRoleModal',
+	var roleModalData = new Vue({
+		el : '#roleModal',
 		data : {
-			name: "",
-			prililegeList: getPrividegeAssignable(),
+			modalType : MODAL_TYPE_ADD,
+			role : {
+				id : "",
+				name : "",
+			},
 		},
 		methods : {
-			addRole : function() {
-				$.post(
-						ajaxUrl.addRestaurantRole,
-						{
-							name: roleInfoData.name,
-							privilegeIds: roleInfoData.calcutePrivilegeIds(),
-						},
-						function(response) {
-							response = JSON.parse(response);
-							if (response.code == SUCCESS_CODE) {
-								roleInfoData.name = "",
-								$('#addRoleModal').modal('hide');
-								roleSearchData.search();
-							}else{
-								alert(response.msg);
-							}
-						}
-				);
-			}, 
-			checkPrivilege: function (privilege, index) {
+			getModalTitle : function(){
+				if(this.modalType == MODAL_TYPE_ADD){
+					return "新增角色信息";
+				}else{
+					return "修改角色信息";
+				}
+			},
+			
+			checkMenu: function (menu, index) {
 			      //alert(privilege.checked + "index = " + index);
 			 },
-			 calcutePrivilegeIds: function () {
-				 var privilegeIds = [];
-				 roleInfoData.prililegeList.forEach(function(privilege){
-					 if(privilege.checked){
-						 privilegeIds.push(privilege.id);
-					 }
-				 }); 
-		      	return JSON.stringify(privilegeIds);
-		    },
+			 
+			sure : function() {
+				if(this.modalType == MODAL_TYPE_ADD){//新增
+					var zTree = $.fn.zTree.getZTreeObj("roleMenuTree");
+					var menuIdArray = [];
+					zTree.getCheckedNodes().forEach(
+						function(node){
+							menuIdArray.push(node.id);
+						}
+					);
+					$.post(
+							ajaxUrl.addRestaurantRole,
+							{
+								name : roleModalData.role.name,
+								menuIds : JSON.stringify(menuIdArray),
+							},
+							function(response) {
+								response = JSON.parse(response);
+								if (response.code == SUCCESS_CODE) {
+									roleModalData.role = response.data;
+									$('#roleModal').modal('hide');
+									searchDivData.search();
+									$('#managerModal').modal('show');
+								}else{
+									alert(response.msg);
+								}
+							}
+					);
+				}else if(this.modalType == MODAL_TYPE_UPDATE){//修改
+					$.post(
+							ajaxUrl.updateRestaurantRole,
+							roleModalData.role,
+							function(response) {
+								response = JSON.parse(response);
+								if (response.code == SUCCESS_CODE) {
+									roleModalData.role = response.data;
+									$('#roleModal').modal('hide');
+									searchDivData.search();
+								}else{
+									alert(response.msg);
+								}
+							}
+					);
+				}
+				
+			}
 		}
+	
 	});
-	$('#addRoleModal').on('shown.bs.modal', function (e) {
-		roleInfoData.prililegeList.forEach(function(privilege, index){
-			privilege.checked = false;
-			Vue.set(roleInfoData.prililegeList, index, privilege)
-		 }); 
-	});
-	var roleSearchData = new Vue({
-		el : '#roleSearchDiv',
+	
+	var searchDivData = new Vue({
+		el : '#searchDiv',
 		data : {
 			searchKey : "",
 		},
 		methods : {
 			search : function() {
-				search(this.searchKey, false);
-			}
+				search();
+			},
+			add : function() {
+				roleModalData.modalType = MODAL_TYPE_ADD;
+				roleModalData.role.id = "";
+				clearRoleModalData();
+				$('#roleModal').modal('show');
+			},
 		}
 
 	});
-	search("", true);
-	//查找角色
-	function search(keyStr, isFirstTime) {
-		$.post(ajaxUrl.restaurantRoleList, {
-			key : keyStr
-		}, function(response) {
-			var response = JSON.parse(response);
+	window.operationTDEvents = {
+	        'click .update': function (e, value, row, index) {
+	        	roleModalData.role.id = row.id;
+	        	roleModalData.modalType = MODAL_TYPE_UPDATE;
+	    		$('#roleModal').modal('show');
+	        },
+	        
+	        'click .delete': function (e, value, row, index) {
+	        	$.post(
+						ajaxUrl.restaurantManagerDetail,
+						{
+							id : row.managerId,	
+						},
+						function(response) {
+							managerModalData.modalType = MODAL_TYPE_UPDATE;
+							response = JSON.parse(response);
+							if (response.code == SUCCESS_CODE) {
+								managerModalData.manager = response.data;
+								$('#managerModal').modal('show');
+							}else{
+								alert(response.msg);
+							}
+						}
+				);
+	        },
+	    };
+	
+	$('#table').bootstrapTable({
+		url: ajaxUrl.restaurantRoleList,
+		cache: false,
+		contentType: "text/html",
+		dataType: "json",
+		pagination: true, 						
+        search: false,
+		sidePagination: "server",
+		pageNumber:1,      //初始化加载第一页，默认第一页
+        pageSize: PAGE_SIZE,      //每页的记录行数（*）
+        smartDisplay: false,
+        contentType: "text/html",
+        queryParamsType:'', //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort 设置为 ''  在这种情况下传给服务器的参数为：pageSize,pageNumber
+		queryParams : function(params) {
+			params.key= searchDivData.searchKey;
+			return params;
+		}, 
+		//queryParams : queryParams1,
+		responseHandler: function(response) {
 			if (response.code == SUCCESS_CODE) {
-				if (isFirstTime) {
-					$('#table').bootstrapTable({
-						columns : [ {
-							align : 'center',
-							field : 'id',
-							title : 'ID'
-						}, {
-							field : 'name',
-							title : '角色名称'
-						}, ],
-						data : response.data,
-					});
-				} else {
-					$('#table').bootstrapTable('load', response.data);
-				}
-			} else {
+				response.total = response.count;
+				response.rows = response.data.list;
+			}else{
 				alert(response.msg);
 			}
-		});
+			return response;
+		},
+		columns : [ {
+			align : 'center',
+			field : 'id',
+			title : 'ID'
+		}, {
+			field : 'name',
+			title : '角色名称'
+		}, {
+			field : 'operation',
+			formatter: operationTDFormater,
+			events: operationTDEvents,
+			title : '操作'
+		}, ],
+		onDblClickRow: function(row, $element, field){
+			if("operation" == field || "manager" == field){
+				return;
+			}
+			roleModalData.modalType = MODAL_TYPE_UPDATE;
+			roleModalData.role = row;
+			$('#roleModal').modal('show');
+		},
+		onDblClickCell: function(field, value, row, $element){
+			if("operation" == field){
+				$.post(
+						ajaxUrl.deleteRestaurant,
+						{
+							id : row.id,	
+						},
+						function(response) {
+							response = JSON.parse(response);
+							if (response.code == SUCCESS_CODE) {
+								searchDivData.search();
+							}else{
+								alert(response.msg);
+							}
+						}
+				);
+			}
+		},
+	});
+	
+	$('#roleModal').on('shown.bs.modal', function (e) {
+		var setting = {
+				data : {
+					simpleData : {
+						enable : true,
+						idKey : "id",
+						pIdKey : "parentId",
+						rootPId : 0,
+					}
+				},
+				check : {
+					autoCheckTrigger : true,
+					chkboxType : {"Y": "ps", "N": "ps"},
+					chkStyle : "checkbox",
+					enable : true,
+					nocheckInherit : false,
+					radioType : "level",
+					},
+				callback: {
+					onClick: zTreeOnClick,
+				},
+			};
+			var zTree = $.fn.zTree.init($("#roleMenuTree"), setting, MENU_LIST);
+			zTree.expandAll(true);
+			
+	});
+	
+	function zTreeOnClick(event, treeId, treeNode) {
+		//if(treeNode.path){
+		    //$('#right').load(pagePathPre + treeNode.path);
+		//}
 	}
 	
-	function getPrividegeAssignable(){
-		var list= [];
-		 _PriliegeList.forEach(function(privilege){
-			 if(privilege.assignable == 1){
-			 	list.push(privilege);
-			 }
-		 }); 
-		 return list;
+	function search() {
+		$('#table').bootstrapTable('refresh',{pageNumber:1, pageSize: PAGE_SIZE, search: true,});
 	}
-	 
+	
+	function clearRoleModalData(){
+		roleModalData.role.name = "";
+	}
+	
+	function operationTDFormater(value, row, index){
+		return [
+	            '<a class="update" href="javascript:void(0);" >',
+	            '编辑',
+	            '</a>',
+	            '<a class="delete" href="javascript:void(0);">',
+	            '删除',
+	            '</a>'
+	        ].join('');
+	}
+	
 </script>

@@ -92,7 +92,7 @@
 	
 	//search("", true);
 	function search(keyStr) {
-		$('#table').bootstrapTable('refresh',{pageNumber:2, pageSize: 10, search: true,});
+		$('#table').bootstrapTable('refresh',{pageNumber:1, pageSize: 10, search: true,});
 	}
 	
 	$('#table').bootstrapTable({
@@ -104,7 +104,7 @@
         search: false,
 		sidePagination: "server",
 		pageNumber:1,      //初始化加载第一页，默认第一页
-        pageSize: 2,      //每页的记录行数（*）
+        pageSize: PAGE_SIZE,      //每页的记录行数（*）
         smartDisplay: false,
         contentType: "text/html",
         queryParamsType:'', //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort 设置为 ''  在这种情况下传给服务器的参数为：pageSize,pageNumber
@@ -114,8 +114,12 @@
 		}, 
 		//queryParams : queryParams1,
 		responseHandler: function(response) {
-			response.total = response.count;
-			response.rows = response.data.list;
+			if (response.code == SUCCESS_CODE) {
+				response.total = response.count;
+				response.rows = response.data.list;
+			}else{
+				alert(response.msg);
+			}
 			return response;
 		},
 		columns : [ {

@@ -7,6 +7,7 @@
 		$.post(ajaxUrl.roleMenuList, function(response) {
 			response = JSON.parse(response);
 			if (response.code == SUCCESS_CODE) {
+				MENU_LIST = response.data;
 				var setting = {
 						data : {
 							simpleData : {
@@ -20,10 +21,10 @@
 							onClick: zTreeOnClick
 						}
 					};
-					var treeNodes = response.data;
-					var zTree = $.fn.zTree.init($("#tree"), setting, treeNodes);
+					var zTree = $.fn.zTree.init($("#tree"), setting, MENU_LIST);
+					zTree.expandAll(true);
 			} else {
-				alert("登录失败:" + response.msg);
+				alert(response.msg);
 			}
 		});
 	});

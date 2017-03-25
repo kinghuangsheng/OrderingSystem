@@ -17,15 +17,14 @@ import global.constant.Reason;
 import permission.Permission;
 
 @Controller
-@RequestMapping("/ajax/seat")
 public class SeatController extends AbsController{
 
 	@Resource
 	private SeatDao seatDao;
 	
-	@RequestMapping(value = "/restaurantSeatList", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = "/ajax/seat/restaurantSeatList", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission(Constant.Interface.RESTAURANT_SEAT_LIST)
+	@Permission("/ajax/seat/addRestaurantSeat")
 	public String restaurantSeatList(HttpSession httpSession, String key, Response response) {
 		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 		response.setData(seatDao.selectSeat(user.getRestaurantId(), key));
@@ -33,9 +32,9 @@ public class SeatController extends AbsController{
 	}
 	
 	
-	@RequestMapping(value = "/addRestaurantSeat", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = "/ajax/seat/addRestaurantSeat", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission(Constant.Interface.ADD_RESTAURANT_SEAT)
+	@Permission("/ajax/seat/addRestaurantSeat")
 	public String addRestaurantSeat(HttpSession httpSession, Seat newSeat, Response response) {
 		String errorArg = checkArg(newSeat);
 		if(errorArg != null){
