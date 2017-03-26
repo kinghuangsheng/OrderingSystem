@@ -1,126 +1,107 @@
-<!-- 新增席位弹窗 -->
-<div class="modal" id="addInterfaceModal" tabindex="-1" role="dialog"
-	aria-labelledby="addInterfaceModal" aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title">新增接口</h4>
-			</div>
-			<div class="modal-body">
-				<form>
-					<div class="form-group">
-						<label for="message-text" class="control-label">接口名称</label>
-						<input v-model="name" class="form-control">
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-				<button type="button" class="btn btn-primary"
-					@click="addInterface">确定</button>
-			</div>
+<div>
+	<div id="vueDataDiv">
+		<div>
+			<label for="message-text">名称</label> <input v-model="row.name">
+			<label for="message-text">路径</label> <input v-model="row.path">
 		</div>
-	</div>
-</div>
-
-
-<div><p>接口前缀为：http://IP:Port/OrderingSystem</p></div>
-
-<div id="interfaceSearchDiv" class="row">
-		<div class="col-lg-6">
-			<div class="input-group">
-				<input v-model="searchKey" type="text" class="form-control"
-					placeholder="接口名称"> <span class="input-group-btn">
-					<button @click="search" class="btn btn-secondary" type="button">查询</button>
-				</span>
+		<br />
+		<div>
+			<div class="input-group" class="row">
+				<input v-model="searchKey" type="text" placeholder="接口名称"> 
+				<button @click="search" class="btn btn-secondary" type="button">查询</button>
+				<button @click="add" class="btn btn-primary">新增</button>
+				<button @click="update" class="btn btn-primary">修改</button>
+				<button @click="del" class="btn btn-primary">删除</button>
 			</div>
-		</div> 
+			<p>接口前缀为：http://IP:Port/OrderingSystem</p>
+		</div>
+		
+	</div>
 
-	<button class="btn btn-primary" type="button" data-toggle="modal"
-		data-target="#addInterfaceModal">新增接口</button>
+
 </div>
 <div id="dataList" class="row">
 	<div class="col-md-12 color:#fff">
-		<table
-			id="table"
-		>
+		<table id="table">
 		</table>
 	</div>
 </div>
 
 <script>
-
-	var interfaceInfoData = new Vue({
-		el : '#addInterfaceModal',
-		data : {
-			name: "",
-			customerNum: "",
-		},
-		methods : {
-			addInterface : function() {
-				$.get(
-						ajaxUrl.addInterface,
-						interfaceInfoData.$data,
-						function(response) {
-							response = JSON.parse(response);
-							if (response.code == SUCCESS_CODE) {
-								interfaceInfoData.name = "",
-								interfaceInfoData.customerNum = "",
-								$('#addInterfaceModal').modal('hide');
-								interfaceSearchData.search();
-							}else{
-								alert(response.msg + "----" + response.data);
-							}
-						}
-				);
-			}
-		}
-
-	});
-	var interfaceSearchData = new Vue({
-		el : '#interfaceSearchDiv',
+	var vueData = new Vue({
+		el : '#vueDataDiv',
 		data : {
 			searchKey : "",
+			row:{
+				name: "",
+				path: "", 
+				id: "",
+			},
 		},
 		methods : {
 			search : function() {
 				search(this.searchKey, false);
-			}
+			},
+			add : function() {
+				$.get(ajaxUrl.addInterface, vueData.row, function(response) {
+					var response = JSON.parse(response);
+					alert(response.msg + "----" + response.data);
+				});
+			},
+			del : function() {
+				$.get(ajaxUrl.deleteInterface, vueData.row, function(response) {
+					var response = JSON.parse(response);
+					alert(response.msg + "----" + response.data);
+				});
+			},
+			update : function() {
+				$.get(ajaxUrl.updateInterface, vueData.row, function(response) {
+					var response = JSON.parse(response);
+					alert(response.msg + "----" + response.data);
+				});
+			},
 		}
 
 	});
-	
+
 	//search("", true);
 	function search(keyStr) {
-		$('#table').bootstrapTable('refresh',{pageNumber:1, pageSize: 10, search: true,});
+		$('#table').bootstrapTable('refresh', {
+			pageNumber : 1,
+			pageSize : 10,
+			search : true,
+		});
 	}
-	
+
 	$('#table').bootstrapTable({
-		url: ajaxUrl.interfaceList,
-		cache: false,
-		contentType: "text/html",
-		dataType: "json",
-		pagination: true, 						
-        search: false,
-		sidePagination: "server",
-		pageNumber:1,      //初始化加载第一页，默认第一页
-        pageSize: PAGE_SIZE,      //每页的记录行数（*）
-        smartDisplay: false,
-        contentType: "text/html",
-        queryParamsType:'', //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort 设置为 ''  在这种情况下传给服务器的参数为：pageSize,pageNumber
+		url : ajaxUrl.interfaceList,
+		cache : false,
+		contentType : "text/html",
+		dataType : "json",
+		pagination : true,
+		search : false,
+		sidePagination : "server",
+		pageNumber : 1, //初始化加载第一页，默认第一页
+		pageSize : PAGE_SIZE, //每页的记录行数（*）
+		smartDisplay : false,
+		contentType : "text/html",
+		queryParamsType : '', //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort 设置为 ''  在这种情况下传给服务器的参数为：pageSize,pageNumber
 		queryParams : function(params) {
-			params.key= interfaceSearchData.searchKey;
+			params.key = vueData.searchKey;
 			return params;
-		}, 
+		},
 		//queryParams : queryParams1,
-		responseHandler: function(response) {
+		responseHandler : function(response) {
 			if (response.code == SUCCESS_CODE) {
 				response.total = response.count;
 				response.rows = response.data.list;
-			}else{
+			} else {
 				alert(response.msg + "----" + response.data);
 			}
 			return response;
+		},
+		onClickRow: function(row, $element, field){
+			vueData.row = row;
 		},
 		columns : [ {
 			align : 'center',
@@ -134,6 +115,6 @@
 		}, {
 			field : 'path',
 			title : '请求路径'
-		},],
+		}, ],
 	});
 </script>

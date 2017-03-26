@@ -29,13 +29,18 @@ public class RoleController extends AbsController{
 	
 	@RequestMapping(value = "/ajax/role/restaurantRoleList", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/role/addRestaurantRole")
+	@Permission("/ajax/role/restaurantRoleList")
 	public String restaurantUserList(HttpSession httpSession, String key, Page page, Response response) {
-		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put(Constant.MapKey.COUNT, roleDao.selectRoleCount(user.getRestaurantId(), key));
-		map.put(Constant.MapKey.LIST, roleDao.selectRole(user.getRestaurantId(), key, page));
-		response.setData(map);
+		
+		if(page.checkArgSuccess("name", "id")){
+			User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put(Constant.MapKey.COUNT, roleDao.selectRoleCount(user.getRestaurantId(), key));
+			map.put(Constant.MapKey.LIST, roleDao.selectRole(user.getRestaurantId(), key, page));
+			response.setData(map);
+		}else{
+			response.setReason(Reason.ERR_ARG);
+		}
 		return response.toJsonString();
 	}
 	
@@ -44,7 +49,7 @@ public class RoleController extends AbsController{
 	@ResponseBody
 	@Permission("/ajax/role/addRestaurantRole")
 	public String addRestaurantRole(HttpSession httpSession, Role newRole, String menuIds, Response response) {
-		String errorArg = checkArg(newRole);
+		String errorArg = checkAddArg(newRole);
 		if(errorArg != null){
 			response.setReason(Reason.ERR_ARG);
 			response.setData(errorArg);
@@ -78,10 +83,53 @@ public class RoleController extends AbsController{
 		}
 		return response.toJsonString();
 	}
+	@RequestMapping(value = "/ajax/role/updateRestaurantRole", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Permission("/ajax/role/updateRestaurantRole")
+	public String updateRestaurantRole(HttpSession httpSession, Role newRole, String menuIds, Response response) {
+		String errorArg = checkUpdateArg(newRole);
+		if(errorArg != null){
+			response.setReason(Reason.ERR_ARG);
+			response.setData(errorArg);
+		}else{
+			List<Integer> roleMenuids = null;
+			try{
+				roleMenuids = (List<Integer>) JsonUtil.parseArray(menuIds, Integer.class);
+			}catch(Exception e){
+				roleMenuids = null;
+			}
+			if(roleMenuids == null || roleMenuids.isEmpty()){
+				response.setReason(Reason.ERR_ARG);
+				response.setData("menuIds");
+				return response.toJsonString();
+			}
+			User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
+			List<Integer> userMenuIds = roleDao.selectRoleMenuIds(user.getRoleId());
+			if(userMenuIds == null || !userMenuIds.containsAll(roleMenuids)){
+				response.setReason(Reason.ERR_ARG);
+				response.setData("menuIds");
+				return response.toJsonString();
+			}
+			newRole.setRestaurantId(user.getRestaurantId());
+			int rowNum = roleDao.updateRole(newRole);
+			if(rowNum == 0){
+				response.setReason(Reason.ERR_ARG);
+			}else{
+				roleDao.deleteRoleMenu(newRole.getId());
+				rowNum = roleDao.insertRoleMenu(newRole.getId(), roleMenuids);
+			}
+		}
+		return response.toJsonString();
+	}
 	
+	public String checkUpdateArg(Role role){
+		if(StringUtil.isEmpty(role.getId())){
+			return "id";
+		}
+		return checkAddArg(role);
+	}
 	
-	
-	public String checkArg(Role role){
+	public String checkAddArg(Role role){
 		if(StringUtil.checkFail(role.getName(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
 			return "name";
 		}

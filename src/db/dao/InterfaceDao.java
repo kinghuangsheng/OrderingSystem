@@ -13,7 +13,10 @@ public interface InterfaceDao {
 	
 	List<Map<String, Object>> selectInterfaceList(@Param("key")String key, @Param("page")Page page);
 	int selectInterfaceCount(@Param("key")String key);
-	int insertInterface(@Param("interface") Interface i);
+	int insertInterface(Interface i);
+	int updateInterface(Interface i);
+	int deleteInterface(@Param("id")Integer id);
+	int deleteInterfaceMenu(Integer id);
 	
 
 }

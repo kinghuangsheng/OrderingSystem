@@ -37,6 +37,20 @@ public class MenuController extends AbsController{
 		return response.toJsonString();
 	}
 	
+	@RequestMapping(value = "/ajax/menu/authorizedRoleMenuList", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Permission("/ajax/menu/authorizedRoleMenuList")
+	public String authorizedRoleMenuList(HttpSession httpSession, Integer roleId, Response response) {
+		if(StringUtil.isEmpty(roleId)){
+			response.setReason(Reason.ERR_ARG);
+			response.setData("roleId");
+			return response.toJsonString();
+		}
+		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
+		response.setData(menuDao.selectAuthorizedRoleMenu(user.getRoleId(), roleId));
+		return response.toJsonString();
+	}
+	
 	@RequestMapping(value = "/ajax/menu/allList", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Permission("/ajax/menu/allList")
@@ -48,7 +62,12 @@ public class MenuController extends AbsController{
 	@RequestMapping(value = "/ajax/menu/menuInterfaceList", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Permission("/ajax/menu/menuInterfaceList")
-	public String menuInterfaceList(HttpSession httpSession, int menuId, Response response) {
+	public String menuInterfaceList(HttpSession httpSession, Integer menuId, Response response) {
+		if(StringUtil.isEmpty(menuId)){
+			response.setReason(Reason.ERR_ARG);
+			response.setData("menuId");
+			return response.toJsonString();
+		}
 		response.setData(menuDao.selectMenuInterface(menuId));
 		return response.toJsonString();
 	}

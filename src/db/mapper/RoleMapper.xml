@@ -16,16 +16,18 @@
 		FROM 
 			role r 
 		WHERE
-			restaurant_id = #{restaurantId} 
+			restaurant_id = #{restaurantId} and r.id > 0
 	        <if test="key != null">
 	        and r.name like concat('%',#{key},'%')
 	        </if>
+	    order by 
 	    <if test="page.sortName != null">
-	    order by ${page.sortName} ${page.sortOrder}
+	    	r.${page.sortName} ${page.sortOrder}, 
 	    </if>
+	    r.id desc
 	    LIMIT #{page.start} , #{page.pageSize}
 	</select>
-	<select id="selectRoleCount" resultType="Map">
+	<select id="selectRoleCount" resultType="int">
 		SELECT count(r.id)
 		FROM 
 			role r 
@@ -72,11 +74,20 @@
   
   
   <insert id="insertRoleMenu" useGeneratedKeys="true" parameterType="java.util.List">  
-    insert into role_menu (role_id, menu_id)   
-    values  
-    <foreach collection="menus" item="item" index="index" separator="," >  
-        (#{roleId}, #{item})  
-    </foreach>  
-</insert> 
-	
+	    insert into role_menu (role_id, menu_id)   
+	    values  
+	    <foreach collection="menus" item="item" index="index" separator="," >  
+	        (#{roleId}, #{item})  
+	    </foreach>  
+	</insert> 
+	<update id="updateRole" parameterType="db.pojo.Role" >
+		    UPDATE role 
+		    <set> 
+			  <if test="name != null">name = #{name},</if>
+			 </set>
+			 WHERE id = #{id} and restaurant_id = #{restaurantId}
+	  </update>
+	<delete id="deleteRoleMenu" parameterType="Integer">  
+		delete from role_menu where role_id = #{id};
+	</delete> 
 </mapper>

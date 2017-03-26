@@ -32,4 +32,21 @@
 	    FROM DUAL 
 		WHERE NOT EXISTS (SELECT id FROM interface WHERE name = #{name} or path = #{path})
   </insert>
+  
+  <update id="updateInterface" parameterType="db.pojo.Interface" >
+	    UPDATE interface 
+	    <set> 
+		  <if test="name != null">name = #{name},</if>
+		  <if test="path != null">path = #{path},</if>
+		 </set>
+		 WHERE id = #{id}
+  </update>
+  
+  
+  <delete id="deleteInterface">
+  		delete from interface where id = #{id}
+  </delete>
+  <delete id="deleteInterfaceMenu">
+  		delete from menu_interface where interface_id = #{id}
+  </delete>
 </mapper>

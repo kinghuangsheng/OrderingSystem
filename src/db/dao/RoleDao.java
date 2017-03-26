@@ -12,7 +12,7 @@ public interface RoleDao {
 	
 	
 	List<Map<String, Object>> selectRole(@Param("restaurantId")int restaurantId, @Param("key")String key, @Param("page")Page page);
-	List<Map<String, Object>> selectRoleCount(@Param("restaurantId")int restaurantId, @Param("key")String key);
+	int selectRoleCount(@Param("restaurantId")int restaurantId, @Param("key")String key);
 	
 	int insertRole(Role role);
 	
@@ -23,5 +23,9 @@ public interface RoleDao {
 	List<String> selectRoleInterface(@Param("roleId")int roleId);
 	
 	List<Integer> selectRoleMenuIds(@Param("roleId")int roleId);
+	
+	int updateRole(Role newRole);
+	
+	int deleteRoleMenu(int roldId);
 
 }

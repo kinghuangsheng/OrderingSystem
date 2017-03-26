@@ -74,49 +74,35 @@
 			 },
 			 
 			sure : function() {
-				if(this.modalType == MODAL_TYPE_ADD){//新增
-					var zTree = $.fn.zTree.getZTreeObj("roleMenuTree");
-					var menuIdArray = [];
-					zTree.getCheckedNodes().forEach(
-						function(node){
-							menuIdArray.push(node.id);
-						}
-					);
-					$.get(
-							ajaxUrl.addRestaurantRole,
-							{
-								name : roleModalData.role.name,
-								menuIds : JSON.stringify(menuIdArray),
-							},
-							function(response) {
-								response = JSON.parse(response);
-								if (response.code == SUCCESS_CODE) {
-									roleModalData.role = response.data;
-									$('#roleModal').modal('hide');
-									searchDivData.search();
-									$('#managerModal').modal('show');
-								}else{
-									alert(response.msg + "----" + response.data);
-								}
-							}
-					);
-				}else if(this.modalType == MODAL_TYPE_UPDATE){//修改
-					$.get(
-							ajaxUrl.updateRestaurantRole,
-							roleModalData.role,
-							function(response) {
-								response = JSON.parse(response);
-								if (response.code == SUCCESS_CODE) {
-									roleModalData.role = response.data;
-									$('#roleModal').modal('hide');
-									searchDivData.search();
-								}else{
-									alert(response.msg + "----" + response.data);
-								}
-							}
-					);
+				var url = ajaxUrl.addRestaurantRole;
+				if(this.modalType == MODAL_TYPE_UPDATE){//修改
+					url = ajaxUrl.updateRestaurantRole;
 				}
-				
+				var zTree = $.fn.zTree.getZTreeObj("roleMenuTree");
+				var menuIdArray = [];
+				zTree.getCheckedNodes().forEach(
+					function(node){
+						menuIdArray.push(node.id);
+					}
+				);
+				$.get(
+						url,
+						{
+							id: roleModalData.role.id,
+							name : roleModalData.role.name,
+							menuIds : JSON.stringify(menuIdArray),
+						},
+						function(response) {
+							response = JSON.parse(response);
+							if (response.code == SUCCESS_CODE) {
+								roleModalData.role = response.data;
+								$('#roleModal').modal('hide');
+								searchDivData.search();
+							}else{
+								alert(response.msg + "----" + response.data);
+							}
+						}
+				);
 			}
 		}
 	
@@ -142,28 +128,11 @@
 	});
 	window.operationTDEvents = {
 	        'click .update': function (e, value, row, index) {
-	        	roleModalData.role.id = row.id;
-	        	roleModalData.modalType = MODAL_TYPE_UPDATE;
-	    		$('#roleModal').modal('show');
+	        	
 	        },
 	        
 	        'click .delete': function (e, value, row, index) {
-	        	$.get(
-						ajaxUrl.restaurantManagerDetail,
-						{
-							id : row.managerId,	
-						},
-						function(response) {
-							managerModalData.modalType = MODAL_TYPE_UPDATE;
-							response = JSON.parse(response);
-							if (response.code == SUCCESS_CODE) {
-								managerModalData.manager = response.data;
-								$('#managerModal').modal('show');
-							}else{
-								alert(response.msg + "----" + response.data);
-							}
-						}
-				);
+	        	
 	        },
 	    };
 	
@@ -208,60 +177,89 @@
 			title : '操作'
 		}, ],
 		onDblClickRow: function(row, $element, field){
-			if("operation" == field || "manager" == field){
-				return;
-			}
 			roleModalData.modalType = MODAL_TYPE_UPDATE;
 			roleModalData.role = row;
 			$('#roleModal').modal('show');
 		},
 		onDblClickCell: function(field, value, row, $element){
-			if("operation" == field){
-				$.get(
-						ajaxUrl.deleteRestaurant,
-						{
-							id : row.id,	
-						},
-						function(response) {
-							response = JSON.parse(response);
-							if (response.code == SUCCESS_CODE) {
-								searchDivData.search();
-							}else{
-								alert(response.msg + "----" + response.data);
-							}
-						}
-				);
-			}
+			
 		},
 	});
 	
 	$('#roleModal').on('shown.bs.modal', function (e) {
-		var setting = {
-				data : {
-					simpleData : {
-						enable : true,
-						idKey : "id",
-						pIdKey : "parentId",
-						rootPId : 0,
-					}
-				},
-				check : {
-					autoCheckTrigger : true,
-					chkboxType : {"Y": "ps", "N": "ps"},
-					chkStyle : "checkbox",
-					enable : true,
-					nocheckInherit : false,
-					radioType : "level",
+		if(roleModalData.modalType == MODAL_TYPE_UPDATE){
+			$.get(
+					ajaxUrl.authorizedRoleMenuList,
+					{
+						roleId : roleModalData.role.id,	
 					},
-				callback: {
-					onClick: zTreeOnClick,
-				},
-			};
-			var zTree = $.fn.zTree.init($("#roleMenuTree"), setting, MENU_LIST);
-			zTree.expandAll(true);
-			
+					function(response) {
+						response = JSON.parse(response);
+						if (response.code == SUCCESS_CODE) {
+							var setting = {
+									data : {
+										simpleData : {
+											enable : true,
+											idKey : "id",
+											pIdKey : "parentId",
+											rootPId : 0,
+										},
+										key: {
+											checked: "authorized"
+										}
+
+									},
+									check : {
+										autoCheckTrigger : true,
+										chkboxType : {"Y": "ps", "N": "ps"},
+										chkStyle : "checkbox",
+										enable : true,
+										nocheckInherit : false,
+										radioType : "level",
+										},
+									callback: {
+										onClick: zTreeOnClick,
+									},
+								};
+								var zTree = $.fn.zTree.init($("#roleMenuTree"), setting, response.data);
+								zTree.expandAll(true);
+						}else{
+							alert(response.msg + "----" + response.data);
+						}
+					}
+			);
+		}else{
+			var setting = {
+					data : {
+						simpleData : {
+							enable : true,
+							idKey : "id",
+							pIdKey : "parentId",
+							rootPId : 0,
+						},
+					},
+					check : {
+						autoCheckTrigger : true,
+						chkboxType : {"Y": "ps", "N": "ps"},
+						chkStyle : "checkbox",
+						enable : true,
+						nocheckInherit : false,
+						radioType : "level",
+						},
+					callback: {
+						onClick: zTreeOnClick,
+					},
+				};
+				var zTree = $.fn.zTree.init($("#roleMenuTree"), setting, MENU_LIST);
+				zTree.expandAll(true);
+		}
 	});
 	
+	
+	
+	$('#roleModal').on('hidden.bs.modal', function (e) {
+		$.fn.zTree.destroy("roleMenuTree");}
+	);
 	function zTreeOnClick(event, treeId, treeNode) {
 		//if(treeNode.path){
 		    //$('#right').load(pagePathPre + treeNode.path);

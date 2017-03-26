@@ -6,6 +6,7 @@ var ajaxUrl = {
 		addRestaurantManager: ajaxPath + "user/addRestaurantManager",
 		
 		roleMenuList: ajaxPath + "menu/roleMenuList",
+		authorizedRoleMenuList: ajaxPath + "menu/authorizedRoleMenuList",
 		allMenuList: ajaxPath + "menu/allList",
 		menuInterfaceList: ajaxPath + "menu/menuInterfaceList",
 		updateMenu: ajaxPath + "menu/update",
@@ -18,6 +19,9 @@ var ajaxUrl = {
 		deleteRestaurant: ajaxPath + "restaurant/delete",
 		
 		interfaceList: ajaxPath + "interface/list",
+		addInterface: ajaxPath + "interface/add",
+		updateInterface: ajaxPath + "interface/update",
+		deleteInterface: ajaxPath + "interface/delete",
 		
 		
 		restaurantRoleList: ajaxPath + "role/restaurantRoleList",
