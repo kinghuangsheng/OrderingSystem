@@ -188,6 +188,7 @@
 				
 				if(this.modalType == MODAL_TYPE_ADD){//新增
 					var a = managerModalData.manager;
+				debugger;
 					$.get(
 							ajaxUrl.addRestaurantManager,
 							managerModalData.manager,
@@ -387,75 +388,6 @@
 		restaurantModalData.restaurant.name = "";
 		restaurantModalData.restaurant.license = "";
 	}
-	
-	/* function search(keyStr, isFirstTime) {
-		$.get(ajaxUrl.restaurantList, {
-			key : keyStr
-		}, function(response) {
-			var response = JSON.parse(response);
-			if (response.code == SUCCESS_CODE) {
-				if (isFirstTime) {
-					$('#table').bootstrapTable({
-						columns : [ {
-							align : 'center',
-							field : 'id',
-							title : 'ID'
-						}, {
-							field : 'name',
-							title : '餐厅名称'
-						}, {
-							field : 'license',
-							title : '营业执照'
-						}, {
-							field : 'managerName',
-							formatter: managerTDFormater,
-							events: managerTDEvents,
-							title : '管理员'
-						},  {
-							field : 'state',
-							title : '状态'
-						}, {
-							field : 'operation',
-							formatter: operationTDFormater,
-							//events: operationTDEvents,
-							title : '操作'
-						}, ],
-						data : response.data,
-						onDblClickRow: function(row, $element, field){
-							if("operation" == field || "manager" == field){
-								return;
-							}
-							restaurantModalData.modalType = MODAL_TYPE_UPDATE;
-							restaurantModalData.restaurant = row;
-							$('#restaurantModal').modal('show');
-						},
-						onDblClickCell: function(field, value, row, $element){
-							if("operation" == field){
-								$.get(
-										ajaxUrl.deleteRestaurant,
-										{
-											id : row.id,	
-										},
-										function(response) {
-											response = JSON.parse(response);
-											if (response.code == SUCCESS_CODE) {
-												searchDivData.search();
-											}else{
-												alert(response.msg + "----" + response.data);
-											}
-										}
-								);
-							}
-						},
-					});
-				} else {
-					$('#table').bootstrapTable('load', response.data);
-				}
-			} else {
-				alert(response.msg + "----" + response.data);
-			}
-		});
-	} */
 	
 	function managerTDFormater(value, row, index){
 		if(value){

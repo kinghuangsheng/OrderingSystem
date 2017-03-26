@@ -1,13 +1,10 @@
 package controller;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -29,11 +26,11 @@ public class RestaurantController extends AbsController{
 	@RequestMapping(value = "/ajax/restaurant/list", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Permission("/ajax/restaurant/list")
-	public String list(String key, Page page, Response response) {
-		if(page.checkArgSuccess("name", "license", "id")){
+	public String list(String key, Page page, Integer state, Response response) {
+		if(page.checkSortNameSuccess("name", "license", "id")){
 			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put(Constant.MapKey.COUNT, restaurantDao.selectRestaurantCount(key));
-			map.put(Constant.MapKey.LIST, restaurantDao.selectRestaurant(key, page));
+			map.put(Constant.MapKey.COUNT, restaurantDao.selectRestaurantCount(key, state));
+			map.put(Constant.MapKey.LIST, restaurantDao.selectRestaurant(key, state, page));
 			response.setData(map);
 		}else{
 			response.setReason(Reason.ERR_ARG);
@@ -86,7 +83,7 @@ public class RestaurantController extends AbsController{
 			response.setReason(Reason.ERR_ARG);
 			response.setData("id");
 		}else{
-			int rowNum = restaurantDao.deleteRestaurant(restaurant.getId(), Constant.Restuarant.RESTUARANT_STATE_DELETE);
+			int rowNum = restaurantDao.deleteRestaurant(restaurant.getId(), Constant.State.Restaurant.FORBIDDEN);
 			if(rowNum == 0){
 				response.setReason(Reason.ERR_ARG);
 			}

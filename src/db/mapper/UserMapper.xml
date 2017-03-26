@@ -26,17 +26,34 @@
 	</select>
 	
 	<select id="selectRestaurantUser" resultType="Map">
-		select u.id, u.account, u.name, u.password, role.name 'roleName'
+		select u.id, u.account, u.name, u.password, u.phone, role.name roleName, role.id roleId
 		from user u
 		LEFT JOIN role on role.id = u.role_id
-		where u.restaurant_id = #{restaurantId}
+		where u.restaurant_id = #{restaurantId} and u.role_id > 0 
 		<if test="state != null">
          and u.state = #{state} 
          </if>
 		<if test="key != null">
          and (u.account like concat('%',#{key},'%') or u.name like concat('%',#{key},'%'))
          </if>
-		ORDER BY u.id
+		ORDER BY
+		<if test="page.sortName != null">
+	     u.${page.sortName} ${page.sortOrder},
+	    </if>
+	    u.id desc
+	    LIMIT #{page.start} , #{page.pageSize}
+	</select>
+	<select id="selectRestaurantUserCount" resultType="Integer">
+		select count(u.id)
+		from user u
+		LEFT JOIN role on role.id = u.role_id
+		where u.restaurant_id = #{restaurantId} and u.role_id > 0 
+		<if test="state != null">
+         and u.state = #{state} 
+         </if>
+		<if test="key != null">
+         and (u.account like concat('%',#{key},'%') or u.name like concat('%',#{key},'%'))
+         </if>
 	</select>
 	
 	<insert id="insertUser" parameterType="db.pojo.User" useGeneratedKeys="true" keyProperty="id" >
@@ -54,7 +71,7 @@
 		  <if test="roleId != null">role_id = #{roleId},</if>
 		  <if test="phone != null">phone = #{phone},</if>
 		 </set>
-		 WHERE id = #{id}
+		 WHERE id = #{id} and restaurant_id = #{restaurantId}
   </update>
   
 </mapper>

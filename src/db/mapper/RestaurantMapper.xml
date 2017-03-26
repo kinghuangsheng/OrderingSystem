@@ -11,6 +11,9 @@
         <if test="key != null">
         and (r.name like concat('%',#{key},'%') or r.license like concat('%',#{key},'%'))
         </if>
+        <if test="state != null">
+         and r.state = #{state}
+        </if>
         order by
         <if test="page.sortName != null">
 	     r.${page.sortName} ${page.sortOrder},
@@ -24,8 +27,12 @@
 		SELECT 
 		count(r.id) 
 		FROM restaurant r 
+		where r.id > 0
         <if test="key != null">
-        where r.name like concat('%',#{key},'%') or r.license like concat('%',#{key},'%') 
+         and (r.name like concat('%',#{key},'%') or r.license like concat('%',#{key},'%') )
+        </if>
+        <if test="state != null">
+         and r.state = #{state}
         </if>
 	</select>
 	

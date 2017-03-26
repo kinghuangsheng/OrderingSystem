@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -10,6 +11,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import bean.Page;
 import bean.Response;
 import common.util.StringUtil;
 import db.dao.RoleDao;
@@ -35,23 +37,23 @@ public class UserController extends AbsController{
 //		@CookieValue(value = "account", required = false) String cookieUserName,
 		user = this.userDao.selectByAccount(account);
 		if (user != null) {
-			if(user.getState() == Constant.State.USER_NORMAL){
+			if(user.getState() == Constant.State.User.NORMAL){
 				if (user.getPassword().equals(password)) {
 					//检查餐厅是否停用
 					int restaurantState = userDao.selectRestaurantState(user.getRestaurantId());
-					if(restaurantState == Constant.State.RESTAURANT_NORMAL){
+					if(restaurantState == Constant.State.Restaurant.NORMAL){
 						List<String> interfaces = roleDao.selectRoleInterface(user.getRoleId());
 						user.setPassword(null);
 						response.setData(user);
 						httpSession.setAttribute(Constant.MapKey.USER, user);
 						httpSession.setAttribute(Constant.MapKey.INTERFACES, interfaces);
-					}else if(restaurantState == Constant.State.RESTAURANT_FORBIDDEN){
+					}else if(restaurantState == Constant.State.Restaurant.FORBIDDEN){
 						response.setReason(Reason.RESTAURANT_FORBIDDEN);
 					}
 				} else {
 					response.setReason(Reason.PASSW0RD_ERROR);
 				}
-			}else if(user.getState() == Constant.State.USER_FORBIDDEN){
+			}else if(user.getState() == Constant.State.User.FORBIDDEN){
 				response.setReason(Reason.ACCOUNT_FORBIDDEN);
 			}
 		} else {
@@ -63,8 +65,15 @@ public class UserController extends AbsController{
 	@RequestMapping(value = "/ajax/user/restaurantUserList", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Permission("/ajax/user/restaurantUserList")
-	public String restaurantUserList(HttpSession httpSession, String key, Integer state, Response response) {
-		response.setData(userDao.selectRestaurantUser(user.getRestaurantId(), key, state));
+	public String restaurantUserList(HttpSession httpSession, String key, Integer state, Page page, Response response) {
+		if(page.checkSortNameSuccess("name", "license", "id")){
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put(Constant.MapKey.COUNT, userDao.selectRestaurantUserCount(user.getRestaurantId(), key, state));
+			map.put(Constant.MapKey.LIST, userDao.selectRestaurantUser(user.getRestaurantId(), key, state, page));
+			response.setData(map);
+		}else{
+			response.setReason(Reason.ERR_ARG);
+		}
 		return response.toJsonString();
 	}
 	
@@ -73,37 +82,18 @@ public class UserController extends AbsController{
 	@ResponseBody
 	@Permission("/ajax/user/addRestaurantUser")
 	public String addRestaurantUser(HttpSession httpSession, User newUser, Response response) {
-		String errorArg = checkAddArg(newUser);
-		if(errorArg != null){
-			response.setReason(Reason.ERR_ARG);
-			response.setData(errorArg);
-		}else{
-			if(newUser.getRoleId() == null){
-				response.setReason(Reason.ERR_ARG);
-				response.setData("roleId");
-				return response.toJsonString();
-			}
-			int roleIdNum = roleDao.selectRoleIdNum(user.getRestaurantId(), newUser.getRoleId());
-			if(roleIdNum == 0){
-				response.setReason(Reason.ERR_ARG);
-				response.setData("roleId");
-				return response.toJsonString();
-			}
-			newUser.setRestaurantId(user.getRestaurantId());
-			int rowNum = userDao.insertUser(newUser);
-			if(rowNum == 0){
-				response.setReason(Reason.ACCOUNT_REPEATED);
-			}else{
-				response.setData(newUser);
-			}
-		}
-		return response.toJsonString();
+		newUser.setRestaurantId(user.getRestaurantId());
+		return addUser(newUser, response);
 	}
 	
 	@RequestMapping(value = "/ajax/user/addRestaurantManager", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Permission("/ajax/user/addRestaurantManager")
 	public String addRestaurantManager(User newUser, Response response) {
+		return addUser(newUser, response);
+	}
+	
+	private String addUser(User newUser, Response response){
 		String errorArg = checkAddArg(newUser);
 		if(errorArg != null){
 			response.setReason(Reason.ERR_ARG);
@@ -118,11 +108,22 @@ public class UserController extends AbsController{
 		}
 		return response.toJsonString();
 	}
+	@RequestMapping(value = "/ajax/user/updateRestaurantUser", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Permission("/ajax/user/updateRestaurantUser")
+	public String updateRestaurantUser(User newUser, Response response) {
+		newUser.setRestaurantId(user.getRestaurantId());
+		return updateUser(newUser, response);
+	}
 	
 	@RequestMapping(value = "/ajax/user/updateRestaurantManager", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Permission("/ajax/user/updateRestaurantManager")
 	public String updateRestaurantManager(User newUser, Response response) {
+		return updateUser(newUser, response);
+	}
+	
+	private String updateUser(User newUser, Response response){
 		String errorArg = checkUpdateArg(newUser);
 		if(errorArg != null){
 			response.setReason(Reason.ERR_ARG);
@@ -136,6 +137,7 @@ public class UserController extends AbsController{
 			}
 		}
 		return response.toJsonString();
+	
 	}
 	
 	@RequestMapping(value = "/ajax/user/restaurantManagerDetail", produces = "text/html;charset=UTF-8")

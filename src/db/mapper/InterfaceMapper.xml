@@ -7,7 +7,7 @@
 		FROM  interface i
 	    <if test="key != null">
         WHERE
-        i.name like concat('%',#{key},'%') or i.path like concat('%',#{key},'%')
+        (i.name like concat('%',#{key},'%') or i.path like concat('%',#{key},'%'))
 	    </if>
 	    order by
         <if test="page.sortName != null">
@@ -22,7 +22,7 @@
 		FROM  interface i
         <if test="key != null">
         WHERE
-        i.name like concat('%',#{key},'%') or i.path like concat('%',#{key},'%')
+        (i.name like concat('%',#{key},'%') or i.path like concat('%',#{key},'%'))
         </if>
 	</select>
 	

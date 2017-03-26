@@ -32,7 +32,7 @@ public class RoleController extends AbsController{
 	@Permission("/ajax/role/restaurantRoleList")
 	public String restaurantUserList(HttpSession httpSession, String key, Page page, Response response) {
 		
-		if(page.checkArgSuccess("name", "id")){
+		if(page.checkSortNameSuccess("name", "id")){
 			User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put(Constant.MapKey.COUNT, roleDao.selectRoleCount(user.getRestaurantId(), key));

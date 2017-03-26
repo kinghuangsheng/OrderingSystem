@@ -28,7 +28,7 @@ public class InterfaceController extends AbsController{
 	@ResponseBody
 	@Permission("/ajax/interface/list")
 	public String list(HttpSession httpSession, String key, Page page, Response response) {
-		if(page.checkArgSuccess("name", "path", "id")){
+		if(page.checkSortNameSuccess("name", "path", "id")){
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put(Constant.MapKey.COUNT, interfaceDao.selectInterfaceCount(key));
 			map.put(Constant.MapKey.LIST, interfaceDao.selectInterfaceList(key, page));

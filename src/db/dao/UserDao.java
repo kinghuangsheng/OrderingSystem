@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import bean.Page;
 import db.pojo.User;
 
 public interface UserDao {
@@ -14,6 +15,8 @@ public interface UserDao {
 	User selectById(@Param("id")int id);
 
 	List<Map<String, Object>> selectRestaurantUser(@Param("restaurantId")int restaurantId,
+			@Param("key")String key, @Param("state")Integer state, @Param("page")Page page);
+	int selectRestaurantUserCount(@Param("restaurantId")int restaurantId,
 			@Param("key")String key, @Param("state")Integer state);
 	
 	int insertUser(User user);

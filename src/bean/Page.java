@@ -74,7 +74,7 @@ public class Page {
 	}
 
 
-	public boolean checkArgSuccess(String ... sortNames){
+	public boolean checkSortNameSuccess(String ... sortNames){
 		if(sortName == null){
 			return true;
 		}
