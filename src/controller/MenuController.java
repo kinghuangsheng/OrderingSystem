@@ -88,7 +88,7 @@ public class MenuController extends AbsController{
 				response.setData("parentId");
 				return response.toJsonString();
 			}
-			num = menuDao.insertRoleMenu(menu, Constant.Role.DEVELOPER);
+			num = menuDao.insertRoleMenu(menu, Constant.Table.Role.Id.DEVELOPER);
 			if(num == 0){
 				response.setReason(Reason.ERR_ARG);
 				response.setData("interfaceIds");

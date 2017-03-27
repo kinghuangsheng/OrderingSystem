@@ -12,7 +12,8 @@
 		$("#btnLogin").click(function() {
 			$.get(ajaxUrl.login, {
 				account : $("#account").val(),
-				password : $("#password").val()
+				password : $("#password").val(),
+				restaurantId: 101,
 			}, function(response) {
 				response = JSON.parse(response);
 				$.cookie('account', 'admin');

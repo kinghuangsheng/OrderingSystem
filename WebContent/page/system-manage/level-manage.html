@@ -1,0 +1,288 @@
+<!-- 新增角色弹窗 -->
+<div class="modal" id="roleModal" tabindex="-1" role="dialog"
+	aria-labelledby="roleModal" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" >{{getModalTitle()}}</h4>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="recipient-name" class="control-label">角色名称</label>
+						<input v-model="role.name" type="text" class="form-control">
+					</div>
+					
+					<div class="content_wrap" id="tree_box">
+						<ul id="roleMenuTree" class="ztree" style="width: 230px; overflow: auto;"></ul>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary"
+					@click="sure">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="searchDiv" class="row">
+	<div class="col-lg-6">
+		<div class="input-group">
+			<input v-model="searchKey" type="text" class="form-control"
+				placeholder="角色名称"> <span class="input-group-btn">
+				<button @click="search" class="btn btn-secondary" type="button">查询</button>
+			</span>
+		</div>
+	</div>
+
+	<button class="btn btn-primary" type="button" data-toggle="modal"
+		@click="add" >新增角色</button>
+		
+</div>
+<div id="dataList" class="row">
+	<div class="col-md-12 color:#fff">
+		<table id="table" data-search="false" data-show-refresh="false"
+			data-show-toggle="false" data-show-columns="false"
+			data-show-export="false" data-detail-view="true">
+		</table>
+	</div>
+</div>
+
+<script>
+	var roleModalData = new Vue({
+		el : '#roleModal',
+		data : {
+			modalType : MODAL_TYPE_ADD,
+			role : {
+				id : "",
+				name : "",
+			},
+		},
+		methods : {
+			getModalTitle : function(){
+				if(this.modalType == MODAL_TYPE_ADD){
+					return "新增角色信息";
+				}else{
+					return "修改角色信息";
+				}
+			},
+			
+			checkMenu: function (menu, index) {
+			      //alert(privilege.checked + "index = " + index);
+			 },
+			 
+			sure : function() {
+				var url = ajaxUrl.addRestaurantManagerRole;
+				if(this.modalType == MODAL_TYPE_UPDATE){//修改
+					url = ajaxUrl.updateRestaurantManagerRole;
+				}
+				var zTree = $.fn.zTree.getZTreeObj("roleMenuTree");
+				var menuIdArray = [];
+				zTree.getCheckedNodes().forEach(
+					function(node){
+						menuIdArray.push(node.id);
+					}
+				);
+				$.get(
+						url,
+						{
+							id: roleModalData.role.id,
+							name : roleModalData.role.name,
+							menuIds : JSON.stringify(menuIdArray),
+						},
+						function(response) {
+							response = JSON.parse(response);
+							if (response.code == SUCCESS_CODE) {
+								roleModalData.role = response.data;
+								$('#roleModal').modal('hide');
+								searchDivData.search();
+							}else{
+								alert(response.msg + "----" + response.data);
+							}
+						}
+				);
+			}
+		}
+	
+	});
+	
+	var searchDivData = new Vue({
+		el : '#searchDiv',
+		data : {
+			searchKey : "",
+		},
+		methods : {
+			search : function() {
+				search();
+			},
+			add : function() {
+				roleModalData.modalType = MODAL_TYPE_ADD;
+				roleModalData.role.id = "";
+				clearRoleModalData();
+				$('#roleModal').modal('show');
+			},
+		}
+
+	});
+	window.operationTDEvents = {
+	        'click .update': function (e, value, row, index) {
+	        	
+	        },
+	        
+	        'click .delete': function (e, value, row, index) {
+	        	
+	        },
+	    };
+	
+	$('#table').bootstrapTable({
+		url: ajaxUrl.restaurantManagerRoleList,
+		cache: false,
+		contentType: "text/html",
+		dataType: "json",
+		pagination: true, 						
+        search: false,
+		sidePagination: "server",
+		pageNumber:1,      //初始化加载第一页，默认第一页
+        pageSize: PAGE_SIZE,      //每页的记录行数（*）
+        smartDisplay: false,
+        contentType: "text/html",
+        queryParamsType:'', //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort 设置为 ''  在这种情况下传给服务器的参数为：pageSize,pageNumber
+		queryParams : function(params) {
+			params.key= searchDivData.searchKey;
+			return params;
+		}, 
+		//queryParams : queryParams1,
+		responseHandler: function(response) {
+			if (response.code == SUCCESS_CODE) {
+				response.total = response.count;
+				response.rows = response.data.list;
+			}else{
+				alert(response.msg + "----" + response.data);
+			}
+			return response;
+		},
+		columns : [ {
+			align : 'center',
+			field : 'id',
+			title : 'ID'
+		}, {
+			field : 'name',
+			title : '角色名称'
+		}, {
+			field : 'operation',
+			formatter: operationTDFormater,
+			events: operationTDEvents,
+			title : '操作'
+		}, ],
+		onDblClickRow: function(row, $element, field){
+			roleModalData.modalType = MODAL_TYPE_UPDATE;
+			roleModalData.role = row;
+			$('#roleModal').modal('show');
+		},
+		onDblClickCell: function(field, value, row, $element){
+			
+		},
+	});
+	
+	$('#roleModal').on('shown.bs.modal', function (e) {
+		if(roleModalData.modalType == MODAL_TYPE_UPDATE){
+			$.get(
+					ajaxUrl.authorizedRoleMenuList,
+					{
+						roleId : roleModalData.role.id,	
+					},
+					function(response) {
+						response = JSON.parse(response);
+						if (response.code == SUCCESS_CODE) {
+							var setting = {
+									data : {
+										simpleData : {
+											enable : true,
+											idKey : "id",
+											pIdKey : "parentId",
+											rootPId : 0,
+										},
+										key: {
+											checked: "authorized"
+										}
+
+									},
+									check : {
+										autoCheckTrigger : true,
+										chkboxType : {"Y": "ps", "N": "ps"},
+										chkStyle : "checkbox",
+										enable : true,
+										nocheckInherit : false,
+										radioType : "level",
+										},
+									callback: {
+										onClick: zTreeOnClick,
+									},
+								};
+								var zTree = $.fn.zTree.init($("#roleMenuTree"), setting, response.data);
+								zTree.expandAll(true);
+						}else{
+							alert(response.msg + "----" + response.data);
+						}
+					}
+			);
+		}else{
+			var setting = {
+					data : {
+						simpleData : {
+							enable : true,
+							idKey : "id",
+							pIdKey : "parentId",
+							rootPId : 0,
+						},
+					},
+					check : {
+						autoCheckTrigger : true,
+						chkboxType : {"Y": "ps", "N": "ps"},
+						chkStyle : "checkbox",
+						enable : true,
+						nocheckInherit : false,
+						radioType : "level",
+						},
+					callback: {
+						onClick: zTreeOnClick,
+					},
+				};
+				var zTree = $.fn.zTree.init($("#roleMenuTree"), setting, MENU_LIST);
+				zTree.expandAll(true);
+		}
+	});
+	
+	
+	
+	$('#roleModal').on('hidden.bs.modal', function (e) {
+		$.fn.zTree.destroy("roleMenuTree");}
+	);
+	function zTreeOnClick(event, treeId, treeNode) {
+		//if(treeNode.path){
+		    //$('#right').load(pagePathPre + treeNode.path);
+		//}
+	}
+	
+	function search() {
+		$('#table').bootstrapTable('refresh',{pageNumber:1, pageSize: PAGE_SIZE, search: true,});
+	}
+	
+	function clearRoleModalData(){
+		roleModalData.role.name = "";
+	}
+	
+	function operationTDFormater(value, row, index){
+		return [
+	            '<a class="update" href="javascript:void(0);" >',
+	            '编辑',
+	            '</a>',
+	            '<a class="delete" href="javascript:void(0);">',
+	            '删除',
+	            '</a>'
+	        ].join('');
+	}
+	
+</script>

@@ -31,12 +31,20 @@ public class RoleController extends AbsController{
 	@ResponseBody
 	@Permission("/ajax/role/restaurantRoleList")
 	public String restaurantUserList(HttpSession httpSession, String key, Page page, Response response) {
-		
+		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
+		return roleList(key, user.getRestaurantId(), page, response);
+	}
+	@RequestMapping(value = "/ajax/role/restaurantManagerRoleList", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Permission("/ajax/role/restaurantManagerRoleList")
+	public String restaurantManagerRoleList(HttpSession httpSession, String key, Page page, Response response) {
+		return roleList(key, Constant.Table.Restaurant.Id.SYSTEM_MANAGER, page, response);
+	}
+	private String roleList(String key, Integer restaurantId, Page page, Response response){
 		if(page.checkSortNameSuccess("name", "id")){
-			User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put(Constant.MapKey.COUNT, roleDao.selectRoleCount(user.getRestaurantId(), key));
-			map.put(Constant.MapKey.LIST, roleDao.selectRole(user.getRestaurantId(), key, page));
+			map.put(Constant.MapKey.COUNT, roleDao.selectRoleCount(restaurantId, key));
+			map.put(Constant.MapKey.LIST, roleDao.selectRole(restaurantId, key, page));
 			response.setData(map);
 		}else{
 			response.setReason(Reason.ERR_ARG);
@@ -44,11 +52,23 @@ public class RoleController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	
 	@RequestMapping(value = "/ajax/role/addRestaurantRole", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Permission("/ajax/role/addRestaurantRole")
 	public String addRestaurantRole(HttpSession httpSession, Role newRole, String menuIds, Response response) {
+		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
+		return addRole(newRole, menuIds, user.getRoleId(), user.getRestaurantId(), response);
+	}
+	
+	@RequestMapping(value = "/ajax/role/addRestaurantManagerRole", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Permission("/ajax/role/addRestaurantManagerRole")
+	public String addRestaurantManagerRole(HttpSession httpSession, Role newRole, String menuIds, Response response) {
+		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
+		return addRole(newRole, menuIds, user.getRoleId(), Constant.Table.Restaurant.Id.SYSTEM_MANAGER, response);
+	}
+	
+	private String addRole(Role newRole, String menuIds, int userRoleId, int restaurantId, Response response){
 		String errorArg = checkAddArg(newRole);
 		if(errorArg != null){
 			response.setReason(Reason.ERR_ARG);
@@ -65,14 +85,14 @@ public class RoleController extends AbsController{
 				response.setData("menuIds");
 				return response.toJsonString();
 			}
-			User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
-			List<Integer> userMenuIds = roleDao.selectRoleMenuIds(user.getRoleId());
+			
+			List<Integer> userMenuIds = roleDao.selectRoleMenuIds(userRoleId);
 			if(userMenuIds == null || !userMenuIds.containsAll(roleMenuids)){
 				response.setReason(Reason.ERR_ARG);
 				response.setData("menuIds");
 				return response.toJsonString();
 			}
-			newRole.setRestaurantId(user.getRestaurantId());
+			newRole.setRestaurantId(restaurantId);
 			int rowNum = roleDao.insertRole(newRole);
 			if(rowNum == 0){
 				response.setReason(Reason.ROLE_REPEATED);
@@ -87,6 +107,19 @@ public class RoleController extends AbsController{
 	@ResponseBody
 	@Permission("/ajax/role/updateRestaurantRole")
 	public String updateRestaurantRole(HttpSession httpSession, Role newRole, String menuIds, Response response) {
+		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
+		return updateRole(newRole, menuIds, user.getRoleId(), user.getRestaurantId(), response);
+	}
+	
+	@RequestMapping(value = "/ajax/role/updateRestaurantManagerRole", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Permission("/ajax/role/updateRestaurantManagerRole")
+	public String updateRestaurantManagerRole(HttpSession httpSession, Role newRole, String menuIds, Response response) {
+		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
+		return updateRole(newRole, menuIds, user.getRoleId(), Constant.Table.Restaurant.Id.SYSTEM_MANAGER, response);
+	}
+	
+	private String updateRole(Role newRole, String menuIds, int roleId, int restaurantId, Response response){
 		String errorArg = checkUpdateArg(newRole);
 		if(errorArg != null){
 			response.setReason(Reason.ERR_ARG);
@@ -103,14 +136,14 @@ public class RoleController extends AbsController{
 				response.setData("menuIds");
 				return response.toJsonString();
 			}
-			User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
-			List<Integer> userMenuIds = roleDao.selectRoleMenuIds(user.getRoleId());
+			
+			List<Integer> userMenuIds = roleDao.selectRoleMenuIds(roleId);
 			if(userMenuIds == null || !userMenuIds.containsAll(roleMenuids)){
 				response.setReason(Reason.ERR_ARG);
 				response.setData("menuIds");
 				return response.toJsonString();
 			}
-			newRole.setRestaurantId(user.getRestaurantId());
+			newRole.setRestaurantId(restaurantId);
 			int rowNum = roleDao.updateRole(newRole);
 			if(rowNum == 0){
 				response.setReason(Reason.ERR_ARG);

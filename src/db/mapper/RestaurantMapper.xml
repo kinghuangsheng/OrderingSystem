@@ -6,10 +6,13 @@
 		SELECT 
 		r.id, r.name, r.license, r.state, u.id as managerId, u.name "managerName"
 		FROM restaurant r
-		LEFT JOIN user u on u.restaurant_id = r.id
-		where r.id > 0 
+		LEFT JOIN user u on (u.restaurant_id = r.id and u.type = 1 ) 
+		where 1=1
         <if test="key != null">
         and (r.name like concat('%',#{key},'%') or r.license like concat('%',#{key},'%'))
+        </if>
+        <if test="type != null">
+         and r.type = #{type}
         </if>
         <if test="state != null">
          and r.state = #{state}
@@ -27,9 +30,12 @@
 		SELECT 
 		count(r.id) 
 		FROM restaurant r 
-		where r.id > 0
+		where 1=1
         <if test="key != null">
          and (r.name like concat('%',#{key},'%') or r.license like concat('%',#{key},'%') )
+        </if>
+        <if test="type != null">
+         and r.type = #{type}
         </if>
         <if test="state != null">
          and r.state = #{state}

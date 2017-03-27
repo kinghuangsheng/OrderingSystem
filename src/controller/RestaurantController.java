@@ -29,8 +29,8 @@ public class RestaurantController extends AbsController{
 	public String list(String key, Page page, Integer state, Response response) {
 		if(page.checkSortNameSuccess("name", "license", "id")){
 			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put(Constant.MapKey.COUNT, restaurantDao.selectRestaurantCount(key, state));
-			map.put(Constant.MapKey.LIST, restaurantDao.selectRestaurant(key, state, page));
+			map.put(Constant.MapKey.COUNT, restaurantDao.selectRestaurantCount(key, state, Constant.Table.Restaurant.Type.NORMAL_RESTAURANT));
+			map.put(Constant.MapKey.LIST, restaurantDao.selectRestaurant(key, state, Constant.Table.Restaurant.Type.NORMAL_RESTAURANT, page));
 			response.setData(map);
 		}else{
 			response.setReason(Reason.ERR_ARG);
@@ -83,7 +83,7 @@ public class RestaurantController extends AbsController{
 			response.setReason(Reason.ERR_ARG);
 			response.setData("id");
 		}else{
-			int rowNum = restaurantDao.deleteRestaurant(restaurant.getId(), Constant.State.Restaurant.FORBIDDEN);
+			int rowNum = restaurantDao.deleteRestaurant(restaurant.getId(), Constant.Table.Restaurant.State.FORBIDDEN);
 			if(rowNum == 0){
 				response.setReason(Reason.ERR_ARG);
 			}

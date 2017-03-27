@@ -26,6 +26,7 @@ var ajaxUrl = {
 		
 		
 		restaurantRoleList: ajaxPath + "role/restaurantRoleList",
+		restaurantManagerRoleList: ajaxPath + "role/restaurantManagerRoleList",
 		
 		
 		restaurantUserList: ajaxPath + "user/restaurantUserList",
@@ -33,7 +34,9 @@ var ajaxUrl = {
 		
 		
 		addRestaurantRole: ajaxPath + "role/addRestaurantRole",
+		addRestaurantManagerRole: ajaxPath + "role/addRestaurantManagerRole",
 		updateRestaurantRole: ajaxPath + "role/updateRestaurantRole",
+		updateRestaurantManagerRole: ajaxPath + "role/updateRestaurantManagerRole",
 		
 		restaurantSeatList: ajaxPath + "seat/restaurantSeatList",
 		addRestaurantSeat: ajaxPath + "seat/addRestaurantSeat",

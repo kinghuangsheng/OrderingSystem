@@ -364,7 +364,7 @@
 	
 	
 	function showManagerModal(){
-		$.get(ajaxUrl.restaurantRoleList, function(response) {
+		$.get(ajaxUrl.restaurantManagerRoleList, function(response) {
 			var response = JSON.parse(response);
 			if (response.code == SUCCESS_CODE) {
 				managerModalData.roleList = response.data.list;

@@ -14,6 +14,8 @@ public class User {
     private Integer roleId;
 
     private Integer state;
+    
+    private Integer type;
 
     private String phone;
 
@@ -80,4 +82,14 @@ public class User {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+    
+    
 }

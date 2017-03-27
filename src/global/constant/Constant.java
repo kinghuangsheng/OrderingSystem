@@ -13,19 +13,10 @@ public class Constant {
 		public final static String LIST = "list";
 		
 	}
-	public class State{
-		public class User{
-			public final static int NORMAL = 0;
-			public final static int FORBIDDEN = 1;
-		}
-		public class Restaurant{
-			public final static int NORMAL = 0;
-			public final static int FORBIDDEN = 1;
-		}
-	}
+	
 	public class Length{
 		public final static int DEFAULT_MIN = 1;
-		public final static int DEFAULT_MAX = 8;
+		public final static int DEFAULT_MAX = 20;
 		public final static int PATH_MAX = 255;
 	}
 
@@ -38,8 +29,38 @@ public class Constant {
 		
 	}
 	
-	public class Role{
-		public final static int DEVELOPER = 0;
+	
+	public class Table{
+		public class Restaurant{
+			public class State{
+				public final static int NORMAL = 0;
+				public final static int FORBIDDEN = 1;
+			}
+			public class Id{
+				public final static int SYSTEM_DEVELOP = 0;
+				public final static int SYSTEM_MANAGER = 1;
+			}
+			public class Type{
+				public final static int NORMAL_RESTAURANT = 0;
+			}
+		}
+		public class User{
+			public class State{
+				public final static int NORMAL = 0;
+				public final static int FORBIDDEN = 1;
+			}
+			
+			public class Type{
+				public final static int NORMAL = 0;
+				public final static int RESTAURANT_MANAGER = 1;
+			}
+		}
+		public class Role{
+			public class Id{
+				public final static int DEVELOPER = 0;
+			}
+		}
 	}
+	
 	
 }
