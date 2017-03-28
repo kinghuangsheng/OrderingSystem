@@ -64,7 +64,7 @@
 				});
 			},
 			del : function() {
-				$.get(ajaxUrl.deleteInterface, vueData.row, function(response) {
+				$.get(ajaxUrl.deleteRestaurantUser, vueData.row, function(response) {
 					var response = JSON.parse(response);
 					alert(response.msg + "----" + response.data);
 				});

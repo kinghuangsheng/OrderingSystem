@@ -19,6 +19,7 @@ public interface UserDao {
 	int selectRestaurantUserCount(@Param("restaurantId")int restaurantId,
 			@Param("key")String key, @Param("state")Integer state, @Param("type")Integer type);
 	
+	int deleteUser(@Param("id")int id, @Param("restaurantId")int restaurantId);
 	int insertUser(User user);
 	int updateUser(User user);
 	int selectRestaurantState(int restaurantId);

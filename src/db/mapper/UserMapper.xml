@@ -79,4 +79,7 @@
 		 WHERE id = #{id} and restaurant_id = #{restaurantId}
   </update>
   
+  <delete id="deleteUser" parameterType="Map">
+  	delete from user where id = #{id} and restaurant_id = #{restaurantId}
+  </delete>
 </mapper>

@@ -9,7 +9,20 @@
         <if test="key != null">
         and (s.name like concat('%',#{key},'%') or s.customer_num like concat('%',#{key},'%'))
         </if>
-        
+        order by
+        <if test="page.sortName != null">
+	     s.${page.sortName} ${page.sortOrder},
+	    </if>
+	     s.id desc
+	    LIMIT #{page.start} , #{page.pageSize}
+	</select>
+	<select id="selectSeatCount" resultType="Integer">
+		SELECT count(s.id)
+		FROM seat s
+		where restaurant_id = #{restaurantId} 
+        <if test="key != null">
+        and (s.name like concat('%',#{key},'%') or s.customer_num like concat('%',#{key},'%'))
+        </if>
 	</select>
 	
 	
@@ -17,6 +30,18 @@
 	    INSERT INTO seat (name, restaurant_id, customer_num) select #{name}, #{restaurantId}, #{customerNum} FROM DUAL 
 		WHERE NOT EXISTS (SELECT name, restaurant_id FROM seat WHERE name = #{name} and restaurant_id = #{restaurantId})
   </insert>
+  
+  <update id="updateSeat" parameterType="db.pojo.Seat" >
+	    UPDATE seat 
+	    <set> 
+		  <if test="name != null">name = #{name},</if>
+		  <if test="customerNum != null">customer_num = #{customerNum},</if>
+		 </set>
+		 WHERE id = #{id} and restaurant_id = #{restaurantId}
+  </update>
+  <delete id="deleteSeat" parameterType="db.pojo.Seat" >
+	    delete from  seat WHERE id = #{id} and restaurant_id = #{restaurantId}
+  </delete>
   
 	
 </mapper>

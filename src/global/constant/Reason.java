@@ -12,7 +12,8 @@ public enum Reason {
 	ROLE_REPEATED(7, "角色名已存在"),
 	
 	ERR_ARG(9, "参数有误"),
-	RESTAURANT_FORBIDDEN(9, "餐厅被停用"),
+	RESTAURANT_FORBIDDEN(11, "餐厅被停用"),
+	SEAT_REPEATED(12, "席位已存在"),
 	ACCOUNT_FORBIDDEN(10, "账号被停用");
 
 	private int code;

@@ -92,6 +92,21 @@ public class UserController extends AbsController{
 		newUser.setRestaurantId(user.getRestaurantId());
 		return addUser(newUser, response);
 	}
+	@RequestMapping(value = "/ajax/user/deleteRestaurantUser", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Permission("/ajax/user/deleteRestaurantUser")
+	public String deleteRestaurantUser(HttpSession httpSession, Integer id, Response response) {
+		if(StringUtil.isEmpty(id)){
+			response.setReason(Reason.ERR_ARG);
+			response.setData("id");
+		}else{
+			int rowNum = userDao.deleteUser(id, user.getRestaurantId());
+			if(rowNum == 0){
+				response.setReason(Reason.ERR_ARG);
+			}
+		}
+		return response.toJsonString();
+	}
 	
 	@RequestMapping(value = "/ajax/user/addRestaurantManager", produces = "text/html;charset=UTF-8")
 	@ResponseBody

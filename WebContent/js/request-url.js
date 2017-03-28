@@ -4,6 +4,7 @@ var ajaxUrl = {
 		restaurantManagerDetail: ajaxPath + "user/restaurantManagerDetail",
 		updateRestaurantManager: ajaxPath + "user/updateRestaurantManager",
 		updateRestaurantUser: ajaxPath + "user/updateRestaurantUser",
+		deleteRestaurantUser: ajaxPath + "user/deleteRestaurantUser",
 		addRestaurantManager: ajaxPath + "user/addRestaurantManager",
 		
 		roleMenuList: ajaxPath + "menu/roleMenuList",
@@ -40,6 +41,8 @@ var ajaxUrl = {
 		
 		restaurantSeatList: ajaxPath + "seat/restaurantSeatList",
 		addRestaurantSeat: ajaxPath + "seat/addRestaurantSeat",
+		updateRestaurantSeat: ajaxPath + "seat/updateRestaurantSeat",
+		deleteRestaurantSeat: ajaxPath + "seat/deleteRestaurantSeat",
 		
 		
 		
