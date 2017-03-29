@@ -7,6 +7,7 @@ public class Response{
 	
 	private int code;
 	private String msg;
+	private String callback;
 	private Object data;
 	
 	public void setReason(Reason reason){
@@ -38,9 +39,21 @@ public class Response{
 		this.msg = msg;
 	}
 	public String toJsonString(){
-		return JsonUtil.toJsonString(this);
+		if(callback == null){
+			return JsonUtil.toJsonString(this);
+		}else{
+			String callbackTmp = callback;
+			this.callback = null;
+			return callbackTmp + "(" + JsonUtil.toJsonString(this) + ")";
+		}
 	}
 	
-	
+	public String getCallback() {
+		return callback;
+	}
+
+	public void setCallback(String callback) {
+		this.callback = callback;
+	}
 
 }
