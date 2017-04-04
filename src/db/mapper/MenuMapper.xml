@@ -3,13 +3,13 @@
 <mapper namespace="db.dao.MenuDao">
 
 	<select id="selectRoleMenu" resultType="Map">
-		SELECT m.name , m.id , m.parent_id parentId , m.path
+		SELECT m.name , m.id , m.parent_id parentId , m.path, m.class_name className
 		FROM role_menu rm
 		LEFT JOIN menu m on m.id = rm.menu_id
 		WHERE rm.role_id = #{roleId}
 	</select>
 	<select id="selectAuthorizedRoleMenu" resultType="Map">
-		SELECT m.name , m.id , m.parent_id parentId , m.path, tmp.authorized
+		SELECT m.name , m.id , m.parent_id parentId , m.path, m.class_name className, tmp.authorized
 		FROM role_menu rm
 		LEFT JOIN menu m on m.id = rm.menu_id
 		left join (select menu_id, 'true' as authorized from role_menu rm where rm.role_id = #{roleId}) tmp on tmp.menu_id = rm.menu_id
@@ -17,7 +17,7 @@
 	</select>
 	
 	<select id="selectAllMenu" resultType="Map">
-		SELECT m.name , m.id , m.parent_id parentId , m.path
+		SELECT m.name , m.id , m.parent_id parentId , m.path, m.class_name className
 		FROM menu m
 	</select>
 	
@@ -57,8 +57,8 @@
 		values (#{roleId}, #{menu.id})
 	</insert> 
 	<insert id="insertMenu" parameterType="db.pojo.Menu" useGeneratedKeys="true" keyProperty="menu.id" >  
-		insert into menu(name, path, parent_id) 
-		SELECT #{menu.name}, #{menu.path}, #{menu.parentId} 
+		insert into menu(name, path, parent_id, class_name) 
+		SELECT #{menu.name}, #{menu.path}, #{menu.parentId}, #{menu.className}  
 	    FROM DUAL 
 		WHERE EXISTS (SELECT id FROM menu WHERE id = #{menu.parentId})
 	</insert> 
@@ -68,6 +68,7 @@
 		    <set> 
 			  <if test="menu.name != null">name = #{menu.name},</if>
 			  <if test="menu.path != null">path = #{menu.path},</if>
+			  <if test="menu.className != null">class_name = #{menu.className},</if>
 			 </set>
 			 WHERE id = #{menu.id}
 	  </update>

@@ -6,6 +6,8 @@ public class Menu {
     private String name;
 
     private String path;
+    
+    private String className;
 
     private Integer parentId;
 
@@ -50,4 +52,14 @@ public class Menu {
     public void setAssignable(Integer assignable) {
         this.assignable = assignable;
     }
+
+	public String getClassName() {
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
+	}
+    
+    
 }

@@ -141,6 +141,11 @@ public class MenuController extends AbsController{
 		if(menu.getId() == null){
 			response.setReason(Reason.ERR_ARG);
 			response.setData("id");
+		}
+		String errorArg = checkAddArg(menu);
+		if(errorArg != null){
+			response.setReason(Reason.ERR_ARG);
+			response.setData(errorArg);
 		}else{
 			int num = menuDao.updateMenu(menu);
 			if(num == 0){
@@ -186,6 +191,9 @@ public class MenuController extends AbsController{
 		}
 		if(StringUtil.isEmpty(menu.getPath()) && StringUtil.checkFail(menu.getPath(), 0, Constant.Length.PATH_MAX, null)){
 			return "path";
+		}
+		if(StringUtil.isEmpty(menu.getClassName())){
+			return "className";
 		}
 		return null;
 	}

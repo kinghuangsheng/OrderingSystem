@@ -4,10 +4,13 @@
 
 <div id="menuDetailDiv" v-if="menuDetailDivSeen">
 	<div id="btnDiv" >
-		<label for="message-text" >名称</label>
+		<label >名称</label>
 		<input v-model="treeNode.name" >
-		<label for="recipient-name" >路径</label>
+		<label >路径</label>
 		<input v-model="treeNode.path" type="text">
+		<label >图标Class</label>
+		<input v-model="treeNode.className" type="text">
+		<br/>
 		<button v-if="addBtnSeen" class="btn btn-primary" @click="add">添加子菜单</button>
 		<button v-if="delBtnSeen" class="btn btn-primary" @click="del">删除菜单</button>
 		<button class="btn btn-primary" @click="update">保存更新</button>
@@ -52,7 +55,7 @@
 	var btnDivData = new Vue({
 		el : '#menuDetailDiv',
 		data : {
-			treeNode : {name : "", path: ""},
+			treeNode : {name : "", path: "", className:""},
 			menuDetailDivSeen : false,
 			addBtnSeen : true,
 			delBtnSeen : true,
@@ -65,6 +68,7 @@
 					parentId : btnDivData.treeNode.id,
 					name : btnDivData.treeNode.name,
 					path : btnDivData.treeNode.path,
+					className : btnDivData.treeNode.className,
 					interfaceIds : getCheckInterfaceIds,
 				},function(response) {
 					response = JSON.parse(response);
@@ -81,9 +85,11 @@
 			},
 			update : function() {
 				$.get(ajaxUrl.updateMenu, {
+					parentId : btnDivData.treeNode.parentId,
 					id : btnDivData.treeNode.id,
 					name : btnDivData.treeNode.name,
 					path : btnDivData.treeNode.path,
+					className : btnDivData.treeNode.className,
 					interfaceIds : getCheckInterfaceIds,
 				},function(response) {
 					response = JSON.parse(response);
