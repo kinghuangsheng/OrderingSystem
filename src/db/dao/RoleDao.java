@@ -26,6 +26,6 @@ public interface RoleDao {
 	
 	int updateRole(Role newRole);
 	
-	int deleteRoleMenu(int roldId);
+	int deleteRoleMenu(int roleId);
 
 }

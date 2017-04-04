@@ -1,0 +1,123 @@
+<div>
+	<div id="vueDataDiv">
+		<div>
+			<label for="message-text">分类名称</label> <input v-model="row.name">
+		</div>
+		<br />
+		<div>
+			<div class="input-group" class="row">
+				<input v-model="searchKey" type="text" placeholder="分类名称"> 
+				<button @click="search" class="btn btn-secondary" type="button">查询</button>
+				<button @click="add" class="btn btn-primary">新增</button>
+				<button @click="update" class="btn btn-primary">修改</button>
+				<button @click="del" class="btn btn-primary">删除</button>
+			</div>
+		</div>
+		
+	</div>
+
+
+</div>
+<div id="dataList" class="row">
+	<div class="col-md-12 color:#fff">
+		<table id="table">
+		</table>
+	</div>
+</div>
+
+<script>
+	var vueData = new Vue({
+		el : '#vueDataDiv',
+		data : {
+			searchKey : "",
+			row:{
+				name: "",
+			},
+			roleList: [],
+		},
+		methods : {
+			search : function() {
+				search(this.searchKey, false);
+			},
+			add : function() {
+				$.get(ajaxUrl.addRestaurantCategory, vueData.row, function(response) {
+					var response = JSON.parse(response);
+					alert(response.msg + "----" + response.data);
+				});
+			},
+			del : function() {
+				$.get(ajaxUrl.deleteRestaurantCategory, vueData.row, function(response) {
+					var response = JSON.parse(response);
+					alert(response.msg + "----" + response.data);
+				});
+			},
+			update : function() {
+				$.get(ajaxUrl.updateRestaurantCategory, vueData.row, function(response) {
+					var response = JSON.parse(response);
+					alert(response.msg + "----" + response.data);
+				});
+			},
+			
+		}
+
+	});
+	
+	$.get(ajaxUrl.restaurantRoleList, function(response) {
+		var response = JSON.parse(response);
+		if (response.code == SUCCESS_CODE) {
+			vueData.roleList = response.data.list;
+		} else {
+			alert(response.msg + "----" + response.data);
+		}
+	});
+
+	//search("", true);
+	function search(keyStr) {
+		$('#table').bootstrapTable('refresh', {
+			pageNumber : 1,
+			pageSize : 10,
+			search : true,
+		});
+	}
+
+	$('#table').bootstrapTable({
+		url : ajaxUrl.restaurantCategoryList,
+		cache : false,
+		contentType : "text/html",
+		dataType : "json",
+		pagination : true,
+		search : false,
+		sidePagination : "server",
+		pageNumber : 1, //初始化加载第一页，默认第一页
+		pageSize : PAGE_SIZE, //每页的记录行数（*）
+		smartDisplay : false,
+		contentType : "text/html",
+		queryParamsType : '', //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort 设置为 ''  在这种情况下传给服务器的参数为：pageSize,pageNumber
+		queryParams : function(params) {
+			params.key = vueData.searchKey;
+			return params;
+		},
+		//queryParams : queryParams1,
+		responseHandler : function(response) {
+			if (response.code == SUCCESS_CODE) {
+				response.total = response.count;
+				response.rows = response.data.list;
+			} else {
+				alert(response.msg + "----" + response.data);
+			}
+			return response;
+		},
+		onClickRow: function(row, $element, field){
+			vueData.row = row;
+		},
+		columns : [ {
+			align : 'center',
+			field : 'id',
+			sortable : true,
+			title : 'ID'
+		}, {
+			field : 'name',
+			title : '分类名称'
+		},],
+	});
+</script>

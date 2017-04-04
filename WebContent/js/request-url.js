@@ -30,6 +30,11 @@ var ajaxUrl = {
 		restaurantManagerRoleList: ajaxPath + "role/restaurantManagerRoleList",
 		
 		
+		restaurantCategoryList: ajaxPath + "category/restaurantCategoryList",
+		addRestaurantCategory: ajaxPath + "category/addRestaurantCategory",
+		updateRestaurantCategory: ajaxPath + "category/updateRestaurantCategory",
+		deleteRestaurantCategory: ajaxPath + "category/deleteRestaurantCategory",
+		
 		restaurantUserList: ajaxPath + "user/restaurantUserList",
 		addRestaurantUser: ajaxPath + "user/addRestaurantUser",
 		
