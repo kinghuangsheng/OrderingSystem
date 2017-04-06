@@ -60,25 +60,27 @@
 				search(this.searchKey, false);
 			},
 			add : function() {
-				$.get(ajaxUrl.addRestaurantUser, vueData.row, function(response) {
+				vueData.row.categoryIds = getCheckCategoryIds();
+				$.get(ajaxUrl.addRestaurantFood, vueData.row, function(response) {
 					var response = JSON.parse(response);
 					alert(response.msg + "----" + response.data);
 				});
 			},
 			del : function() {
-				$.get(ajaxUrl.deleteRestaurantUser, vueData.row, function(response) {
+				$.get(ajaxUrl.deleteRestaurantFood, vueData.row, function(response) {
 					var response = JSON.parse(response);
 					alert(response.msg + "----" + response.data);
 				});
 			},
 			update : function() {
-				$.get(ajaxUrl.updateRestaurantUser, vueData.row, function(response) {
+				vueData.row.categoryIds = getCheckCategoryIds();
+				$.get(ajaxUrl.updateRestaurantFood, vueData.row, function(response) {
 					var response = JSON.parse(response);
 					alert(response.msg + "----" + response.data);
 				});
 			},
 			
-			itemClick : function(inter, index){
+			itemClick : function(category, index){
 				
 			},
 			
@@ -86,15 +88,27 @@
 
 	});
 	
-	$.get(ajaxUrl.restaurantRoleList, function(response) {
-		var response = JSON.parse(response);
-		if (response.code == SUCCESS_CODE) {
-			vueData.roleList = response.data.list;
-		} else {
-			alert(response.msg + "----" + response.data);
-		}
+	function getCheckCategoryIds (){
+		var checkedIds = [];
+		vueData.categoryList.forEach(function(value){
+			if(value.checked){
+				checkedIds.push(value.id);
+			}
+		});
+		return JSON.stringify(checkedIds);
+	}
+	
+	$(function(){
+		$.get(ajaxUrl.restaurantCategoryList, function(response) {
+			var response = JSON.parse(response);
+			if (response.code == SUCCESS_CODE) {
+				vueData.categoryList = response.data.list;
+			} else {
+				alert(response.msg + "----" + response.data);
+			}
+		});
 	});
-
+	
 	//search("", true);
 	function search(keyStr) {
 		$('#table').bootstrapTable('refresh', {
@@ -134,12 +148,12 @@
 		onClickRow: function(row, $element, field){
 			vueData.row = row;
 			
-			$.get(ajaxUrl.menuInterfaceList, {
-				menuId:treeNode.id,
+			$.get(ajaxUrl.restaurantFoodCategoryList, {
+				foodId:row.id,
 			},function(response) {
 				response = JSON.parse(response);
 				if (response.code == SUCCESS_CODE) {
-					btnDivData.interfaceList = response.data;
+					vueData.categoryList = response.data;
 				} else {
 					alert(response.msg + "----" + response.data);
 				}

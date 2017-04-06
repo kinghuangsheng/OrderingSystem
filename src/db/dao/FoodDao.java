@@ -17,5 +17,10 @@ public interface FoodDao {
 	int insertFood(Food food);
 	int updateFood(Food food);
 	int deleteFood(Food food);
+	
+	List<Integer> selectAllCategoryIds(@Param("restaurantId")int restaurantId);
+	void insertFoodCategory(@Param("foodId")Integer foodId, @Param("categoryIdList")List<Integer> categoryIdList);
+	void deleteFoodCategory(@Param("foodId")Integer foodId);
+	List<Map<String, Object>>  selectFoodCategoryList(@Param("restaurantId")int restaurantId, @Param("foodId")Integer foodId);
 
 }

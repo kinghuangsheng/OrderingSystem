@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import bean.Page;
 import bean.Response;
+import common.util.JsonUtil;
 import common.util.StringUtil;
 import db.dao.FoodDao;
 import db.pojo.Food;
@@ -41,11 +43,25 @@ public class FoodController extends AbsController{
 		return response.toJsonString();
 	}
 	
+	@RequestMapping(value = "/ajax/food/restaurantFoodCategoryList", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Permission("/ajax/food/restaurantFoodCategoryList")
+	public String restaurantFoodCategoryList(HttpSession httpSession, Integer foodId, Response response) {
+		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
+		if(StringUtil.isEmpty(foodId)){
+			response.setReason(Reason.ERR_ARG);
+			response.setData("foodId");
+			return response.toJsonString();
+		}
+		response.setData(foodDao.selectFoodCategoryList(user.getRestaurantId(), foodId));
+		return response.toJsonString();
+	}
+	
 	
 	@RequestMapping(value = "/ajax/food/addRestaurantFood", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Permission("/ajax/food/addRestaurantFood")
-	public String addRestaurantFood(HttpSession httpSession, Food newFood, Response response) {
+	public String addRestaurantFood(HttpSession httpSession, Food newFood, String categoryIds, Response response) {
 		String errorArg = checkAddArg(newFood);
 		if(errorArg != null){
 			response.setReason(Reason.ERR_ARG);
@@ -55,9 +71,26 @@ public class FoodController extends AbsController{
 			newFood.setRestaurantId(user.getRestaurantId());
 			int rowNum = foodDao.insertFood(newFood);
 			if(rowNum == 0){
-				response.setReason(Reason.SEAT_REPEATED);
+				response.setReason(Reason.ERR_ARG);
+				response.setData("name");
 			}else{
-				response.setData(newFood);
+				List<Integer> categoryIdList = null;
+				try{
+					categoryIdList = (List<Integer>) JsonUtil.parseArray(categoryIds, Integer.class);
+				}catch(Exception e){
+					categoryIdList = null;
+				}
+				if(categoryIdList == null || categoryIdList.isEmpty()){
+					return response.toJsonString();
+				}else{
+					List<Integer> allCategoryIdList = foodDao.selectAllCategoryIds(user.getRestaurantId());
+					if(!allCategoryIdList.containsAll(categoryIdList)){
+						response.setReason(Reason.ERR_ARG);
+						response.setData("categoryIds");
+						return response.toJsonString();
+					}
+					foodDao.insertFoodCategory(newFood.getId(), categoryIdList);
+				}
 			}
 		}
 		return response.toJsonString();
@@ -66,7 +99,7 @@ public class FoodController extends AbsController{
 	@RequestMapping(value = "/ajax/food/updateRestaurantFood", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	@Permission("/ajax/food/updateRestaurantFood")
-	public String updateRestaurantFood(HttpSession httpSession, Food newFood, Response response) {
+	public String updateRestaurantFood(HttpSession httpSession, Food newFood, String categoryIds, Response response) {
 		String errorArg = checkUpdateArg(newFood);
 		if(errorArg != null){
 			response.setReason(Reason.ERR_ARG);
@@ -78,7 +111,24 @@ public class FoodController extends AbsController{
 			if(rowNum == 0){
 				response.setReason(Reason.ERR_ARG);
 			}else{
-				response.setData(newFood);
+				List<Integer> categoryIdList = null;
+				try{
+					categoryIdList = (List<Integer>) JsonUtil.parseArray(categoryIds, Integer.class);
+				}catch(Exception e){
+					categoryIdList = null;
+				}
+				if(categoryIdList == null || categoryIdList.isEmpty()){
+					return response.toJsonString();
+				}else{
+					List<Integer> allCategoryIdList = foodDao.selectAllCategoryIds(user.getRestaurantId());
+					if(!allCategoryIdList.containsAll(categoryIdList)){
+						response.setReason(Reason.ERR_ARG);
+						response.setData("categoryIds");
+						return response.toJsonString();
+					}
+					foodDao.deleteFoodCategory(newFood.getId());
+					foodDao.insertFoodCategory(newFood.getId(), categoryIdList);
+				}
 			}
 		}
 		return response.toJsonString();
@@ -97,6 +147,8 @@ public class FoodController extends AbsController{
 			int rowNum = foodDao.deleteFood(food);
 			if(rowNum == 0){
 				response.setReason(Reason.ERR_ARG);
+			}else{
+				foodDao.deleteFoodCategory(food.getId());
 			}
 		}
 		return response.toJsonString();
@@ -114,7 +166,13 @@ public class FoodController extends AbsController{
 			return "name";
 		}
 		if(StringUtil.isEmpty(food.getSalePrice())){
-			return "customerNum";
+			return "salePrice";
+		}
+		if(!StringUtil.isEmpty(food.getOriginalPrice()) && food.getOriginalPrice().compareTo(food.getSalePrice()) == -1){
+			return "originalPrice";
+		}
+		if(StringUtil.checkFail(food.getUrl(), Constant.Length.DEFAULT_MIN, Constant.Length.PATH_MAX, null)){
+			return "url";
 		}
 		return null;
 	}

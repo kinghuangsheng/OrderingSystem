@@ -39,6 +39,11 @@ var ajaxUrl = {
 		addRestaurantUser: ajaxPath + "user/addRestaurantUser",
 		
 		restaurantFoodList: ajaxPath + "food/restaurantFoodList",
+		restaurantFoodCategoryList: ajaxPath + "food/restaurantFoodCategoryList",
+		addRestaurantFood: ajaxPath + "food/addRestaurantFood",
+		updateRestaurantFood: ajaxPath + "food/updateRestaurantFood",
+		deleteRestaurantFood: ajaxPath + "food/deleteRestaurantFood",
+		
 		
 		addRestaurantRole: ajaxPath + "role/addRestaurantRole",
 		addRestaurantManagerRole: ajaxPath + "role/addRestaurantManagerRole",

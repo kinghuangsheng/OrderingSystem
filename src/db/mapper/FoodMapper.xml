@@ -25,19 +25,48 @@
         </if>
 	</select>
 	
+	<select id="selectAllCategoryIds" resultType="Integer">
+		SELECT c.id
+		FROM category c where restaurant_id = #{restaurantId}
+	</select>
+	
+	<select id="selectFoodCategoryList" resultType="Map">
+		select c.* , tmp.checked
+		from category c
+		left join 
+		(select fc.category_id, 'true' as checked from food_category fc where fc.food_id= #{foodId}) tmp
+		on tmp.category_id = c.id
+		where c.restaurant_id = #{restaurantId}
+	</select>
 	
 	<insert id="insertFood" parameterType="db.pojo.Food" useGeneratedKeys="true" keyProperty="id" >
-	    INSERT INTO food (name, restaurant_id, customer_num) select #{name}, #{restaurantId}, #{customerNum} FROM DUAL 
+	    INSERT INTO food (name, restaurant_id, sale_price, original_price, url) select #{name}, #{restaurantId}, #{salePrice} , #{originalPrice} , #{url}  FROM DUAL 
 		WHERE NOT EXISTS (SELECT name, restaurant_id FROM food WHERE name = #{name} and restaurant_id = #{restaurantId})
   </insert>
+  
+  <insert id="insertFoodCategory" parameterType="Map">  
+	    insert into food_category (food_id, category_id)   
+	    values  
+	    <foreach collection="categoryIdList" item="item" index="index" separator="," >  
+	        (#{foodId}, #{item})
+	    </foreach>  
+	</insert> 
   
   <update id="updateFood" parameterType="db.pojo.Food" >
 	    UPDATE food 
 	    <set> 
 		  <if test="name != null">name = #{name},</if>
+		  <if test="salePrice != null">sale_price = #{salePrice},</if>
+		  <if test="originalPrice != null">original_price = #{originalPrice},</if>
+		  <if test="url != null">url = #{url},</if>
 		 </set>
 		 WHERE id = #{id} and restaurant_id = #{restaurantId}
   </update>
+  
+  <delete id="deleteFoodCategory" parameterType="Integer">  
+		delete from food_category where food_id = #{foodId};
+	</delete> 
+	
   <delete id="deleteFood" parameterType="db.pojo.Food" >
 	    delete from  food WHERE id = #{id} and restaurant_id = #{restaurantId}
   </delete>
