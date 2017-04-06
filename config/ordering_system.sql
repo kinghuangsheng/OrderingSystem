@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost_3306
-Source Server Version : 50554
+Source Server         : localhost
+Source Server Version : 50716
 Source Host           : localhost:3306
 Source Database       : ordering_system
 
 Target Server Type    : MYSQL
-Target Server Version : 50554
+Target Server Version : 50716
 File Encoding         : 65001
 
-Date: 2017-04-05 00:27:05
+Date: 2017-04-06 17:35:42
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,17 +25,39 @@ CREATE TABLE `category` (
   `restaurant_id` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`,`restaurant_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of category
 -- ----------------------------
+INSERT INTO `category` VALUES ('7', 'aaaaa', '0');
+INSERT INTO `category` VALUES ('8', 'bbbbb', '0');
 INSERT INTO `category` VALUES ('3', '上海青菜', '101');
 INSERT INTO `category` VALUES ('5', '凉菜', '102');
 INSERT INTO `category` VALUES ('2', '川菜', '101');
 INSERT INTO `category` VALUES ('1', '湘菜', '101');
 INSERT INTO `category` VALUES ('4', '炒菜', '102');
 INSERT INTO `category` VALUES ('6', '蒸菜', '102');
+
+-- ----------------------------
+-- Table structure for food
+-- ----------------------------
+DROP TABLE IF EXISTS `food`;
+CREATE TABLE `food` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(10) NOT NULL DEFAULT '',
+  `restaurant_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `sale_price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `original_price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `url` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`,`restaurant_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of food
+-- ----------------------------
+INSERT INTO `food` VALUES ('9', '小炒肉', '0', '10.00', '10.00', 'http://dict-pc.cache.iciba.com/news/2017/0406/20170406025737169.jpg@base@tag=imgScale&w=200&h=150&q=100');
 
 -- ----------------------------
 -- Table structure for interface
@@ -49,7 +71,7 @@ CREATE TABLE `interface` (
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `license` (`path`),
   UNIQUE KEY `path` (`path`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of interface
@@ -88,6 +110,7 @@ INSERT INTO `interface` VALUES ('44', '会员级别列表', '/ajax/role/restaura
 INSERT INTO `interface` VALUES ('45', '菜品分类列表', '/ajax/category/restaurantCategoryList');
 INSERT INTO `interface` VALUES ('46', '菜品分类添加', '/ajax/category/addRestaurantCategory');
 INSERT INTO `interface` VALUES ('47', '菜品分类更新', '/ajax/category/updateRestaurantCategory');
+INSERT INTO `interface` VALUES ('48', '菜品列表', '/ajax/food/restaurantFoodList');
 
 -- ----------------------------
 -- Table structure for menu
@@ -120,7 +143,7 @@ INSERT INTO `menu` VALUES ('14', '活动管理', '/error.html', '13', '');
 INSERT INTO `menu` VALUES ('15', '会员管理', '/error.html', '13', '');
 INSERT INTO `menu` VALUES ('16', '统计管理', '/error.html', '13', '');
 INSERT INTO `menu` VALUES ('17', '菜品分类管理', '/restaurant_manage/category_manage.html', '10', 'asdf');
-INSERT INTO `menu` VALUES ('18', '菜品管理', '/error.html', '10', '');
+INSERT INTO `menu` VALUES ('18', '菜品管理', '/restaurant_manage/food_manage.html', '10', 'a');
 
 -- ----------------------------
 -- Table structure for menu_interface
@@ -131,7 +154,7 @@ CREATE TABLE `menu_interface` (
   `menu_id` int(10) unsigned NOT NULL DEFAULT '0',
   `interface_id` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=236 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=237 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of menu_interface
@@ -171,6 +194,7 @@ INSERT INTO `menu_interface` VALUES ('232', '6', '25');
 INSERT INTO `menu_interface` VALUES ('233', '17', '45');
 INSERT INTO `menu_interface` VALUES ('234', '17', '46');
 INSERT INTO `menu_interface` VALUES ('235', '17', '47');
+INSERT INTO `menu_interface` VALUES ('236', '18', '48');
 
 -- ----------------------------
 -- Table structure for restaurant
@@ -184,7 +208,7 @@ CREATE TABLE `restaurant` (
   `type` int(2) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `license` (`license`)
-) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of restaurant

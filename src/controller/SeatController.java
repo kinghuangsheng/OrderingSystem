@@ -27,7 +27,7 @@ public class SeatController extends AbsController{
 	
 	@RequestMapping(value = "/ajax/seat/restaurantSeatList", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/seat/addRestaurantSeat")
+	@Permission("/ajax/seat/restaurantSeatList")
 	public String restaurantSeatList(HttpSession httpSession, String key, Page page, Response response) {
 		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 		if(page.checkSortNameSuccess("name", "customer_num", "id")){

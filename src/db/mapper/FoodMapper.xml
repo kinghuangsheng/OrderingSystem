@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="db.dao.FoodDao">
+    
+	<select id="selectFood" resultType="Map">
+		SELECT f.id, f.name, f.restaurant_id as restaurantId, f.sale_price as salePrice, f.original_price as originalPrice, f.url 
+		FROM food f
+		where restaurant_id = #{restaurantId} 
+        <if test="key != null">
+        and (f.name like concat('%',#{key},'%') )
+        </if>
+        order by
+        <if test="page.sortName != null">
+	     f.${page.sortName} ${page.sortOrder},
+	    </if>
+	     f.id desc
+	    LIMIT #{page.start} , #{page.pageSize}
+	</select>
+	<select id="selectFoodCount" resultType="Integer">
+		SELECT count(f.id)
+		FROM food f
+		where restaurant_id = #{restaurantId} 
+        <if test="key != null">
+        and (f.name like concat('%',#{key},'%') )
+        </if>
+	</select>
+	
+	
+	<insert id="insertFood" parameterType="db.pojo.Food" useGeneratedKeys="true" keyProperty="id" >
+	    INSERT INTO food (name, restaurant_id, customer_num) select #{name}, #{restaurantId}, #{customerNum} FROM DUAL 
+		WHERE NOT EXISTS (SELECT name, restaurant_id FROM food WHERE name = #{name} and restaurant_id = #{restaurantId})
+  </insert>
+  
+  <update id="updateFood" parameterType="db.pojo.Food" >
+	    UPDATE food 
+	    <set> 
+		  <if test="name != null">name = #{name},</if>
+		 </set>
+		 WHERE id = #{id} and restaurant_id = #{restaurantId}
+  </update>
+  <delete id="deleteFood" parameterType="db.pojo.Food" >
+	    delete from  food WHERE id = #{id} and restaurant_id = #{restaurantId}
+  </delete>
+  
+	
+</mapper>
