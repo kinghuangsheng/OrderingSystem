@@ -44,6 +44,8 @@ var ajaxUrl = {
 		updateRestaurantFood: ajaxPath + "food/updateRestaurantFood",
 		deleteRestaurantFood: ajaxPath + "food/deleteRestaurantFood",
 		
+		foodImageUpload: ajaxPath + "file/foodImageUpload",
+		
 		
 		addRestaurantRole: ajaxPath + "role/addRestaurantRole",
 		addRestaurantManagerRole: ajaxPath + "role/addRestaurantManagerRole",

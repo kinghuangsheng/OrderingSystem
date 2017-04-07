@@ -1,8 +1,8 @@
 <div>
 	<div id="vueDataDiv">
-		<form action="mvc/upload" method="post" enctype="multipart/form-data">
-	        <input type="file" name="file"><input type="submit"
-	            value="submit">
+		<form id="formFile" onsubmit="return false;" action="../../ajax/file/foodImageUpload" multiple="multiple" method="post" enctype="multipart/form-data">
+	        <input type="file" id="inputfile" name="file">
+	        <button @click="uploadImage" class="btn btn-primary">上传</button>
 	    </form>
 		<div>
 			<label for="message-text">菜名</label> <input v-model="row.name">
@@ -84,6 +84,30 @@
 				
 			},
 			
+			uploadImage : function(){
+				var form = new FormData(document.getElementById("formFile"));
+				$.ajax({
+					url: ajaxUrl.foodImageUpload,
+					type: "post",
+					data: form,
+					cache: false,
+					processData: false,
+					contentType: false,
+					success: function(response) {
+						debugger;
+						var response = JSON.parse(response);
+						if (response.code == SUCCESS_CODE) {
+							vueData.row.url = response.data;
+						}else{
+							alert(response.msg + "----" + response.data);
+						}
+					},
+					error: function(e) {
+						alert("网络错误，请重试！！");
+					}
+				});
+			},
+			
 		}
 
 	});
@@ -108,6 +132,8 @@
 			}
 		});
 	});
+	
+	
 	
 	//search("", true);
 	function search(keyStr) {
