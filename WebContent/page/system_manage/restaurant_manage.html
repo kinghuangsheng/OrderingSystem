@@ -341,7 +341,7 @@
 		onDblClickCell: function(field, value, row, $element){
 			if("operation" == field){
 				$.get(
-						ajaxUrl.deleteRestaurant,
+						ajaxUrl.toggleRestaurantState,
 						{
 							id : row.id,	
 						},

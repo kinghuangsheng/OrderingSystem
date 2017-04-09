@@ -6,8 +6,21 @@ public class Restaurant {
     private String name;
 
     private String license;
+    
+    private Integer state;
+    
+    
+    
 
-    public Integer getId() {
+    public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
+	}
+
+	public Integer getId() {
         return id;
     }
 

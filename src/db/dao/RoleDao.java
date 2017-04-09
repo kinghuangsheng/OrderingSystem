@@ -10,7 +10,7 @@ import db.pojo.Role;
 
 public interface RoleDao {
 	
-	
+	List<Map<String, Object>> selectRoleMenu(@Param("roleId")int roleId);
 	List<Map<String, Object>> selectRole(@Param("restaurantId")int restaurantId, @Param("key")String key, @Param("page")Page page);
 	int selectRoleCount(@Param("restaurantId")int restaurantId, @Param("key")String key);
 	
@@ -23,6 +23,8 @@ public interface RoleDao {
 	List<String> selectRoleInterface(@Param("roleId")int roleId);
 	
 	List<Integer> selectRoleMenuIds(@Param("roleId")int roleId);
+	
+	List<Map<String, Object>> selectAuthorizedRoleMenu(@Param("parentRoleId")int parentRoleId, @Param("roleId")int roleId);
 	
 	int updateRole(Role newRole);
 	

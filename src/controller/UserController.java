@@ -31,7 +31,7 @@ public class UserController extends AbsController{
 	
 	private User user;
 	
-	@RequestMapping(value = "/ajax/user/login", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.USER_LOGIN, produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	public String login(String account, String password, Integer restaurantId,HttpSession httpSession, Response response) {
 //		@CookieValue(value = "account", required = false) String cookieUserName,
@@ -69,9 +69,9 @@ public class UserController extends AbsController{
 		return response.toJsonString();
 	}
 
-	@RequestMapping(value = "/ajax/user/restaurantUserList", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.USER_LIST, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/user/restaurantUserList")
+	@Permission(Constant.RequestPath.USER_LIST)
 	public String restaurantUserList(HttpSession httpSession, String key, Integer state, Page page, Response response) {
 		if(page.checkSortNameSuccess("name", "license", "id")){
 			HashMap<String, Object> map = new HashMap<String, Object>();
@@ -85,16 +85,17 @@ public class UserController extends AbsController{
 	}
 	
 	
-	@RequestMapping(value = "/ajax/user/addRestaurantUser", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.USER_ADD, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/user/addRestaurantUser")
+	@Permission(Constant.RequestPath.USER_ADD)
 	public String addRestaurantUser(HttpSession httpSession, User newUser, Response response) {
 		newUser.setRestaurantId(user.getRestaurantId());
+		newUser.setType(Constant.Table.User.Type.NORMAL);
 		return addUser(newUser, response);
 	}
-	@RequestMapping(value = "/ajax/user/deleteRestaurantUser", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.USER_DELETE, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/user/deleteRestaurantUser")
+	@Permission(Constant.RequestPath.USER_DELETE)
 	public String deleteRestaurantUser(HttpSession httpSession, Integer id, Response response) {
 		if(StringUtil.isEmpty(id)){
 			response.setReason(Reason.ERR_ARG);
@@ -108,16 +109,15 @@ public class UserController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/ajax/user/addRestaurantManager", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.MANAGER_ADD, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/user/addRestaurantManager")
+	@Permission(Constant.RequestPath.MANAGER_ADD)
 	public String addRestaurantManager(User newUser, Response response) {
 		newUser.setType(Constant.Table.User.Type.RESTAURANT_MANAGER);
 		return addUser(newUser, response);
 	}
 	
 	private String addUser(User newUser, Response response){
-		newUser.setType(Constant.Table.User.Type.NORMAL);
 		String errorArg = checkAddArg(newUser);
 		if(errorArg != null){
 			response.setReason(Reason.ERR_ARG);
@@ -132,17 +132,17 @@ public class UserController extends AbsController{
 		}
 		return response.toJsonString();
 	}
-	@RequestMapping(value = "/ajax/user/updateRestaurantUser", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.USER_UPDATE, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/user/updateRestaurantUser")
+	@Permission(Constant.RequestPath.USER_UPDATE)
 	public String updateRestaurantUser(User newUser, Response response) {
 		newUser.setRestaurantId(user.getRestaurantId());
 		return updateUser(newUser, response);
 	}
 	
-	@RequestMapping(value = "/ajax/user/updateRestaurantManager", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.MANAGER_UPDATE, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/user/updateRestaurantManager")
+	@Permission(Constant.RequestPath.MANAGER_UPDATE)
 	public String updateRestaurantManager(User newUser, Response response) {
 		return updateUser(newUser, response);
 	}
@@ -164,9 +164,9 @@ public class UserController extends AbsController{
 	
 	}
 	
-	@RequestMapping(value = "/ajax/user/restaurantManagerDetail", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.MANAGER_DETAIL, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/user/restaurantManagerDetail")
+	@Permission(Constant.RequestPath.MANAGER_DETAIL)
 	public String restaurantManagerDetail(Integer id, Response response) {
 		if(StringUtil.isEmpty(id)){
 			response.setReason(Reason.ERR_ARG);
@@ -182,14 +182,14 @@ public class UserController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	public String checkUpdateArg(User newUser){
+	private String checkUpdateArg(User newUser){
 		if(StringUtil.isEmpty(user.getId())){
 			return "id";
 		}
 		return checkAddArg(newUser);
 	}
 	
-	public String checkAddArg(User newUser){
+	private String checkAddArg(User newUser){
 		if(StringUtil.checkFail(newUser.getAccount(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
 			return "account";
 		}

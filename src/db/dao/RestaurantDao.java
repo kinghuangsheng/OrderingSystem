@@ -14,8 +14,10 @@ public interface RestaurantDao {
 	int selectRestaurantCount(@Param("key")String key, @Param("state")Integer state, @Param("type")Integer type);
 	List<Map<String, Object>> selectRestaurant(@Param("key")String key, @Param("state")Integer state, @Param("type")Integer type, @Param("page")Page page);
 	
+	Restaurant selectRestaurantById(@Param("id")int id);
+	
 	int insertRestaurant(Restaurant restaurant);
 	int updateRestaurant(Restaurant restaurant);
-	int deleteRestaurant(@Param("id")int id, @Param("state")int state);
+	int setRestaurantState(@Param("id")int id, @Param("state")int state);
 
 }

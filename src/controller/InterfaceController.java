@@ -24,9 +24,9 @@ public class InterfaceController extends AbsController{
 	@Resource
 	private InterfaceDao interfaceDao;
 	
-	@RequestMapping(value = "/ajax/interface/list", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.INTERFACE_LIST, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/interface/list")
+	@Permission(Constant.RequestPath.INTERFACE_LIST)
 	public String list(HttpSession httpSession, String key, Page page, Response response) {
 		if(page.checkSortNameSuccess("name", "path", "id")){
 			HashMap<String, Object> map = new HashMap<String, Object>();
@@ -39,9 +39,9 @@ public class InterfaceController extends AbsController{
 		
 		return response.toJsonString();
 	}
-	@RequestMapping(value = "/ajax/interface/add", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.INTERFACE_ADD, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/interface/add")
+	@Permission(Constant.RequestPath.INTERFACE_ADD)
 	public String add(HttpSession httpSession, Interface i, Response response) {
 		String errorArg = checkAddArg(i);
 		if(errorArg != null){
@@ -58,9 +58,9 @@ public class InterfaceController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/ajax/interface/update", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.INTERFACE_UPDATE, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/interface/update")
+	@Permission(Constant.RequestPath.INTERFACE_UPDATE)
 	public String update(HttpSession httpSession, Interface i, Response response) {
 		String errorArg = checkUpdateArg(i);
 		if(errorArg != null){
@@ -76,9 +76,9 @@ public class InterfaceController extends AbsController{
 		}
 		return response.toJsonString();
 	}
-	@RequestMapping(value = "/ajax/interface/delete", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.INTERFACE_DELETE, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/interface/delete")
+	@Permission(Constant.RequestPath.INTERFACE_DELETE)
 	public String delete(HttpSession httpSession, Integer id, Response response) {
 		if(StringUtil.isEmpty(id)){
 			response.setReason(Reason.ERR_ARG);
@@ -93,7 +93,7 @@ public class InterfaceController extends AbsController{
 		}
 		return response.toJsonString();
 	}
-	public String checkUpdateArg(Interface i){
+	private String checkUpdateArg(Interface i){
 		if(StringUtil.isEmpty(i.getId())){
 			return "id";
 		}
@@ -101,7 +101,7 @@ public class InterfaceController extends AbsController{
 	
 	}
 	
-	public String checkAddArg(Interface i){
+	private String checkAddArg(Interface i){
 		if(StringUtil.checkFail(i.getName(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
 			return "name";
 		}

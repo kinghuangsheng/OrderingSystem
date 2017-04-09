@@ -43,6 +43,13 @@
 	</select>
 	
 	
+	<select id="selectRestaurantById" resultType="db.pojo.Restaurant">
+		SELECT 
+		r.id, r.name, r.license, r.state 
+		FROM restaurant r
+		where r.id = #{id}
+	</select>
+	
 	<insert id="insertRestaurant" parameterType="db.pojo.Restaurant" useGeneratedKeys="true" keyProperty="id" >
 	    INSERT INTO restaurant (name, license) select #{name}, #{license} FROM DUAL 
 		WHERE NOT EXISTS (SELECT license FROM restaurant WHERE license = #{license})
@@ -56,7 +63,7 @@
 		 </set>
 		 WHERE id = #{id}
   </update>
-  <update id="deleteRestaurant" parameterType="db.pojo.Restaurant" >
+  <update id="setRestaurantState">
 	    UPDATE restaurant 
 	    set state = #{state} 
 		 WHERE id = #{id}

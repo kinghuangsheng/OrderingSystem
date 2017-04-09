@@ -1,6 +1,7 @@
 <div>
 	<div id="vueDataDiv">
 		<form id="formFile" onsubmit="return false;" action="../../ajax/file/foodImageUpload" multiple="multiple" method="post" enctype="multipart/form-data">
+	        <input id="attribute" name="attribute">
 	        <input type="file" id="inputfile" name="file">
 	        <button @click="uploadImage" class="btn btn-primary">上传</button>
 	    </form>

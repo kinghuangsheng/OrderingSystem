@@ -27,16 +27,26 @@ public class RoleController extends AbsController{
 	@Resource
 	private RoleDao roleDao;
 	
-	@RequestMapping(value = "/ajax/role/restaurantRoleList", produces = "text/html;charset=UTF-8")
+	
+	@RequestMapping(value = Constant.RequestPath.ROLE_MENU_LIST, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/role/restaurantRoleList")
+	public String roleMenuList(HttpSession httpSession, Response response) {
+		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
+		response.setData(roleDao.selectRoleMenu(user.getRoleId()));
+		return response.toJsonString();
+	}
+	
+	
+	@RequestMapping(value = Constant.RequestPath.ROLE_LIST, produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Permission(Constant.RequestPath.ROLE_LIST)
 	public String restaurantUserList(HttpSession httpSession, String key, Page page, Response response) {
 		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 		return roleList(key, user.getRestaurantId(), page, response);
 	}
-	@RequestMapping(value = "/ajax/role/restaurantManagerRoleList", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.MANAGERROLE_LIST, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/role/restaurantManagerRoleList")
+	@Permission(Constant.RequestPath.MANAGERROLE_LIST)
 	public String restaurantManagerRoleList(HttpSession httpSession, String key, Page page, Response response) {
 		return roleList(key, Constant.Table.Restaurant.Id.SYSTEM_MANAGER, page, response);
 	}
@@ -52,17 +62,17 @@ public class RoleController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/ajax/role/addRestaurantRole", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.ROLE_ADD, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/role/addRestaurantRole")
+	@Permission(Constant.RequestPath.ROLE_ADD)
 	public String addRestaurantRole(HttpSession httpSession, Role newRole, String menuIds, Response response) {
 		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 		return addRole(newRole, menuIds, user.getRoleId(), user.getRestaurantId(), response);
 	}
 	
-	@RequestMapping(value = "/ajax/role/addRestaurantManagerRole", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.MANAGERROLE_ADD, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/role/addRestaurantManagerRole")
+	@Permission(Constant.RequestPath.MANAGERROLE_ADD)
 	public String addRestaurantManagerRole(HttpSession httpSession, Role newRole, String menuIds, Response response) {
 		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 		return addRole(newRole, menuIds, user.getRoleId(), Constant.Table.Restaurant.Id.SYSTEM_MANAGER, response);
@@ -103,20 +113,34 @@ public class RoleController extends AbsController{
 		}
 		return response.toJsonString();
 	}
-	@RequestMapping(value = "/ajax/role/updateRestaurantRole", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.ROLE_UPDATE, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/role/updateRestaurantRole")
+	@Permission(Constant.RequestPath.ROLE_UPDATE)
 	public String updateRestaurantRole(HttpSession httpSession, Role newRole, String menuIds, Response response) {
 		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 		return updateRole(newRole, menuIds, user.getRoleId(), user.getRestaurantId(), response);
 	}
 	
-	@RequestMapping(value = "/ajax/role/updateRestaurantManagerRole", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.MANAGERROLE_UPDATE, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/role/updateRestaurantManagerRole")
+	@Permission(Constant.RequestPath.MANAGERROLE_UPDATE)
 	public String updateRestaurantManagerRole(HttpSession httpSession, Role newRole, String menuIds, Response response) {
 		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 		return updateRole(newRole, menuIds, user.getRoleId(), Constant.Table.Restaurant.Id.SYSTEM_MANAGER, response);
+	}
+	
+	@RequestMapping(value = Constant.RequestPath.ROLE_AUTHORIZED_MENU_LIST, produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Permission(Constant.RequestPath.ROLE_AUTHORIZED_MENU_LIST)
+	public String authorizedRoleMenuList(HttpSession httpSession, Integer roleId, Response response) {
+		if(StringUtil.isEmpty(roleId)){
+			response.setReason(Reason.ERR_ARG);
+			response.setData("roleId");
+			return response.toJsonString();
+		}
+		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
+		response.setData(roleDao.selectAuthorizedRoleMenu(user.getRoleId(), roleId));
+		return response.toJsonString();
 	}
 	
 	private String updateRole(Role newRole, String menuIds, int roleId, int restaurantId, Response response){

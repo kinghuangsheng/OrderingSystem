@@ -29,40 +29,19 @@ public class MenuController extends AbsController{
 	
 	private static List<Integer> allInterfaceIdList;
 
-	@RequestMapping(value = "/ajax/menu/roleMenuList", produces = "text/html;charset=UTF-8")
-	@ResponseBody
-	public String roleMenuList(HttpSession httpSession, Response response) {
-		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
-		response.setData(menuDao.selectRoleMenu(user.getRoleId()));
-		return response.toJsonString();
-	}
 	
-	@RequestMapping(value = "/ajax/menu/authorizedRoleMenuList", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.MENU_ALL_LIST, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/menu/authorizedRoleMenuList")
-	public String authorizedRoleMenuList(HttpSession httpSession, Integer roleId, Response response) {
-		if(StringUtil.isEmpty(roleId)){
-			response.setReason(Reason.ERR_ARG);
-			response.setData("roleId");
-			return response.toJsonString();
-		}
-		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
-		response.setData(menuDao.selectAuthorizedRoleMenu(user.getRoleId(), roleId));
-		return response.toJsonString();
-	}
-	
-	@RequestMapping(value = "/ajax/menu/allList", produces = "text/html;charset=UTF-8")
-	@ResponseBody
-	@Permission("/ajax/menu/allList")
+	@Permission(Constant.RequestPath.MENU_ALL_LIST)
 	public String allList(HttpSession httpSession, Response response) {
 		response.setData(menuDao.selectAllMenu());
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/ajax/menu/menuInterfaceList", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.MENU_INTERFACE_LIST, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/menu/menuInterfaceList")
-	public String menuInterfaceList(HttpSession httpSession, Integer menuId, Response response) {
+	@Permission(Constant.RequestPath.MENU_INTERFACE_LIST)
+	public String interfaceList(HttpSession httpSession, Integer menuId, Response response) {
 		if(StringUtil.isEmpty(menuId)){
 			response.setReason(Reason.ERR_ARG);
 			response.setData("menuId");
@@ -73,9 +52,9 @@ public class MenuController extends AbsController{
 	}
 	
 
-	@RequestMapping(value = "/ajax/menu/add", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.MENU_ADD, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/menu/add")
+	@Permission(Constant.RequestPath.MENU_ADD)
 	public String add(HttpSession httpSession, Menu menu, String interfaceIds, Response response) {
 		String errorArg = checkAddArg(menu);
 		if(errorArg != null){
@@ -115,9 +94,9 @@ public class MenuController extends AbsController{
 		}
 		return response.toJsonString();
 	}
-	@RequestMapping(value = "/ajax/menu/delete", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.MENU_DELETE, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/menu/delete")
+	@Permission(Constant.RequestPath.MENU_DELETE)
 	public String delete(HttpSession httpSession, Menu menu, String interfaceIds, Response response) {
 		if(menu.getId() == null){
 			response.setReason(Reason.ERR_ARG);
@@ -134,9 +113,9 @@ public class MenuController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/ajax/menu/update", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.MENU_UPDATE, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/menu/update")
+	@Permission(Constant.RequestPath.MENU_UPDATE)
 	public String update(HttpSession httpSession, Menu menu, String interfaceIds, Response response) {
 		if(menu.getId() == null){
 			response.setReason(Reason.ERR_ARG);

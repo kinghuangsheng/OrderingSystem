@@ -23,9 +23,9 @@ public class RestaurantController extends AbsController{
 	@Resource
 	private RestaurantDao restaurantDao;
 
-	@RequestMapping(value = "/ajax/restaurant/list", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.RESTAURANT_LIST, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/restaurant/list")
+	@Permission(Constant.RequestPath.RESTAURANT_LIST)
 	public String list(String key, Page page, Integer state, Response response) {
 		if(page.checkSortNameSuccess("name", "license", "id")){
 			HashMap<String, Object> map = new HashMap<String, Object>();
@@ -38,9 +38,9 @@ public class RestaurantController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/ajax/restaurant/add", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.RESTAURANT_ADD, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/restaurant/add")
+	@Permission(Constant.RequestPath.RESTAURANT_ADD)
 	public String add(Restaurant restaurant, Response response) {
 		String errorArg = checkAddArg(restaurant);
 		if(errorArg != null){
@@ -58,9 +58,9 @@ public class RestaurantController extends AbsController{
 	}
 	
 	
-	@RequestMapping(value = "/ajax/restaurant/update", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.RESTAURANT_UPDATE, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/restaurant/update")
+	@Permission(Constant.RequestPath.RESTAURANT_UPDATE)
 	public String update(Restaurant restaurant, Response response) {
 		String errorArg = checkUpdateArg(restaurant);
 		if(errorArg != null){
@@ -75,29 +75,36 @@ public class RestaurantController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/ajax/restaurant/delete", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.RESTAURANT_TOGGLE_STATE, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/restaurant/delete")
-	public String delete(Restaurant restaurant, Response response) {
+	@Permission(Constant.RequestPath.RESTAURANT_TOGGLE_STATE)
+	public String toggleState(Restaurant restaurant, Response response) {
 		if(StringUtil.isEmpty(restaurant.getId())){
 			response.setReason(Reason.ERR_ARG);
 			response.setData("id");
 		}else{
-			int rowNum = restaurantDao.deleteRestaurant(restaurant.getId(), Constant.Table.Restaurant.State.FORBIDDEN);
-			if(rowNum == 0){
+			restaurant = restaurantDao.selectRestaurantById(restaurant.getId());
+			if(restaurant == null){
 				response.setReason(Reason.ERR_ARG);
+				response.setData("id");
+			}else{
+				if(restaurant.getState() == Constant.Table.Restaurant.State.FORBIDDEN){
+					restaurantDao.setRestaurantState(restaurant.getId(), Constant.Table.Restaurant.State.NORMAL);
+				}else{
+					restaurantDao.setRestaurantState(restaurant.getId(), Constant.Table.Restaurant.State.FORBIDDEN);
+				}
 			}
 		}
 		return response.toJsonString();
 	}
 	
-	public String checkUpdateArg(Restaurant restaurant){
+	private String checkUpdateArg(Restaurant restaurant){
 		if(StringUtil.isEmpty(restaurant.getId())){
 			return "id";
 		}
 		return checkAddArg(restaurant);
 	}
-	public String checkAddArg(Restaurant restaurant){
+	private String checkAddArg(Restaurant restaurant){
 		if(StringUtil.checkFail(restaurant.getName(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
 			return "name";
 		}

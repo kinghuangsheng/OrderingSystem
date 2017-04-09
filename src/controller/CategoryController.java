@@ -27,10 +27,10 @@ public class CategoryController extends AbsController{
 	@Resource
 	private CategoryDao categoryDao;
 	
-	@RequestMapping(value = "/ajax/category/restaurantCategoryList", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.CATEGORY_LIST, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/category/restaurantCategoryList")
-	public String restaurantUserList(HttpSession httpSession, String key, Page page, Response response) {
+	@Permission(Constant.RequestPath.CATEGORY_LIST)
+	public String list(HttpSession httpSession, String key, Page page, Response response) {
 		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 		return categoryList(key, user.getRestaurantId(), page, response);
 	}
@@ -47,10 +47,10 @@ public class CategoryController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/ajax/category/addRestaurantCategory", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.CATEGORY_ADD, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/category/addRestaurantCategory")
-	public String addRestaurantCategory(HttpSession httpSession, Category newCategory, Response response) {
+	@Permission(Constant.RequestPath.CATEGORY_ADD)
+	public String add(HttpSession httpSession, Category newCategory, Response response) {
 		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 		String errorArg = checkAddArg(newCategory);
 		if(errorArg != null){
@@ -67,10 +67,10 @@ public class CategoryController extends AbsController{
 	}
 	
 	
-	@RequestMapping(value = "/ajax/category/updateRestaurantCategory", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.CATEGORY_UPDATE, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/category/updateRestaurantCategory")
-	public String updateRestaurantCategory(HttpSession httpSession, Category newCategory, String menuIds, Response response) {
+	@Permission(Constant.RequestPath.CATEGORY_UPDATE)
+	public String update(HttpSession httpSession, Category newCategory, String menuIds, Response response) {
 		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 		String errorArg = checkUpdateArg(newCategory);
 		if(errorArg != null){
@@ -87,14 +87,14 @@ public class CategoryController extends AbsController{
 	}
 	
 	
-	public String checkUpdateArg(Category category){
+	private String checkUpdateArg(Category category){
 		if(StringUtil.isEmpty(category.getId())){
 			return "id";
 		}
 		return checkAddArg(category);
 	}
 	
-	public String checkAddArg(Category category){
+	private String checkAddArg(Category category){
 		if(StringUtil.checkFail(category.getName(), Constant.Length.DEFAULT_MIN, Constant.Length.DEFAULT_MAX, Constant.Pattern.DEFAULT)){
 			return "name";
 		}

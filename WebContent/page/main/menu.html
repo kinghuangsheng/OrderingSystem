@@ -32,6 +32,7 @@
 	function zTreeOnClick(event, treeId, treeNode) {
 		if(treeNode.path){
 		    $('#right').load(pagePathPre + treeNode.path);
+		    //Window.history = pageUrl.main + "#" + treeNode.path
 		}
 	}
 

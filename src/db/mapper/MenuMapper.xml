@@ -2,19 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="db.dao.MenuDao">
 
-	<select id="selectRoleMenu" resultType="Map">
-		SELECT m.name , m.id , m.parent_id parentId , m.path, m.class_name className
-		FROM role_menu rm
-		LEFT JOIN menu m on m.id = rm.menu_id
-		WHERE rm.role_id = #{roleId}
-	</select>
-	<select id="selectAuthorizedRoleMenu" resultType="Map">
-		SELECT m.name , m.id , m.parent_id parentId , m.path, m.class_name className, tmp.authorized
-		FROM role_menu rm
-		LEFT JOIN menu m on m.id = rm.menu_id
-		left join (select menu_id, 'true' as authorized from role_menu rm where rm.role_id = #{roleId}) tmp on tmp.menu_id = rm.menu_id
-		WHERE rm.role_id = #{parentRoleId}
-	</select>
 	
 	<select id="selectAllMenu" resultType="Map">
 		SELECT m.name , m.id , m.parent_id parentId , m.path, m.class_name className

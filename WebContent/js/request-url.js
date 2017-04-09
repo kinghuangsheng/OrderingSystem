@@ -1,67 +1,64 @@
-var ajaxPath = "http://localhost:8080/OrderingSystem/ajax/";
+var ajaxPath = "http://192.168.0.168:8080/OrderingSystem/ajax/";
 var ajaxUrl = {
-		login: ajaxPath + "user/login",
-		restaurantManagerDetail: ajaxPath + "user/restaurantManagerDetail",
-		updateRestaurantManager: ajaxPath + "user/updateRestaurantManager",
-		updateRestaurantUser: ajaxPath + "user/updateRestaurantUser",
-		deleteRestaurantUser: ajaxPath + "user/deleteRestaurantUser",
-		addRestaurantManager: ajaxPath + "user/addRestaurantManager",
 		
-		roleMenuList: ajaxPath + "menu/roleMenuList",
-		authorizedRoleMenuList: ajaxPath + "menu/authorizedRoleMenuList",
-		allMenuList: ajaxPath + "menu/allList",
-		menuInterfaceList: ajaxPath + "menu/menuInterfaceList",
-		updateMenu: ajaxPath + "menu/update",
-		addMenu: ajaxPath + "menu/add",
-		deleteMenu: ajaxPath + "menu/delete",
+
+		restaurantCategoryList: ajaxPath + "category/list",
+		addRestaurantCategory: ajaxPath + "category/add",
+		updateRestaurantCategory: ajaxPath + "category/update",
 		
-		restaurantList: ajaxPath + "restaurant/list",
-		addRestaurant: ajaxPath + "restaurant/add",
-		updateRestaurant: ajaxPath + "restaurant/update",
-		deleteRestaurant: ajaxPath + "restaurant/delete",
+		restaurantFoodList: ajaxPath + "food/list",
+		restaurantFoodCategoryList: ajaxPath + "food/categoryList",
+		addRestaurantFood: ajaxPath + "food/add",
+		updateRestaurantFood: ajaxPath + "food/update",
+		deleteRestaurantFood: ajaxPath + "food/delete",
 		
 		interfaceList: ajaxPath + "interface/list",
 		addInterface: ajaxPath + "interface/add",
 		updateInterface: ajaxPath + "interface/update",
 		deleteInterface: ajaxPath + "interface/delete",
 		
+		allMenuList: ajaxPath + "menu/allList",
+		menuInterfaceList: ajaxPath + "menu/interfaceList",
+		updateMenu: ajaxPath + "menu/update",
+		addMenu: ajaxPath + "menu/add",
+		deleteMenu: ajaxPath + "menu/delete",
 		
-		restaurantRoleList: ajaxPath + "role/restaurantRoleList",
-		restaurantManagerRoleList: ajaxPath + "role/restaurantManagerRoleList",
+		login: ajaxPath + "user/login",
+		updateRestaurantUser: ajaxPath + "user/update",
+		deleteRestaurantUser: ajaxPath + "user/delete",
+		restaurantUserList: ajaxPath + "user/list",
+		addRestaurantUser: ajaxPath + "user/add",
 		
+		restaurantManagerDetail: ajaxPath + "manager/detail",
+		updateRestaurantManager: ajaxPath + "manager/update",
+		addRestaurantManager: ajaxPath + "manager/add",
 		
-		restaurantCategoryList: ajaxPath + "category/restaurantCategoryList",
-		addRestaurantCategory: ajaxPath + "category/addRestaurantCategory",
-		updateRestaurantCategory: ajaxPath + "category/updateRestaurantCategory",
-		deleteRestaurantCategory: ajaxPath + "category/deleteRestaurantCategory",
+		restaurantManagerRoleList: ajaxPath + "managerRole/list",
+		addRestaurantManagerRole: ajaxPath + "managerRole/add",
+		updateRestaurantManagerRole: ajaxPath + "managerRole/update",
 		
-		restaurantUserList: ajaxPath + "user/restaurantUserList",
-		addRestaurantUser: ajaxPath + "user/addRestaurantUser",
+		restaurantList: ajaxPath + "restaurant/list",
+		addRestaurant: ajaxPath + "restaurant/add",
+		updateRestaurant: ajaxPath + "restaurant/update",
+		toggleRestaurantState: ajaxPath + "restaurant/toggleState",
 		
-		restaurantFoodList: ajaxPath + "food/restaurantFoodList",
-		restaurantFoodCategoryList: ajaxPath + "food/restaurantFoodCategoryList",
-		addRestaurantFood: ajaxPath + "food/addRestaurantFood",
-		updateRestaurantFood: ajaxPath + "food/updateRestaurantFood",
-		deleteRestaurantFood: ajaxPath + "food/deleteRestaurantFood",
+		authorizedRoleMenuList: ajaxPath + "role/authorizedMenuList",
+		restaurantRoleList: ajaxPath + "role/list",
+		addRestaurantRole: ajaxPath + "role/add",
+		updateRestaurantRole: ajaxPath + "role/update",
+		roleMenuList: ajaxPath + "role/menuList",
 		
+		restaurantSeatList: ajaxPath + "seat/list",
+		addRestaurantSeat: ajaxPath + "seat/add",
+		updateRestaurantSeat: ajaxPath + "seat/update",
+		deleteRestaurantSeat: ajaxPath + "seat/delete",
+
 		foodImageUpload: ajaxPath + "file/foodImageUpload",
-		
-		
-		addRestaurantRole: ajaxPath + "role/addRestaurantRole",
-		addRestaurantManagerRole: ajaxPath + "role/addRestaurantManagerRole",
-		updateRestaurantRole: ajaxPath + "role/updateRestaurantRole",
-		updateRestaurantManagerRole: ajaxPath + "role/updateRestaurantManagerRole",
-		
-		restaurantSeatList: ajaxPath + "seat/restaurantSeatList",
-		addRestaurantSeat: ajaxPath + "seat/addRestaurantSeat",
-		updateRestaurantSeat: ajaxPath + "seat/updateRestaurantSeat",
-		deleteRestaurantSeat: ajaxPath + "seat/deleteRestaurantSeat",
-		
 		
 		
 };
 
-var pagePathPre = "http://localhost:8080/OrderingSystem/page";
+var pagePathPre = "http://192.168.0.168:8080/OrderingSystem/page";
 var pageUrl = {
 		main: pagePathPre + "/main/main.html"
 };

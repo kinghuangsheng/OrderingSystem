@@ -25,10 +25,10 @@ public class SeatController extends AbsController{
 	@Resource
 	private SeatDao seatDao;
 	
-	@RequestMapping(value = "/ajax/seat/restaurantSeatList", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.SEAT_LIST, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/seat/restaurantSeatList")
-	public String restaurantSeatList(HttpSession httpSession, String key, Page page, Response response) {
+	@Permission(Constant.RequestPath.SEAT_LIST)
+	public String list(HttpSession httpSession, String key, Page page, Response response) {
 		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
 		if(page.checkSortNameSuccess("name", "customer_num", "id")){
 			HashMap<String, Object> map = new HashMap<String, Object>();
@@ -42,10 +42,10 @@ public class SeatController extends AbsController{
 	}
 	
 	
-	@RequestMapping(value = "/ajax/seat/addRestaurantSeat", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.SEAT_ADD, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/seat/addRestaurantSeat")
-	public String addRestaurantSeat(HttpSession httpSession, Seat newSeat, Response response) {
+	@Permission(Constant.RequestPath.SEAT_ADD)
+	public String add(HttpSession httpSession, Seat newSeat, Response response) {
 		String errorArg = checkAddArg(newSeat);
 		if(errorArg != null){
 			response.setReason(Reason.ERR_ARG);
@@ -63,10 +63,10 @@ public class SeatController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/ajax/seat/updateRestaurantSeat", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.SEAT_UPDATE, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/seat/updateRestaurantSeat")
-	public String updateRestaurantSeat(HttpSession httpSession, Seat newSeat, Response response) {
+	@Permission(Constant.RequestPath.SEAT_UPDATE)
+	public String update(HttpSession httpSession, Seat newSeat, Response response) {
 		String errorArg = checkUpdateArg(newSeat);
 		if(errorArg != null){
 			response.setReason(Reason.ERR_ARG);
@@ -84,10 +84,10 @@ public class SeatController extends AbsController{
 		return response.toJsonString();
 	}
 	
-	@RequestMapping(value = "/ajax/seat/deleteRestaurantSeat", produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.SEAT_DELETE, produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	@Permission("/ajax/seat/deleteRestaurantSeat")
-	public String deleteRestaurantSeat(HttpSession httpSession, Seat seat, Response response) {
+	@Permission(Constant.RequestPath.SEAT_DELETE)
+	public String delete(HttpSession httpSession, Seat seat, Response response) {
 		if(StringUtil.isEmpty(seat.getId())){
 			response.setReason(Reason.ERR_ARG);
 			response.setData("id");

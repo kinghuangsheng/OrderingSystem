@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-04-06 23:24:09
+Date: 2017-04-09 23:28:37
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,13 +25,15 @@ CREATE TABLE `category` (
   `restaurant_id` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`,`restaurant_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of category
 -- ----------------------------
 INSERT INTO `category` VALUES ('7', 'aaaaa', '0');
 INSERT INTO `category` VALUES ('8', 'bbbbb', '0');
+INSERT INTO `category` VALUES ('9', 'ccccc', '0');
+INSERT INTO `category` VALUES ('10', 'd', '0');
 INSERT INTO `category` VALUES ('3', '上海青菜', '101');
 INSERT INTO `category` VALUES ('5', '凉菜', '102');
 INSERT INTO `category` VALUES ('2', '川菜', '101');
@@ -59,7 +61,7 @@ CREATE TABLE `food` (
 -- ----------------------------
 INSERT INTO `food` VALUES ('9', '小炒肉3', '0', '10.20', '10.30', 'http://dict-pc.cache.iciba.com/news/2017/0406/20170406025737169.jpg@base@tag=imgScale&w=200&h=150&q=100');
 INSERT INTO `food` VALUES ('11', '小炒肉1', '0', '10.20', '10.30', 'http://dict-pc.cache.iciba.com/news/2017/0406/20170406025737169.jpg@base@tag=imgScale&w=200&h=150&q=100');
-INSERT INTO `food` VALUES ('12', '小炒肉2', '0', '10.20', '10.30', 'http://dict-pc.cache.iciba.com/news/2017/0406/20170406025737169.jpg@base@tag=imgScale&w=200&h=150&q=100');
+INSERT INTO `food` VALUES ('13', '小2炒肉', '0', '10.20', '10.30', 'http://dict-pc.cache.iciba.com/news/2017/0406/20170406025737169.jpg@base@tag=imgScale&w=200&h=150&q=100');
 
 -- ----------------------------
 -- Table structure for food_category
@@ -70,7 +72,7 @@ CREATE TABLE `food_category` (
   `food_id` int(10) unsigned NOT NULL DEFAULT '0',
   `category_id` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=187 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=188 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of food_category
@@ -78,7 +80,7 @@ CREATE TABLE `food_category` (
 INSERT INTO `food_category` VALUES ('180', '9', '8');
 INSERT INTO `food_category` VALUES ('182', '10', '7');
 INSERT INTO `food_category` VALUES ('183', '11', '8');
-INSERT INTO `food_category` VALUES ('184', '12', '8');
+INSERT INTO `food_category` VALUES ('187', '13', '7');
 
 -- ----------------------------
 -- Table structure for interface
@@ -92,50 +94,53 @@ CREATE TABLE `interface` (
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `license` (`path`),
   UNIQUE KEY `path` (`path`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of interface
 -- ----------------------------
 INSERT INTO `interface` VALUES ('5', '接口列表', '/ajax/interface/list');
 INSERT INTO `interface` VALUES ('6', '所有菜单列表', '/ajax/menu/allList');
-INSERT INTO `interface` VALUES ('7', '餐厅管理员添加', '/ajax/user/addRestaurantManager');
-INSERT INTO `interface` VALUES ('8', '餐厅用户添加', '/ajax/user/addRestaurantUser');
-INSERT INTO `interface` VALUES ('9', '餐厅角色列表', '/ajax/role/restaurantRoleList');
-INSERT INTO `interface` VALUES ('10', '餐厅席位列表', '/ajax/seat/restaurantSeatList');
-INSERT INTO `interface` VALUES ('11', '餐厅席位添加', '/ajax/seat/addRestaurantSeat');
+INSERT INTO `interface` VALUES ('7', '餐厅管理员添加', '/ajax/manager/add');
+INSERT INTO `interface` VALUES ('8', '餐厅用户添加', '/ajax/user/add');
+INSERT INTO `interface` VALUES ('9', '餐厅角色列表', '/ajax/role/list');
+INSERT INTO `interface` VALUES ('10', '餐厅席位列表', '/ajax/seat/list');
+INSERT INTO `interface` VALUES ('11', '餐厅席位添加', '/ajax/seat/add');
 INSERT INTO `interface` VALUES ('12', '餐厅列表', '/ajax/restaurant/list');
 INSERT INTO `interface` VALUES ('13', '餐厅添加', '/ajax/restaurant/add');
 INSERT INTO `interface` VALUES ('14', '餐厅更新', '/ajax/restaurant/update');
-INSERT INTO `interface` VALUES ('15', '餐厅用户列表', '/ajax/user/restaurantUserList');
-INSERT INTO `interface` VALUES ('16', '餐厅角色添加', '/ajax/role/addRestaurantRole');
-INSERT INTO `interface` VALUES ('17', '餐厅删除', '/ajax/restaurant/delete');
-INSERT INTO `interface` VALUES ('18', '餐厅用户更新', '/ajax/user/updateRestaurantUser');
-INSERT INTO `interface` VALUES ('19', '餐厅管理员详细信息', '/ajax/user/restaurantManagerDetail');
-INSERT INTO `interface` VALUES ('20', '餐厅角色更新', '/ajax/role/updateRestaurantRole');
+INSERT INTO `interface` VALUES ('15', '餐厅用户列表', '/ajax/user/list');
+INSERT INTO `interface` VALUES ('16', '餐厅角色添加', '/ajax/role/add');
+INSERT INTO `interface` VALUES ('17', '餐厅状态变更', '/ajax/restaurant/toggleState');
+INSERT INTO `interface` VALUES ('18', '餐厅用户更新', '/ajax/user/update');
+INSERT INTO `interface` VALUES ('19', '餐厅管理员详细信息', '/ajax/manager/detail');
+INSERT INTO `interface` VALUES ('20', '餐厅角色更新', '/ajax/role/update');
 INSERT INTO `interface` VALUES ('21', '接口添加', '/ajax/interface/add');
 INSERT INTO `interface` VALUES ('22', '菜单更新', '/ajax/menu/update');
-INSERT INTO `interface` VALUES ('23', '菜单接口列表', '/ajax/menu/menuInterfaceList');
+INSERT INTO `interface` VALUES ('23', '菜单接口列表', '/ajax/menu/interfaceList');
 INSERT INTO `interface` VALUES ('24', '菜单删除', '/ajax/menu/delete');
 INSERT INTO `interface` VALUES ('25', '子菜单添加', '/ajax/menu/add');
 INSERT INTO `interface` VALUES ('28', '接口更新', '/ajax/interface/update');
 INSERT INTO `interface` VALUES ('30', '接口删除', '/ajax/interface/delete');
-INSERT INTO `interface` VALUES ('33', '角色授权接口列表', '/ajax/menu/authorizedRoleMenuList');
-INSERT INTO `interface` VALUES ('35', '餐厅管理员更新', '/ajax/user/updateRestaurantManager');
-INSERT INTO `interface` VALUES ('36', '餐厅管理员角色更新', '/ajax/role/updateRestaurantManagerRole');
-INSERT INTO `interface` VALUES ('37', '餐厅管理员角色添加', '/ajax/role/addRestaurantManagerRole');
-INSERT INTO `interface` VALUES ('39', '餐厅席位更新', '/ajax/seat/updateRestaurantSeat');
-INSERT INTO `interface` VALUES ('40', '餐厅席位删除', '/ajax/seat/deleteRestaurantSeat');
-INSERT INTO `interface` VALUES ('43', '餐厅用户删除', '/ajax/user/deleteRestaurantUser');
-INSERT INTO `interface` VALUES ('44', '会员级别列表', '/ajax/role/restaurantManagerRoleList');
-INSERT INTO `interface` VALUES ('45', '菜品分类列表', '/ajax/category/restaurantCategoryList');
-INSERT INTO `interface` VALUES ('46', '菜品分类添加', '/ajax/category/addRestaurantCategory');
-INSERT INTO `interface` VALUES ('47', '菜品分类更新', '/ajax/category/updateRestaurantCategory');
-INSERT INTO `interface` VALUES ('48', '菜品列表', '/ajax/food/restaurantFoodList');
-INSERT INTO `interface` VALUES ('49', '菜品添加', '/ajax/food/addRestaurantFood');
-INSERT INTO `interface` VALUES ('50', '菜品更新', '/ajax/food/updateRestaurantFood');
-INSERT INTO `interface` VALUES ('51', '菜品删除', '/ajax/food/deleteRestaurantFood');
-INSERT INTO `interface` VALUES ('52', '菜品所属分类', '/ajax/food/restaurantFoodCategoryList');
+INSERT INTO `interface` VALUES ('33', '角色授权接口列表', '/ajax/role/authorizedMenuList');
+INSERT INTO `interface` VALUES ('35', '餐厅管理员更新', '/ajax/manager/update');
+INSERT INTO `interface` VALUES ('36', '餐厅管理员角色更新', '/ajax/managerRole/update');
+INSERT INTO `interface` VALUES ('37', '餐厅管理员角色添加', '/ajax/managerRole/add');
+INSERT INTO `interface` VALUES ('39', '餐厅席位更新', '/ajax/seat/update');
+INSERT INTO `interface` VALUES ('40', '餐厅席位删除', '/ajax/seat/delete');
+INSERT INTO `interface` VALUES ('43', '餐厅用户删除', '/ajax/user/delete');
+INSERT INTO `interface` VALUES ('44', '会员级别列表', '/ajax/managerRole/list');
+INSERT INTO `interface` VALUES ('45', '菜品分类列表', '/ajax/category/list');
+INSERT INTO `interface` VALUES ('46', '菜品分类添加', '/ajax/category/add');
+INSERT INTO `interface` VALUES ('47', '菜品分类更新', '/ajax/category/update');
+INSERT INTO `interface` VALUES ('48', '菜品列表', '/ajax/food/list');
+INSERT INTO `interface` VALUES ('49', '菜品添加', '/ajax/food/add');
+INSERT INTO `interface` VALUES ('50', '菜品更新', '/ajax/food/update');
+INSERT INTO `interface` VALUES ('51', '菜品删除', '/ajax/food/delete');
+INSERT INTO `interface` VALUES ('52', '菜品所属分类', '/ajax/food/categoryList');
+INSERT INTO `interface` VALUES ('53', '上传菜品图片', '/ajax/file/foodImageUpload');
+INSERT INTO `interface` VALUES ('54', '角色菜单列表', '/ajax/role/menuList');
+INSERT INTO `interface` VALUES ('55', '用户登录', '/ajax/user/login');
 
 -- ----------------------------
 -- Table structure for menu
@@ -155,12 +160,12 @@ CREATE TABLE `menu` (
 -- ----------------------------
 INSERT INTO `menu` VALUES ('1', '用户管理', '/restaurant_manage/user_manage.html', '10', '');
 INSERT INTO `menu` VALUES ('2', '角色管理', '/restaurant_manage/role_manage.html', '10', '');
-INSERT INTO `menu` VALUES ('5', '餐厅管理', '/system_manage/restaurant_manage.html', '7', '');
+INSERT INTO `menu` VALUES ('5', '餐厅设置', '/system_manage/restaurant_manage.html', '7', 'a');
 INSERT INTO `menu` VALUES ('6', '菜单管理', '/system_manage/menu_manage.html', '7', 'adsf');
 INSERT INTO `menu` VALUES ('7', '系统管理', '', '8', '');
 INSERT INTO `menu` VALUES ('8', '根结点', '', '0', '');
 INSERT INTO `menu` VALUES ('9', '接口管理', '/system_manage/interface_manage.html', '7', '');
-INSERT INTO `menu` VALUES ('10', '餐厅管理', '', '8', '');
+INSERT INTO `menu` VALUES ('10', '餐厅管理', '', '8', 'aa');
 INSERT INTO `menu` VALUES ('11', '会员级别管理', '/system_manage/level_manage.html', '7', '');
 INSERT INTO `menu` VALUES ('12', '席位管理', '/restaurant_manage/seat_manage.html', '10', '');
 INSERT INTO `menu` VALUES ('13', '运营管理', '', '8', '');
@@ -179,7 +184,7 @@ CREATE TABLE `menu_interface` (
   `menu_id` int(10) unsigned NOT NULL DEFAULT '0',
   `interface_id` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=242 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=249 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of menu_interface
@@ -203,13 +208,6 @@ INSERT INTO `menu_interface` VALUES ('210', '12', '10');
 INSERT INTO `menu_interface` VALUES ('211', '12', '11');
 INSERT INTO `menu_interface` VALUES ('212', '12', '39');
 INSERT INTO `menu_interface` VALUES ('213', '12', '40');
-INSERT INTO `menu_interface` VALUES ('214', '5', '7');
-INSERT INTO `menu_interface` VALUES ('215', '5', '12');
-INSERT INTO `menu_interface` VALUES ('216', '5', '13');
-INSERT INTO `menu_interface` VALUES ('217', '5', '14');
-INSERT INTO `menu_interface` VALUES ('218', '5', '17');
-INSERT INTO `menu_interface` VALUES ('219', '5', '19');
-INSERT INTO `menu_interface` VALUES ('220', '5', '35');
 INSERT INTO `menu_interface` VALUES ('227', '6', '5');
 INSERT INTO `menu_interface` VALUES ('228', '6', '6');
 INSERT INTO `menu_interface` VALUES ('229', '6', '22');
@@ -224,6 +222,13 @@ INSERT INTO `menu_interface` VALUES ('238', '18', '49');
 INSERT INTO `menu_interface` VALUES ('239', '18', '50');
 INSERT INTO `menu_interface` VALUES ('240', '18', '51');
 INSERT INTO `menu_interface` VALUES ('241', '18', '52');
+INSERT INTO `menu_interface` VALUES ('242', '5', '7');
+INSERT INTO `menu_interface` VALUES ('243', '5', '12');
+INSERT INTO `menu_interface` VALUES ('244', '5', '13');
+INSERT INTO `menu_interface` VALUES ('245', '5', '14');
+INSERT INTO `menu_interface` VALUES ('246', '5', '17');
+INSERT INTO `menu_interface` VALUES ('247', '5', '19');
+INSERT INTO `menu_interface` VALUES ('248', '5', '35');
 
 -- ----------------------------
 -- Table structure for restaurant
@@ -237,7 +242,7 @@ CREATE TABLE `restaurant` (
   `type` int(2) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `license` (`license`)
-) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=115 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of restaurant
@@ -252,6 +257,11 @@ INSERT INTO `restaurant` VALUES ('106', '龙门客栈', '12345678', '0', '0');
 INSERT INTO `restaurant` VALUES ('107', '天上人间', 'tsrj', '0', '0');
 INSERT INTO `restaurant` VALUES ('108', 'f', 'f', '1', '0');
 INSERT INTO `restaurant` VALUES ('109', '系统开发', 'system-develop', '0', '1');
+INSERT INTO `restaurant` VALUES ('110', 'gg', 'gg', '1', '0');
+INSERT INTO `restaurant` VALUES ('111', '123123123', '123123123', '0', '0');
+INSERT INTO `restaurant` VALUES ('112', '231231', '3123123', '1', '0');
+INSERT INTO `restaurant` VALUES ('113', '231231', '111111111', '1', '0');
+INSERT INTO `restaurant` VALUES ('114', 'asdf', 'asdf', '0', '0');
 
 -- ----------------------------
 -- Table structure for role
@@ -346,13 +356,14 @@ CREATE TABLE `seat` (
   `customer_num` int(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`,`restaurant_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of seat
 -- ----------------------------
 INSERT INTO `seat` VALUES ('1', 'seat1', '101', '10');
 INSERT INTO `seat` VALUES ('5', 'seat3', '101', '103');
+INSERT INTO `seat` VALUES ('16', 'ass', '0', '11');
 
 -- ----------------------------
 -- Table structure for user
@@ -370,7 +381,7 @@ CREATE TABLE `user` (
   `type` int(2) unsigned NOT NULL DEFAULT '0' COMMENT '0：普通用户  1：管理员',
   PRIMARY KEY (`id`),
   UNIQUE KEY `account` (`account`,`restaurant_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
@@ -385,4 +396,8 @@ INSERT INTO `user` VALUES ('34', 'f', 'f', 'f1', '108', '2', '0', '12333', '1');
 INSERT INTO `user` VALUES ('35', 'ab', 'ab', 'ab', '101', '5', '0', '123', '0');
 INSERT INTO `user` VALUES ('36', 'ac', 'ac', 'ac', '101', '4', '0', '123', '0');
 INSERT INTO `user` VALUES ('37', 'tsrj', 'tsrj', 'tsrj', '107', '6', '0', '123', '0');
-INSERT INTO `user` VALUES ('39', 'sys5', 'sys5', 'sys5', '0', '1', '0', '122345', '0');
+INSERT INTO `user` VALUES ('40', 'asdf', 'asdf', 'asdf', '114', '7', '0', 'asdf', '1');
+INSERT INTO `user` VALUES ('41', '1111', '1111', '1111', '113', '6', '0', '1111', '1');
+INSERT INTO `user` VALUES ('42', '123', '123', '123', '112', '7', '0', '123', '1');
+INSERT INTO `user` VALUES ('43', '321', '321', '321', '111', '6', '0', '321', '1');
+INSERT INTO `user` VALUES ('44', 'sys4', 'sys4', 'sys4', '0', '1', '0', '122345', '0');

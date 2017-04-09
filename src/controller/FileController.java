@@ -17,13 +17,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import bean.Response;
+import global.constant.Constant;
 import permission.Permission;
 
 @Controller
 public class FileController extends AbsController {
 
 	
-	@RequestMapping(value = "/ajax/file/foodImageUpload", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
+	@RequestMapping(value = Constant.RequestPath.FOOD_IMAGE_UPLOAD, method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
 	@ResponseBody
     public String foodImageUpload(HttpServletRequest request, Response response)
         throws Exception

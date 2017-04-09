@@ -10,8 +10,7 @@ import db.pojo.Menu;
 public interface MenuDao {
 	
 	
-	List<Map<String, Object>> selectRoleMenu(@Param("roleId")int roleId);
-	List<Map<String, Object>> selectAuthorizedRoleMenu(@Param("parentRoleId")int parentRoleId, @Param("roleId")int roleId);
+	
 	List<Map<String, Object>> selectMenuInterface(@Param("menuId")int menuId);
 	List<Map<String, Object>> selectAllMenu();
 	List<Integer> selectAllInterfaceIds();

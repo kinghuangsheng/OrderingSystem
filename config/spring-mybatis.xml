@@ -3,12 +3,17 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"  
     xmlns:context="http://www.springframework.org/schema/context"  
     xmlns:mvc="http://www.springframework.org/schema/mvc"  
+    xmlns:tx="http://www.springframework.org/schema/tx"  
     xsi:schemaLocation="http://www.springframework.org/schema/beans    
                         http://www.springframework.org/schema/beans/spring-beans-3.1.xsd    
                         http://www.springframework.org/schema/context    
                         http://www.springframework.org/schema/context/spring-context-3.1.xsd    
                         http://www.springframework.org/schema/mvc    
-                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">  
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+                        http://www.springframework.org/schema/tx  
+				        http://www.springframework.org/schema/tx/spring-tx-3.1.xsd  
+				        http://www.springframework.org/schema/aop   
+				        http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">  
                         
     
     <!-- 引入配置文件 -->  
@@ -51,5 +56,14 @@
         class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
         <property name="dataSource" ref="dataSource" />  
     </bean>  
+    
+    
+    <bean class="service.impl.SeatServiceImpl"/>  
+    <!-- 事务配置 --> 
+    <context:annotation-config />    
+    <!-- 扫描service层 -->  
+    <context:component-scan base-package="service.impl" />   
+    <!--使用注释事务 -->    
+	<tx:annotation-driven  transaction-manager="transactionManager" />  
   
 </beans>  
