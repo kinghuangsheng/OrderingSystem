@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="author" content="Chomo" />
+<title>后台管理</title>
+
+<script src="../../js/jquery/jquery-3.1.1.min.js"></script>
+<script src="../../js/vue/vue.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../css/accordion.css" />
+<script src="../../js/accordion.js"></script>
+
+<link rel="stylesheet" type="text/css"
+	href="../../component/tether-1.3.3/css/tether.min.css" />
+<script src="../../component/tether-1.3.3/js/tether.min.js"></script>
+
+<link rel="stylesheet" type="text/css"
+	href="../../component/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.min.css" />
+<script
+	src="../../component/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" type="text/css"
+	href="../../component/bootstrap-table-1.11.1/bootstrap-table.min.css" />
+<script
+	src="../../component/bootstrap-table-1.11.1/bootstrap-table.min.js"></script>
+<!-- <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css"/>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script> -->
+
+<script src="../../js/request-url.js"></script>
+
+<script src="../../component/ztree.3.5.26/jquery.ztree.all.min.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="../../component/ztree.3.5.26/css/zTreeStyle/zTreeStyle.css" />
+<script src="../../js/sockjs-0.3.min.js"></script>  
+
+<script>
+	var SUCCESS_CODE = 0;
+	var MODAL_TYPE_ADD = 1;
+	var MODAL_TYPE_UPDATE = 2;
+	var PAGE_SIZE = 10;
+	var PAGE_SIZE_LIST = [ 10, 20, 50, 100 ];
+	var MENU_LIST;
+</script>
+</head>
+<body>
+	<div>
+		<div id="vueDataDiv">
+			<br />
+			<div>
+				<div class="input-group" class="row">
+					<input v-model="searchKey" type="text" placeholder="菜名">
+						<button @click="search" class="btn btn-secondary" type="button">查询</button>
+				</div>
+			</div>
+
+		</div>
+
+
+	</div>
+	<div id="dataList" class="row">
+		<div class="col-md-12 color:#fff">
+			<table id="table">
+			</table>
+		</div>
+	</div>
+
+	<script>
+		var vueData = new Vue({
+			el : '#vueDataDiv',
+			data : {
+				searchKey : "",
+				row : {
+					name : "",
+					salePrice : "",
+					originalPrice : "",
+					url : "",
+					restaurantId : "",
+					id : "",
+				},
+				categoryList : [],
+			},
+			methods : {
+				search : function() {
+					search(this.searchKey, false);
+				},
+
+				itemClick : function(category, index) {
+
+				},
+			}
+
+		});
+
+		function getCheckCategoryIds() {
+			var checkedIds = [];
+			vueData.categoryList.forEach(function(value) {
+				if (value.checked) {
+					checkedIds.push(value.id);
+				}
+			});
+			return JSON.stringify(checkedIds);
+		}
+
+		$(function() {
+			$.get(ajaxUrl.restaurantCategoryList, function(response) {
+				var response = JSON.parse(response);
+				if (response.code == SUCCESS_CODE) {
+					vueData.categoryList = response.data.list;
+				} else {
+					alert(response.msg + "----" + response.data);
+				}
+			});
+		});
+
+		//search("", true);
+		function search(keyStr) {
+			$('#table').bootstrapTable('refresh', {
+				pageNumber : 1,
+				pageSize : 10,
+				search : true,
+			});
+		}
+
+		$('#table').bootstrapTable({
+			url : ajaxUrl.restaurantFoodList,
+			cache : false,
+			contentType : "text/html",
+			dataType : "json",
+			pagination : true,
+			search : false,
+			sidePagination : "server",
+			pageNumber : 1, //初始化加载第一页，默认第一页
+			pageSize : PAGE_SIZE, //每页的记录行数（*）
+			smartDisplay : false,
+			contentType : "text/html",
+			queryParamsType : '', //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort 设置为 ''  在这种情况下传给服务器的参数为：pageSize,pageNumber
+			queryParams : function(params) {
+				params.key = vueData.searchKey;
+				return params;
+			},
+			//queryParams : queryParams1,
+			responseHandler : function(response) {
+				if (response.code == SUCCESS_CODE) {
+					response.total = response.count;
+					response.rows = response.data.list;
+				} else {
+					alert(response.msg + "----" + response.data);
+				}
+				return response;
+			},
+			onClickRow : function(row, $element, field) {
+				vueData.row = row;
+
+				$.get(ajaxUrl.restaurantFoodCategoryList, {
+					foodId : row.id,
+				}, function(response) {
+					response = JSON.parse(response);
+					if (response.code == SUCCESS_CODE) {
+						vueData.categoryList = response.data;
+					} else {
+						alert(response.msg + "----" + response.data);
+					}
+				});
+			},
+			columns : [ {
+				field : 'url',
+				formatter : imageUrlFormater,
+				title : '图片'
+			}, {
+				field : 'name',
+				sortable : true,
+				title : '菜名'
+			}, {
+				field : 'salePrice',
+				title : '现价'
+			}, {
+				field : 'originalPrice',
+				title : '原价'
+			}, ],
+		});
+
+		function imageUrlFormater(value, row, index) {
+			return [ '<a class="updateManager" href="javascript:void(0);" >',
+					'<img src="'+ value + '"/>', '</a>' ].join('');
+		}
+		
+		
+		var ws = new WebSocket("ws://localhost:8080/OrderingSystem/websocket");
+		ws.onopen = function () {  
+            alert("webSocket onopen");
+            var loginMsg = {
+            		seatId : getParam("seatId"),
+            		secret : getParam("secret"),
+            		
+            }
+            ws.send(JSON.stringify(loginMsg)); 
+        };  
+        ws.onmessage = function (event) {  
+        	alert("webSocket  onmessage ---" + event.data) ;
+        };  
+        ws.onclose = function (event) {  
+        	alert("webSocket  onclose") ;
+        };
+        function disconnect() {  
+            if (ws != null) {  
+                ws.close();  
+                ws = null;  
+            }  
+        }  
+        function getParam(paramName) {
+    		paramValue = "";
+    		isFound = false;
+    		if (this.location.search.indexOf("?") == 0
+    				&& this.location.search.indexOf("=") > 1) {
+    			arrSource = unescape(this.location.search).substring(1,
+    					this.location.search.length).split("&");
+    			i = 0;
+    			while (i < arrSource.length && !isFound) {
+    				if (arrSource[i].indexOf("=") > 0) {
+    					if (arrSource[i].split("=")[0].toLowerCase() == paramName
+    							.toLowerCase()) {
+    						paramValue = arrSource[i].split("=")[1];
+    						isFound = true;
+    					}
+    				}
+    				i++;
+    			}
+    		}
+    		return paramValue;
+    	}
+	</script>
+</body>
+</html>

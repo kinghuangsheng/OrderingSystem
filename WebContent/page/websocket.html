@@ -34,7 +34,7 @@
         }  
     </style>  
   
-    <script src="../component/sockjs-0.3.min.js"></script>  
+    <script src="../js/sockjs-0.3.min.js"></script>  
   
     <script type="text/javascript">  
         var ws = null;  
@@ -56,7 +56,7 @@
   
             ws = (url.indexOf('sockjs') != -1) ?   
                 new SockJS(url, undefined, {protocols_whitelist: transports}) : new WebSocket(url);  
-  
+                debugger;
             ws.onopen = function () {  
                 setConnected(true);  
                 log('Info: connection opened.');  
@@ -90,6 +90,7 @@
         }  
   
         function updateUrl(urlPath) {  
+        	debugger;
             if (urlPath.indexOf('sockjs') != -1) {  
                 url = urlPath;  
                 document.getElementById('sockJsTransportSelect').style.visibility = 'visible';  

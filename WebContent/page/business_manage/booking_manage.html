@@ -1,17 +1,9 @@
 <div>
 	<div id="vueDataDiv">
 		<div>
-			<label for="message-text">名称</label> <input v-model="row.name">
-			<label for="message-text">容纳人数</label> <input v-model="row.customerNum">
-		</div>
-		<br />
-		<div>
 			<div class="input-group" class="row">
 				<input v-model="searchKey" type="text" placeholder="席位名称"> 
 				<button @click="search" class="btn btn-secondary" type="button">查询</button>
-				<button @click="add" class="btn btn-primary">新增</button>
-				<button @click="update" class="btn btn-primary">修改</button>
-				<button @click="del" class="btn btn-primary">删除</button>
 			</div>
 		</div>
 		
@@ -41,24 +33,7 @@
 			search : function() {
 				search(this.searchKey, false);
 			},
-			add : function() {
-				$.get(ajaxUrl.addRestaurantSeat, vueData.row, function(response) {
-					var response = JSON.parse(response);
-					alert(response.msg + "----" + response.data);
-				});
-			},
-			del : function() {
-				$.get(ajaxUrl.deleteRestaurantSeat, vueData.row, function(response) {
-					var response = JSON.parse(response);
-					alert(response.msg + "----" + response.data);
-				});
-			},
-			update : function() {
-				$.get(ajaxUrl.updateRestaurantSeat, vueData.row, function(response) {
-					var response = JSON.parse(response);
-					alert(response.msg + "----" + response.data);
-				});
-			},
+			
 			
 		}
 
@@ -73,6 +48,26 @@
 		});
 	}
 
+	window.operationTDEvents = {
+	        'click .refreshQRCode': function (e, value, row, index) {
+	        	$.get(
+						ajaxUrl.refreshSeatSecret,
+						{
+							id : row.id,	
+						},
+						function(response) {
+							response = JSON.parse(response);
+							if (response.code == SUCCESS_CODE) {
+								
+								alert(response.data);
+							}else{
+								alert(response.msg + "----" + response.data);
+							}
+						}
+				);
+	        },
+	    };
+	
 	$('#table').bootstrapTable({
 		url : ajaxUrl.restaurantSeatList,
 		cache : false,
@@ -113,6 +108,21 @@
 		}, {
 			field : 'customerNum',
 			title : '容纳人数'
+		},{
+			field : 'operation',
+			formatter: operationTDFormater,
+			events: operationTDEvents,
+			title : '操作'
 		}, ],
 	});
+	
+	function operationTDFormater(value, row, index){
+		return [
+			'<a class="refreshQRCode" href="javascript:void(0);">',
+			'刷新二维码',
+			'</a>'
+	        ].join('');
+	}
+	
+	
 </script>

@@ -42,6 +42,11 @@
   <delete id="deleteSeat" parameterType="db.pojo.Seat" >
 	    delete from  seat WHERE id = #{id} and restaurant_id = #{restaurantId}
   </delete>
+  <select id="selectSeatById" resultType="db.pojo.Seat">
+	    select id, restaurant_id as restaurantId 
+	    from seat 
+	    WHERE id = #{seatId} and restaurant_id = #{restaurantId}
+  </select>
   
 	
 </mapper>

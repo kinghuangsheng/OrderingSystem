@@ -1,4 +1,4 @@
-var ajaxPath = "http://192.168.0.168:8080/OrderingSystem/ajax/";
+var ajaxPath = "http://localhost:8080/OrderingSystem/ajax/";
 var ajaxUrl = {
 		
 
@@ -52,13 +52,14 @@ var ajaxUrl = {
 		addRestaurantSeat: ajaxPath + "seat/add",
 		updateRestaurantSeat: ajaxPath + "seat/update",
 		deleteRestaurantSeat: ajaxPath + "seat/delete",
+		refreshSeatSecret: ajaxPath + "seat/refreshSecret",
 
 		foodImageUpload: ajaxPath + "file/foodImageUpload",
 		
 		
 };
 
-var pagePathPre = "http://192.168.0.168:8080/OrderingSystem/page";
+var pagePathPre = "http://localhost:8080/OrderingSystem/page";
 var pageUrl = {
 		main: pagePathPre + "/main/main.html"
 };

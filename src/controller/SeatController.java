@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -18,6 +19,8 @@ import db.pojo.User;
 import global.constant.Constant;
 import global.constant.Reason;
 import permission.Permission;
+import running.data.BookingData;
+import running.data.GlobalData;
 
 @Controller
 public class SeatController extends AbsController{
@@ -102,6 +105,26 @@ public class SeatController extends AbsController{
 		return response.toJsonString();
 	}
 	
+	@RequestMapping(value = Constant.RequestPath.SEAT_REFRESH_SECRET, produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	@Permission(Constant.RequestPath.SEAT_REFRESH_SECRET)
+	public String refreshSecret(HttpSession httpSession, Seat seat, Response response){
+		User user = (User) httpSession.getAttribute(Constant.MapKey.USER);
+		if(seat.getId() == null){
+			response.setReason(Reason.ERR_ARG);
+		}else{
+			seat = seatDao.selectSeatById(user.getRestaurantId(), seat.getId());
+			if(seat == null){
+				response.setReason(Reason.ERR_ARG);
+			}else{
+				UUID uuid = UUID.randomUUID();
+				BookingData bookingData = GlobalData.getTableData(seat.getId());
+				bookingData.setSecret(uuid.toString());
+				response.setData(uuid.toString());
+			}
+		}
+		return response.toJsonString();
+	}
 	
 	public String checkUpdateArg(Seat seat){
 		if(StringUtil.isEmpty(seat.getId())){

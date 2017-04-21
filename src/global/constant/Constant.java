@@ -107,6 +107,7 @@ public class Constant {
 		
 		public final static String SEAT_ADD = "/ajax/seat/add";
 		public final static String SEAT_DELETE = "/ajax/seat/delete";
+		public final static String SEAT_REFRESH_SECRET = "/ajax/seat/refreshSecret";
 		public final static String SEAT_LIST = "/ajax/seat/list";
 		public final static String SEAT_UPDATE = "/ajax/seat/update";
 		
