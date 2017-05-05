@@ -8,6 +8,48 @@
 <script src="js/jquery/jquery.cookie.js"></script>
 <script src="js/request-url.js"></script>
 <script>
+
+/* var scope = "global";
+function f(){
+	console.log(scope);
+	var scope = "local";
+	console.log(scope);
+}
+f(); */
+(
+	ff()
+);
+console.log("ss");
+eval('ff()');
+function ff(){
+	console.log('--asdfas');
+	var f = 'f';
+}
+/* function aa(){
+	var a = 'a';
+	function bb(){
+		a = 'aa';
+		console.log(b);
+		
+		if(2>1){
+		b = 'b';
+		}
+		var b;
+		console.log(b);
+	}
+	bb(); 
+	delete a;
+	c='c';
+	console.log(c);
+	console.log(delete a);
+	console.log(delete c);
+	console.log(a);
+	
+	
+}
+var d = 'd';
+console.log(this.d); */
+
 	$(document).ready(function() {
 		$("#btnLogin").click(function() {
 			$.get(ajaxUrl.login, {

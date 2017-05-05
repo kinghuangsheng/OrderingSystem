@@ -12,11 +12,11 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import annotation.Permission;
 import bean.Response;
 import db.pojo.User;
 import global.constant.Constant;
 import global.constant.Reason;
-import permission.Permission;
 
 public class AjaxRequestInterceptor implements HandlerInterceptor {
 

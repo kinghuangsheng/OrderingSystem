@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import annotation.Permission;
 import bean.Page;
 import bean.Response;
 import common.util.StringUtil;
@@ -18,7 +19,6 @@ import db.pojo.Seat;
 import db.pojo.User;
 import global.constant.Constant;
 import global.constant.Reason;
-import permission.Permission;
 import running.data.BookingData;
 import running.data.GlobalData;
 
@@ -118,7 +118,7 @@ public class SeatController extends AbsController{
 				response.setReason(Reason.ERR_ARG);
 			}else{
 				UUID uuid = UUID.randomUUID();
-				BookingData bookingData = GlobalData.getTableData(seat.getId());
+				BookingData bookingData = GlobalData.getBookingData(seat.getId());
 				bookingData.setSecret(uuid.toString());
 				response.setData(uuid.toString());
 			}

@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import annotation.Permission;
 import bean.Response;
 import common.util.JsonUtil;
 import common.util.StringUtil;
@@ -19,7 +20,6 @@ import db.pojo.Role;
 import db.pojo.User;
 import global.constant.Constant;
 import global.constant.Reason;
-import permission.Permission;
 
 @Controller
 public class MenuController extends AbsController{

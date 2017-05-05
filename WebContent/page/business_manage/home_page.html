@@ -189,11 +189,15 @@
 		
 		var ws = new WebSocket("ws://localhost:8080/OrderingSystem/websocket");
 		ws.onopen = function () {  
-            alert("webSocket onopen");
+            //alert("webSocket onopen");
+            var startBookingData = {
+           		seatId : getParam("seatId"),
+           		secret : getParam("secret"),
+           		restaurantId : getParam("restaurantId"),
+            }
             var loginMsg = {
-            		seatId : getParam("seatId"),
-            		secret : getParam("secret"),
-            		
+            	cmd: 1,
+            	data: JSON.stringify(startBookingData),
             }
             ws.send(JSON.stringify(loginMsg)); 
         };  
@@ -201,7 +205,7 @@
         	alert("webSocket  onmessage ---" + event.data) ;
         };  
         ws.onclose = function (event) {  
-        	alert("webSocket  onclose") ;
+        	//alert("webSocket  onclose") ;
         };
         function disconnect() {  
             if (ws != null) {  

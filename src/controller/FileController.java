@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import annotation.Permission;
 import bean.Response;
 import global.constant.Constant;
-import permission.Permission;
 
 @Controller
 public class FileController extends AbsController {

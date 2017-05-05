@@ -11,6 +11,7 @@ public class Constant {
 		public final static String MENUS = "menus";
 		public final static String COUNT = "count";
 		public final static String LIST = "list";
+		public final static String BOOKING_DATA = "bookingData";
 		
 	}
 	

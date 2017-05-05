@@ -7,8 +7,7 @@ public class GlobalData {
 	
 	private static HashMap<Integer, BookingData> seatIdBookingDataMap = new HashMap<Integer, BookingData>();
 
-	
-	public static synchronized BookingData getTableData(int seatId){
+	public static synchronized BookingData getBookingData(int seatId){
 		if(seatIdBookingDataMap.containsKey(seatId)){
 			return seatIdBookingDataMap.get(seatId);
 		}else{
@@ -17,4 +16,7 @@ public class GlobalData {
 			return bookingData;
 		}
 	}
+	
+	
+	
 }

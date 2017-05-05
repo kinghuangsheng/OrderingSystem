@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import annotation.Permission;
 import bean.Page;
 import bean.Response;
 import common.util.StringUtil;
@@ -15,7 +16,6 @@ import db.dao.RestaurantDao;
 import db.pojo.Restaurant;
 import global.constant.Constant;
 import global.constant.Reason;
-import permission.Permission;
 
 @Controller
 public class RestaurantController extends AbsController{
